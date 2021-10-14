@@ -1,5 +1,11 @@
 S000001	FM	Face Masks	China	12/9/2021	1	2	2
 S000002	HS	Hand Sanitizer	USA	14/10/2021	1	3	2
-S000003	BM	Breathing Machine	Africa	12/12/2021	2	6	2
-S000004	FM	Face Masks	China	15/9/2021	1	4	3
+S000003	BM	Breathing Machine	Africa	12/12/2021	2	6	1
+S000004	FM	Face Masks	China	15/9/2021	1	8	3
+S000005	FM	Face Masks	China	12/9/2021	4	2	2
+S000006	BM	Breathing Machine	Africa	25/12/2021	2	8	2
+S000007	HS	Hand Sanitizer	Malaysia	14/10/2021	1	3	2
+S000008	HS	Hand Sanitizer	Singapore	23/10/2021	4	11	11
+
+
 
