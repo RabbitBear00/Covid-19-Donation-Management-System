@@ -282,6 +282,34 @@ void PrintTable(int mode, int col_count, int *space, char col_name[][30], int ro
         }
         break;
 
+    case 8:
+        //Aggregated table of dist.txt
+        //Autogenerate table every time(Because dist Will be updated if changes are made)
+        DistTotal_Generator();
+        Sort_DistTotalQuan(&DistTotalHead, DistTotalLength, "quantity");
+        for (struct dist_total *ptr = DistTotalHead; ptr != NULL; ptr = ptr->link)
+        {
+            printTableDistTotalRow(Space_DistTotal, ptr);
+            putchar('\n');
+        }
+        //Free the memory
+        freeList_disttotal(DistTotalHead);
+        break;
+
+    case 9:
+        //Aggregated table of dist.txt
+        //Autogenerate table every time(Because dist Will be updated if changes are made)
+        DistTotal_Generator();
+        Sort_DistTotalQuan(&DistTotalHead, DistTotalLength, "accu_quantity");
+        for (struct dist_total *ptr = DistTotalHead; ptr != NULL; ptr = ptr->link)
+        {
+            printTableDistTotalRow(Space_DistTotal, ptr);
+            putchar('\n');
+        }
+        //Free the memory
+        freeList_disttotal(DistTotalHead);
+        break;
+
     default:
         break;
     }
@@ -402,7 +430,7 @@ static void printTableDistRow(int space[], dist input, int skipdate)
             break;
 
         case 5:
-            strcpy(buffer, input.stocks_ID);
+            strcpy(buffer, input.donation_ID);
             break;
 
         case 6:
@@ -472,6 +500,67 @@ static void printTableStockRow(int space[], struct stocks *input)
 
         case 7:
             snprintf(buffer, 99, FLOATFORMAT, input->curr_quantity);
+            break;
+
+        default:
+            break;
+        }
+
+        //Printing all the values(attributes)
+        printf("%s", buffer);
+        for (int k = 0; k < space[space_index] - strlen(buffer); k++)
+            printf(" ");
+
+        space_index++;
+        printf("|");
+    }
+
+    return;
+}
+
+static void printTableDistTotalRow(int space[], struct dist_total *input)
+{
+    int i = 1;
+    int index = input->dist_index;
+    int space_index = 0;
+    char buffer[100];
+
+    printf("|");
+    //Iterate over supply to find the index of the node's donation_ID
+    //+1 because i starts with 1
+    while (i < DISTCOLUMN + 1)
+    {
+
+        switch (i++)
+        {
+        //Could consider adding protection(check input length) to prevent buffer overflow
+        //Iterate over every attribute in supply, storing values into buffer as string
+        case 1:
+            strcpy(buffer, input->disttotal_ID);
+            break;
+
+        case 2:
+            strcpy(buffer, DistHead[index].donee_name);
+            break;
+
+        case 3:
+            strcpy(buffer, DistHead[index].donee_location);
+            break;
+
+        case 4:
+            snprintf(buffer, 99, DATEFORMAT, DistHead[index].donation_date.day, DistHead[index].donation_date.month, DistHead[index].donation_date.year);
+            break;
+
+        case 5:
+            strcpy(buffer, DistHead[index].stocks_ID);
+            break;
+
+        case 6:
+            snprintf(buffer, 99, FLOATFORMAT, input->quantity);
+            break;
+
+        case 7:
+            snprintf(buffer, 99, FLOATFORMAT, input->accu_quantity);
             break;
 
         default:
@@ -873,6 +962,81 @@ void DistTotal_Generator()
     return;
 }
 
+static struct dist_total *swap_disttotal(struct dist_total *ptr1, struct dist_total *ptr2)
+{
+    struct dist_total *tmp = ptr2->link;
+    ptr2->link = ptr1;
+    ptr1->link = tmp;
+    return ptr2;
+}
+
+static void Sort_DistTotalQuan(struct dist_total **head, int count, char *mode_name)
+{
+    struct dist_total **h;
+    int i, j, swapped;
+
+    //Mode 1: Init_quantity
+    //Mode 2: Curr_quantity
+    int mode;
+
+    //Conditions Define
+    if (strcmp(mode_name, "quantity") == 0)
+        mode = 1;
+
+    if (strcmp(mode_name, "accu_quantity") == 0)
+        mode = 2;
+
+    for (i = 0; i <= count; i++)
+    {
+
+        h = head;
+        swapped = 0;
+
+        for (j = 0; j < count - i - 1; j++)
+        {
+
+            struct dist_total *p1 = *h;
+            struct dist_total *p2 = p1->link;
+            if (p2 == NULL)
+                continue;
+
+            if (mode == 1 && (p1->quantity < p2->quantity))
+            {
+                //update the link after swapping 
+                *h = swap_disttotal(p1, p2);
+                swapped = 1;
+            }
+
+            if (mode == 2 && (p1->accu_quantity < p2->accu_quantity))
+            {
+                //update the link after swapping 
+                *h = swap_disttotal(p1, p2);
+                swapped = 1;
+            }
+
+            //Move to the next item in the list
+            h = &(*h)->link;
+        }
+
+        /* break if the loop ended without any swap */
+        if (swapped == 0)
+            break;
+    }
+}
+
+static void freeList_disttotal(struct dist_total *head)
+{
+    struct dist_total *curr = head, *link;
+    while (curr != NULL)
+    {
+        link = curr->link;
+        free(curr);
+        curr = link;
+    }
+    DistTotalLength = 0;
+
+    return;
+}
 int main()
 {
     int choice;
@@ -894,6 +1058,9 @@ int main()
     PrintTable(5, STOCKCOLUMN, Space_Stock, StockColumnName, StockLength, 0);
     PrintTable(6, DISTCOLUMN, Space_Dist, DistColumnName, DistLength, 0);
     PrintTable(7, DISTCOLUMN, Space_Dist, DistColumnName, DistLength, 0);
+    PrintTable(8, DISTCOLUMN, Space_DistTotal, DistTotalColumnName, DistTotalLength, 0);
+    PrintTable(9, DISTCOLUMN, Space_DistTotal, DistTotalColumnName, DistTotalLength, 0);
+
 
 
     return 0;

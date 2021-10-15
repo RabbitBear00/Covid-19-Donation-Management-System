@@ -91,12 +91,14 @@ int DistTotalLength = 0;
 //Space and length of the table
 int Space_Supply[MAXCOLUMN] = {12, 12, 31, 21, 16, 14, 24, 24};
 int Space_Dist[MAXCOLUMN] = {15, 31, 21, 16, 12, 16, 32};
+int Space_DistTotal[MAXCOLUMN] = {15, 31, 21, 16, 12, 16, 32};
 int Space_Stock[MAXCOLUMN] = {12, 12, 31, 21, 14, 24, 24};
 
 //Column names
 char SupplyColumnName[MAXCOLUMN][30] = {"Donation ID", "Supply Code", "Supply Name", "Donator", "Donation Date", "Shipment No.", "Quantity Received(mil.)", "Current Quantity(mil.)"};
 char DistColumnName[MAXCOLUMN][30] = {"Distributed ID", "Donee Name", "Donee Location", "Donation Date", "Donation ID", "Quantity(mil.)", "Accumulative Quantity(mil.)"};
-char StockColumnName[MAXCOLUMN][30] = {"Donation ID", "Supply Code", "Supply Name", "Donator", "Shipment No.", "Initial Quantity(mil.)", "Current Quantity(mil.)"};
+char DistTotalColumnName[MAXCOLUMN][30] = {"Distributed ID", "Donee Name", "Donee Location", "Donation Date", "Stock ID", "Quantity(mil.)", "Accumulative Quantity(mil.)"};
+char StockColumnName[MAXCOLUMN][30] = {"Stock ID", "Supply Code", "Supply Name", "Donator", "Shipment No.", "Initial Quantity(mil.)", "Current Quantity(mil.)"};
 
 //Function Declaration
 //Get data from donation.txt, save in array: SupplyHead
@@ -117,6 +119,7 @@ static void printTableTitle(int space[], int argc, char argv[MAXCOLUMN][30], int
 static void printTableSupplyRow(int space[], supply input, int skipdate);
 static void printTableDistRow(int space[], dist input, int skipdate);
 static void printTableStockRow(int space[], struct stocks *input);
+static void printTableDistTotalRow(int space[], struct dist_total *input);
 
 //Printing menus tool
 void Print_Title(int title_length, int argv_size, char argv[100]);
@@ -140,7 +143,10 @@ static void Sort_DistQuan(int *sequence, int mode);
 static void sequence_generator(int *sequence, int length);
 
 void DistTotal_Generator();
-static struct dist_total* insertNode_dist(int i, float quan, float accu_quan);
+static struct dist_total *insertNode_dist(int i, float quan, float accu_quan);
+static void Sort_DistTotalQuan(struct dist_total **head, int count, char *mode_name);
+static struct dist_total *swap_disttotal(struct dist_total *ptr1, struct dist_total *ptr2);
+static void freeList_disttotal(struct dist_total *head);
 
 
 
