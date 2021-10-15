@@ -15,6 +15,7 @@
 #define STOCKIDFORMAT "T%06d"
 #define SUPPLYIDFORMAT "S%06d"
 #define DISTIDFORMAT "D%06d"
+#define DIST_2IDFORMAT "I%06d"
 #define TITLELENGTH 50
 #define CHOICE_CONDITION (choice >= 1) && (choice <= sizeof(menu) / sizeof(menu[0]))
 
@@ -51,6 +52,7 @@ typedef struct dist
     char stocks_ID[8];
     float quantity;
     float accu_quantity;
+    int transaction_no;
 
 } dist;
 
@@ -65,6 +67,14 @@ struct stocks
     struct stocks *link;
 };
 
+struct dist_total
+{
+    int dist_index;
+    char disttotal_ID[8];
+    float quantity;
+    float accu_quantity;
+    struct dist_total *link;
+};
 
 //Variables to store data from txt files
 supply SupplyHead[MAXSUPPLY];
@@ -76,6 +86,7 @@ struct dist_total *DistTotalHead;
 int SupplyLength = 0;
 int DistLength = 0;
 int StockLength = 0;
+int DistTotalLength = 0;
 
 //Space and length of the table
 int Space_Supply[MAXCOLUMN] = {12, 12, 31, 21, 16, 14, 24, 24};
@@ -126,7 +137,11 @@ static struct stocks *swap(struct stocks *ptr1, struct stocks *ptr2);
 static void Sort_StockQuan(struct stocks **head, int count, char *mode);
 
 static void Sort_DistQuan(int *sequence, int mode);
-static void sequence_generator(int* sequence, int length);
+static void sequence_generator(int *sequence, int length);
+
+void DistTotal_Generator();
+static struct dist_total* insertNode_dist(int i, float quan, float accu_quan);
+
 
 
 #endif

@@ -119,9 +119,9 @@ void ReadFile_Dist()
     FILE *fp = fopen("./data/dist.txt", "r");
 
     //Retrieve data from dist.txt according to the format
-    while (fscanf(fp, "%[^\t]\t%[^\t]\t%[^\t]\t%d/%d/%d\t%[^\t]\t%[^\t]\t%f\t%f\n",
+    while (fscanf(fp, "%[^\t]\t%[^\t]\t%[^\t]\t%d/%d/%d\t%[^\t]\t%[^\t]\t%f\t%f\t%d\n",
                   temp.distributed_ID, temp.donee_name, temp.donee_location, &temp.donation_date.day,
-                  &temp.donation_date.month, &temp.donation_date.year, temp.donation_ID, &temp.stocks_ID, &temp.quantity, &temp.accu_quantity) != EOF)
+                  &temp.donation_date.month, &temp.donation_date.year, temp.donation_ID, &temp.stocks_ID, &temp.quantity, &temp.accu_quantity, &temp.transaction_no) != EOF)
     {
         //Copy all values from temp to array - DistHead
         strcpy(DistHead[i].distributed_ID, temp.distributed_ID);
@@ -132,6 +132,7 @@ void ReadFile_Dist()
         strcpy(DistHead[i].stocks_ID, temp.stocks_ID);
         DistHead[i].quantity = temp.quantity;
         DistHead[i].accu_quantity = temp.accu_quantity;
+         DistHead[i].transaction_no = temp.transaction_no;
 
 
         //calculate length
@@ -609,6 +610,37 @@ static void insertNode(int i, float total_init_quan, float total_curr_quan)
     return;
 }
 
+static struct dist_total* insertNode_dist(int i, float quan, float accu_quan)
+{
+    struct dist_total *node, *curr;
+
+    //Formatting of Stock ID
+    char buffer[10];
+    snprintf(buffer, 8, DIST_2IDFORMAT, DistTotalLength);
+
+    //Create a node
+    node = (struct dist_total*)calloc(1, sizeof(struct dist_total));
+    node->dist_index = i;
+    strcpy(node->disttotal_ID, buffer);
+    node->quantity = quan;
+    node->accu_quantity = accu_quan;
+    node->link = NULL;
+
+    //Linking the node to the list: StockHead
+    if (DistTotalHead == NULL)
+    {
+        DistTotalHead = node;
+        curr = node;
+    }
+    else
+    {
+        curr->link = node;
+        curr = node;
+    }
+
+    return node;
+}
+
 static int skip_key(int i, int *finish, int finish_count)
 {
     for (int j = 0; j < finish_count; j++)
@@ -809,12 +841,45 @@ static void sequence_generator(int* sequence, int length)
     }
 }
 
+void DistTotal_Generator()
+{
+    DistTotalHead = NULL;
+    struct dist_total *ptr;
+    float quan = 0;
+    float accu_quan = 0;
+    int i, k;
+
+    //Let the list exist first
+    //insertNode_dist(0, DistHead[0].quantity, DistHead[0].accu_quantity);
+    //ptr = DistTotalHead;
+    for (i = 0; i < DistLength; i++)
+    {
+        ptr = insertNode_dist(i, DistHead[i].quantity, DistHead[i].accu_quantity);
+        DistTotalLength++;
+
+        //When the list has only one data, need to skip this step
+        if(ptr->link != NULL)
+            ptr = ptr->link;
+
+        //Add the quantity to the list if transaction no turns out to be the same
+        while (DistHead[i].transaction_no == DistHead[i+1].transaction_no)
+        {
+            ptr->quantity += DistHead[i+1].quantity;
+            ptr->accu_quantity += DistHead[i+1].accu_quantity;
+            i++;
+        }
+        
+    }
+    return;
+}
+
 int main()
 {
     int choice;
     //Retrive Data
     ReadFile_Donation();
     ReadFile_Dist();
+    DistTotal_Generator();
 
     //Test if data be retreieved from txt files
     //PrintTableSupply();
