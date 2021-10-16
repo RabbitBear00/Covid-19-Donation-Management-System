@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 /*void readFile_Donation()
 {
@@ -132,8 +133,7 @@ void ReadFile_Dist()
         strcpy(DistHead[i].stocks_ID, temp.stocks_ID);
         DistHead[i].quantity = temp.quantity;
         DistHead[i].accu_quantity = temp.accu_quantity;
-         DistHead[i].transaction_no = temp.transaction_no;
-
+        DistHead[i].transaction_no = temp.transaction_no;
 
         //calculate length
         i++;
@@ -246,12 +246,12 @@ void PrintTable(int mode, int col_count, int *space, char col_name[][30], int ro
         sequence_generator(sequence, DistLength);
         Sort_DistQuan(sequence, 1);
         //Go through sequence
-        for(i = 0; i < DistLength; i++)
+        for (i = 0; i < DistLength; i++)
         {
             //Go through DistHead
-            for(k = 0; k < DistLength; k++)
+            for (k = 0; k < DistLength; k++)
             {
-                if(sequence[i] == k)
+                if (sequence[i] == k)
                 {
                     printTableDistRow(Space_Dist, DistHead[k], 0);
                     putchar('\n');
@@ -267,12 +267,12 @@ void PrintTable(int mode, int col_count, int *space, char col_name[][30], int ro
         sequence_generator(sequence, DistLength);
         Sort_DistQuan(sequence, 2);
         //Go through sequence
-        for(i = 0; i < DistLength; i++)
+        for (i = 0; i < DistLength; i++)
         {
             //Go through DistHead
-            for(k = 0; k < DistLength; k++)
+            for (k = 0; k < DistLength; k++)
             {
-                if(sequence[i] == k)
+                if (sequence[i] == k)
                 {
                     printTableDistRow(Space_Dist, DistHead[k], 0);
                     putchar('\n');
@@ -436,7 +436,7 @@ static void printTableDistRow(int space[], dist input, int skipdate)
         case 6:
             snprintf(buffer, 99, FLOATFORMAT, input.quantity);
             break;
-        
+
         case 7:
             snprintf(buffer, 99, FLOATFORMAT, input.accu_quantity);
             break;
@@ -699,7 +699,7 @@ static void insertNode(int i, float total_init_quan, float total_curr_quan)
     return;
 }
 
-static struct dist_total* insertNode_dist(int i, float quan, float accu_quan)
+static struct dist_total *insertNode_dist(int i, float quan, float accu_quan)
 {
     struct dist_total *node, *curr;
 
@@ -708,7 +708,7 @@ static struct dist_total* insertNode_dist(int i, float quan, float accu_quan)
     snprintf(buffer, 8, DIST_2IDFORMAT, DistTotalLength);
 
     //Create a node
-    node = (struct dist_total*)calloc(1, sizeof(struct dist_total));
+    node = (struct dist_total *)calloc(1, sizeof(struct dist_total));
     node->dist_index = i;
     strcpy(node->disttotal_ID, buffer);
     node->quantity = quan;
@@ -898,33 +898,31 @@ static void Sort_DistQuan(int *sequence, int mode)
 {
     //mode 1: Quantity(Desc)
     //mode 2: Accumulative quantity(Desc)
-    for(int i = 0; i < DistLength - 1; i++)
-    { 
+    for (int i = 0; i < DistLength - 1; i++)
+    {
         //index positions
-        for(int k = 0; k < DistLength - i - 1; k++)
+        for (int k = 0; k < DistLength - i - 1; k++)
         {
-            if(mode == 1 && DistHead[sequence[k]].quantity < DistHead[sequence[k+1]].quantity)
+            if (mode == 1 && DistHead[sequence[k]].quantity < DistHead[sequence[k + 1]].quantity)
             {
                 int temp = sequence[k];
-                sequence[k] = sequence[k+1];
-                sequence[k+1] = temp;
+                sequence[k] = sequence[k + 1];
+                sequence[k + 1] = temp;
             }
 
-            if(mode == 2 && DistHead[sequence[k]].accu_quantity < DistHead[sequence[k+1]].accu_quantity)
+            if (mode == 2 && DistHead[sequence[k]].accu_quantity < DistHead[sequence[k + 1]].accu_quantity)
             {
                 int temp = sequence[k];
-                sequence[k] = sequence[k+1];
-                sequence[k+1] = temp;
+                sequence[k] = sequence[k + 1];
+                sequence[k + 1] = temp;
             }
-            
         }
     }
-
 }
 
-static void sequence_generator(int* sequence, int length)
+static void sequence_generator(int *sequence, int length)
 {
-    for(int i = 0; i < length; i++)
+    for (int i = 0; i < length; i++)
     {
         sequence[i] = i;
     }
@@ -947,17 +945,16 @@ void DistTotal_Generator()
         DistTotalLength++;
 
         //When the list has only one data, need to skip this step
-        if(ptr->link != NULL)
+        if (ptr->link != NULL)
             ptr = ptr->link;
 
         //Add the quantity to the list if transaction no turns out to be the same
-        while (DistHead[i].transaction_no == DistHead[i+1].transaction_no)
+        while (DistHead[i].transaction_no == DistHead[i + 1].transaction_no)
         {
-            ptr->quantity += DistHead[i+1].quantity;
-            ptr->accu_quantity += DistHead[i+1].accu_quantity;
+            ptr->quantity += DistHead[i + 1].quantity;
+            ptr->accu_quantity += DistHead[i + 1].accu_quantity;
             i++;
         }
-        
     }
     return;
 }
@@ -1002,14 +999,14 @@ static void Sort_DistTotalQuan(struct dist_total **head, int count, char *mode_n
 
             if (mode == 1 && (p1->quantity < p2->quantity))
             {
-                //update the link after swapping 
+                //update the link after swapping
                 *h = swap_disttotal(p1, p2);
                 swapped = 1;
             }
 
             if (mode == 2 && (p1->accu_quantity < p2->accu_quantity))
             {
-                //update the link after swapping 
+                //update the link after swapping
                 *h = swap_disttotal(p1, p2);
                 swapped = 1;
             }
@@ -1037,7 +1034,210 @@ static void freeList_disttotal(struct dist_total *head)
 
     return;
 }
-int main()
+
+int Validation_Date(struct date input)
+{
+    if (input.year >= 1000 && input.year <= 9999)
+    {
+        //check month
+        if (input.month >= 1 && input.month <= 12)
+        {
+            //check days
+            if ((input.day >= 1 && input.day <= 31) && (input.month == 1 || input.month == 3 || input.month == 5 || input.month == 7 || input.month == 8 || input.month == 10 || input.month == 12))
+                return 1;
+            else if ((input.day >= 1 && input.day <= 30) && (input.month == 4 || input.month == 6 || input.month == 9 || input.month == 11))
+                return 1;
+            else if ((input.day >= 1 && input.day <= 28) && (input.month == 2))
+                return 1;
+            else if (input.day == 29 && input.month == 2 && (input.year % 400 == 0 || (input.year % 4 == 0 && input.year % 100 != 0)))
+                return 1;
+            else
+            {
+                printf("Invalid Date Input/Format.\n");
+                return 0;
+            }
+        }
+        else
+        {
+            printf("Invalid Date Input/Format.\n");
+            return 0;
+        }
+    }
+    else
+    {
+        printf("Invalid Date Input/Format.\n");
+        return 0;
+    }
+
+    printf("Invalid Date Input/Format.\n");
+    return 0;
+}
+
+int Validation_CharLength(int limit, int input_length)
+{
+    if (input_length > limit)
+    {
+        printf("The length can only be within %d characters.\n", limit);
+        return 0;
+    }
+
+    return 1;
+}
+
+int validation_isdigit(int limit, char *input, int input_length)
+{
+    if (input_length > limit)
+    {
+        printf("The length can only be within %d characters.\n", limit);
+        return 0;
+    }
+
+    for (int i = 0; i < input_length; i++)
+    {
+        if (isdigit(input[i]) == 0)
+        {
+            printf("Only numbers can be accepted.\n");
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+int validation_isfloat(char *input, int input_length)
+{
+    //To check whether . appeared
+    int dotted = 0;
+    for (int i = 0; i < input_length; i++)
+    {
+        if (input[i] == '.' && !dotted)
+        {
+            dotted = 1;
+            continue;
+        }
+        if (isdigit(input[i]) == 0)
+        {
+            printf("Only numbers can be accepted.\n");
+            return 0;
+        }
+    }
+
+    if (atof(input) < 10000000)
+        return 1;
+    else
+    {
+        printf("Cannot exceed 10000000.\n");
+        return 0;
+    }
+}
+
+int validation_supply_code(char *input)
+{
+    for (int i = 0; i < SUPPLYTYPES; i++)
+    {
+        if (strcmp(input, Supply_Type[i][0]) == 0)
+            return i;
+    }
+    printf("Invalid Supply Code.\n");
+    return -1;
+}
+
+void ConfirmSupplySection(supply *input)
+{
+    int choice;
+    char title[30] = "Confirm Your Record";
+    char menu[][30] = {"Confirm", "Cancel"};
+    char buffer[100];
+    while (1)
+    {
+        while (1)
+        {
+            Print_Title(TITLELENGTH, strlen(title), title);
+            for (int i = 0; i < SUPPLYCOLUMN; i++)
+            {
+                switch (i)
+                {
+                case 0:
+                    strcpy(buffer, input->donation_ID);
+                    break;
+                case 1:
+                    strcpy(buffer, input->supply_code);
+                    break;
+                case 2:
+                    strcpy(buffer, input->supply_name);
+                    break;
+                case 3:
+                    strcpy(buffer, input->donator);
+                    break;
+                case 4:
+                    snprintf(buffer, 50, DATEFORMAT, input->donation_date.day, input->donation_date.month, input->donation_date.year);
+                    break;
+                case 5:
+                    snprintf(buffer, 99, INTFORMAT, input->shipment_no);
+                    break;
+                case 6:
+                    snprintf(buffer, 99, FLOATFORMAT, input->init_quantity);
+                    break;
+                case 7:
+                    snprintf(buffer, 99, FLOATFORMAT, input->curr_quantity);
+                    break;
+                default:
+                    break;
+                }
+                printf("%s: %s\n", SupplyColumnName[i], buffer);
+            }
+
+            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
+            printf("Choice: ");
+            scanf("%d", &choice);
+            //printf("%d %d", sizeof(menu), sizeof(menu[0]));
+            //printf("%d\n",CHOICE_CONDITION);
+            if (CHOICE_CONDITION)
+                break;
+        }
+
+        switch (choice)
+        {
+        case 1:
+            //Write data into file
+            SupplyToFile();
+            return;
+
+        case 2:
+            SupplyLength--;
+            printf("You have cancelled this record.\n");
+            Exit_Phrase();
+            return;
+
+        default:
+            break;
+        }
+    }
+}
+
+void Exit_Phrase()
+{
+    printf("Press any key to continue......");
+    getchar();
+    getchar();
+}
+
+
+void SupplyToFile()
+{
+    FILE *fp;
+
+    fp = fopen("./data/donation.txt", "w+");
+    for (int i = 0; i < SupplyLength; i++)
+    {
+        fprintf(fp, "%s\t%s\t%s\t%s\t%d/%d/%d\t%d\t%f\t%f\n", SupplyHead[i].donation_ID, SupplyHead[i].supply_code, SupplyHead[i].supply_name, SupplyHead[i].donator, SupplyHead[i].donation_date.day,
+                SupplyHead[i].donation_date.month, SupplyHead[i].donation_date.year, SupplyHead[i].shipment_no, SupplyHead[i].init_quantity, SupplyHead[i].curr_quantity);
+    }
+    fclose(fp);
+
+    
+}
+/*int main()
 {
     int choice;
     //Retrive Data
@@ -1064,4 +1264,4 @@ int main()
 
 
     return 0;
-}
+}*/
