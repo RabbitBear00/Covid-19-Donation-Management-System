@@ -1153,39 +1153,7 @@ void ConfirmSupplySection(supply *input)
         while (1)
         {
             Print_Title(TITLELENGTH, strlen(title), title);
-            for (int i = 0; i < SUPPLYCOLUMN; i++)
-            {
-                switch (i)
-                {
-                case 0:
-                    strcpy(buffer, input->donation_ID);
-                    break;
-                case 1:
-                    strcpy(buffer, input->supply_code);
-                    break;
-                case 2:
-                    strcpy(buffer, input->supply_name);
-                    break;
-                case 3:
-                    strcpy(buffer, input->donator);
-                    break;
-                case 4:
-                    snprintf(buffer, 50, DATEFORMAT, input->donation_date.day, input->donation_date.month, input->donation_date.year);
-                    break;
-                case 5:
-                    snprintf(buffer, 99, INTFORMAT, input->shipment_no);
-                    break;
-                case 6:
-                    snprintf(buffer, 99, FLOATFORMAT, input->init_quantity);
-                    break;
-                case 7:
-                    snprintf(buffer, 99, FLOATFORMAT, input->curr_quantity);
-                    break;
-                default:
-                    break;
-                }
-                printf("%s: %s\n", SupplyColumnName[i], buffer);
-            }
+            Print_SupplyList(input, -1, NULL);
 
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
             printf("Choice: ");
@@ -1222,6 +1190,60 @@ void Exit_Phrase()
     getchar();
 }
 
+void Print_SupplyList(supply *input, int choice, char* edited_data)
+{
+    char buffer[1000];
+    for (int i = 0; i < SUPPLYCOLUMN; i++)
+    {
+        //Print the edited data
+        if(i == choice)
+        {
+            printf("%s: %s\n", SupplyColumnName[i], edited_data);
+            if(choice == 1)
+            {
+                //Need to find the string of certain supply code
+                int k = 0;
+                for(k = 0; i < SUPPLYTYPES; k++)
+                    if(strcmp(edited_data, Supply_Type[k][0]) == 0)
+                        break;
+                printf("%s: %s\n",SupplyColumnName[i], Supply_Type[k][1]);
+                i++;
+            }
+            i++;
+            
+        }
+        switch (i)
+        {
+        case 0:
+            strcpy(buffer, input->donation_ID);
+            break;
+        case 1:
+            strcpy(buffer, input->supply_code);
+            break;
+        case 2:
+            strcpy(buffer, input->supply_name);
+            break;
+        case 3:
+            strcpy(buffer, input->donator);
+            break;
+        case 4:
+            snprintf(buffer, 50, DATEFORMAT, input->donation_date.day, input->donation_date.month, input->donation_date.year);
+            break;
+        case 5:
+            snprintf(buffer, 99, INTFORMAT, input->shipment_no);
+            break;
+        case 6:
+            snprintf(buffer, 99, FLOATFORMAT, input->init_quantity);
+            break;
+        case 7:
+            snprintf(buffer, 99, FLOATFORMAT, input->curr_quantity);
+            break;
+        default:
+            break;
+        }
+        printf("%s: %s\n", SupplyColumnName[i], buffer);
+    }
+}
 
 void SupplyToFile()
 {
@@ -1234,8 +1256,6 @@ void SupplyToFile()
                 SupplyHead[i].donation_date.month, SupplyHead[i].donation_date.year, SupplyHead[i].shipment_no, SupplyHead[i].init_quantity, SupplyHead[i].curr_quantity);
     }
     fclose(fp);
-
-    
 }
 /*int main()
 {

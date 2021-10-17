@@ -9,7 +9,7 @@
 #define DISTCOLUMN 7
 #define STOCKCOLUMN 7
 #define MAXCOLUMN 10
-#define FLOATFORMAT "%f"
+#define FLOATFORMAT "%.2f"
 #define INTFORMAT "%d"
 #define DATEFORMAT "%02d/%02d/%04d"
 #define STOCKIDFORMAT "T%06d"
@@ -174,5 +174,9 @@ void Exit_Phrase();
 
 //Write data into file
 void SupplyToFile();
+
+//Print List Out
+void Print_SupplyList(supply *input, int choice, char* edited_data);
+
 
 #endif

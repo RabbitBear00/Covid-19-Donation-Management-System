@@ -50,6 +50,7 @@ void Dashboard()
 void DonationSupplies()
 {
     int choice;
+    clrscr();
     while (1)
     {
         while (1)
@@ -74,7 +75,7 @@ void DonationSupplies()
             break;
 
         case 2:
-            //EditDonationSupply();
+            EditDonationSupply();
             break;
 
         case 3:
@@ -176,17 +177,14 @@ void AddDonationSupply()
 
 void EditDonationSupply()
 {
-    char supply_code[1000];
     int supply_code_index;
-    char donator[1000];
     struct date donation_date;
     char date_buffer[1000];
-    char shipment_buffer[1000];
-    char quantity_buffer[1000];
-    char buffer[100];
+    char buffer[1000];
     char donation_ID[1000];
     int search_index = -1;
     char title[100] = "Edit Donation Supply";
+    int selection;
 
     while (1)
     {
@@ -221,7 +219,7 @@ void EditDonationSupply()
         {
             clrscr();
 
-            char menu[][30] = {"Supply code", "Donator", "Donation date", "Shipment no", "Quantity received(millions)", "Return"};
+            char menu[][30] = {"Supply code", "Donator", "Donation date", "Shipment no", "Quantity received(millions)", "Current Quantity(millions)", "Return"};
             Print_Title(TITLELENGTH, strlen(title), title);
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
             printf("Choice: ");
@@ -237,9 +235,10 @@ void EditDonationSupply()
         case 1:
             do
             {
+                printf("\nSupply name will be changed automatically");
                 printf("\nSupply Code: ");
-                scanf("%s", supply_code);
-                supply_code_index = validation_supply_code(supply_code);
+                scanf("%s", buffer);
+                supply_code_index = validation_supply_code(buffer);
             } while (supply_code_index < 0);
             break;
         //Donator
@@ -247,8 +246,8 @@ void EditDonationSupply()
             do
             {
                 printf("Donator: ");
-                scanf("%s", donator);
-            } while (!Validation_CharLength(20, strlen(donator)));
+                scanf("%s", buffer);
+            } while (!Validation_CharLength(20, strlen(buffer)));
             break;
         //Donation date
         case 3:
@@ -257,9 +256,9 @@ void EditDonationSupply()
                 printf("Enter Date in format: dd/mm/yyyy\n");
                 printf("Date: ");
                 //Get the string
-                scanf("%s", date_buffer);
+                scanf("%s", buffer);
                 //Write inside donation_date according to the format
-                sscanf(date_buffer, "%d/%d/%d", &donation_date.day, &donation_date.month, &donation_date.year);
+                sscanf(buffer, "%d/%d/%d", &donation_date.day, &donation_date.month, &donation_date.year);
             } while (!Validation_Date(donation_date));
             break;
         //shipment no
@@ -267,23 +266,84 @@ void EditDonationSupply()
             do
             {
                 printf("Shipment No.: ");
-                scanf("%s", shipment_buffer);
-            } while (!validation_isdigit(7, shipment_buffer, strlen(shipment_buffer)));
+                scanf("%s", buffer);
+            } while (!validation_isdigit(7, buffer, strlen(buffer)));
             break;
         //Quantity Received
         case 5:
             do
             {
-                printf("Quantity(millions): ");
-                scanf("%s", quantity_buffer);
+                printf("Quantity Received(millions): ");
+                scanf("%s", buffer);
 
-            } while (!validation_isfloat(quantity_buffer, strlen(quantity_buffer)));
+            } while (!validation_isfloat(buffer, strlen(buffer)));
+            break;
+        //Current Quantity
         case 6:
-            Exit_Phrase();
+            do
+            {
+                printf("Current Quantity(millions): ");
+                scanf("%s", buffer);
+
+            } while (!validation_isfloat(buffer, strlen(buffer)));
+            break;
+
+        case 7:
             return;
+
         default:
             break;
         }
+        
+        //Perform to locate exact location in the supply list(Need to skip row 3 which is supply_name)
+        if(choice >= 2 && choice <= 6)
+            choice++;
+        while (1)
+        {
+
+            char title[30] = "Confirm Your Record";
+            char menu[][30] = {"Confirm", "Cancel"};
+            clrscr();
+            Print_Title(TITLELENGTH, strlen(title), title);
+            Print_SupplyList(&SupplyHead[search_index], choice, buffer);
+            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
+            printf("Choice: ");
+            scanf("%d", &selection);
+            if ((selection >= 1) && (selection <= sizeof(menu) / sizeof(menu[0])))
+                break;
+        }
+
+        if (selection == 2)
+        {
+            printf("You have cancelled this record.\n");
+            Exit_Phrase();
+            return;
+        }
+        //Replace with the attribute in SuppleHead
+        if (choice == 1)
+        {
+            strcpy(SupplyHead[search_index].supply_code, buffer);
+            strcpy(SupplyHead[search_index].supply_name, Supply_Type[supply_code_index][1]);
+        }
+
+        else if (choice == 3)
+            strcpy(SupplyHead[search_index].donator, buffer);
+
+        else if (choice == 4)
+            SupplyHead[search_index].donation_date = donation_date;
+
+        else if (choice == 5)
+            SupplyHead[search_index].shipment_no = atoi(buffer);
+
+        else if (choice == 6)
+            SupplyHead[search_index].init_quantity = atof(buffer);
+
+        else if (choice == 7)
+            SupplyHead[search_index].curr_quantity = atof(buffer);
+
+        SupplyToFile();
+
+        return;
     }
 }
 
