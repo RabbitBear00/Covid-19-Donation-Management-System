@@ -5,7 +5,7 @@
 void MainMenu()
 {
     int choice;
-
+    char choice_buffer[1000];
     while (1)
     {
         clrscr();
@@ -14,8 +14,11 @@ void MainMenu()
         Print_Title(TITLELENGTH, strlen(title), title);
         Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
         printf("Choice: ");
-
-        scanf("%d", &choice);
+        scanf("%s", choice_buffer);
+        if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
+            choice = atoi(choice_buffer);
+        else
+            continue;
         if (CHOICE_CONDITION)
             break;
     }
@@ -50,6 +53,7 @@ void Dashboard()
 void DonationSupplies()
 {
     int choice;
+    char choice_buffer[1000];
     clrscr();
     while (1)
     {
@@ -57,13 +61,17 @@ void DonationSupplies()
         {
             clrscr();
             char title[100] = "Manage Donation Supplies";
-            char menu[][30] = {"Add donation supply", "Edit donation supply", "Search donation supply", "Return"};
+            char menu[][30] = {"Add donation supply", "Edit donation supply", "View Current Stocks", "Search donation supply", "Return"};
             Print_Title(TITLELENGTH, strlen(title), title);
             PrintTable(1, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength, 0);
             putchar('\n');
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
             printf("Choice: ");
-            scanf("%d", &choice);
+            scanf("%s", choice_buffer);
+            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
+                choice = atoi(choice_buffer);
+            else
+                continue;
             if (CHOICE_CONDITION)
                 break;
         }
@@ -79,12 +87,21 @@ void DonationSupplies()
             break;
 
         case 3:
-            //SearchDonationSupply();
+            ViewCurrentStock_Supply();
             break;
 
         case 4:
+            SearchDonationSupplies();
+            break;
+
+        case 5:
             return;
+        
+        default:
+            break;
         }
+
+        return;
     }
 }
 
@@ -189,6 +206,8 @@ void EditDonationSupply()
     while (1)
     {
         int choice;
+        char choice_buffer[1000];
+
         //User enter donation ID part
         while (1)
         {
@@ -223,8 +242,11 @@ void EditDonationSupply()
             Print_Title(TITLELENGTH, strlen(title), title);
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
             printf("Choice: ");
-
-            scanf("%d", &choice);
+            scanf("%s", choice_buffer);
+            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
+                choice = atoi(choice_buffer);
+            else
+                continue;
             if (CHOICE_CONDITION)
                 break;
         }
@@ -294,13 +316,13 @@ void EditDonationSupply()
         default:
             break;
         }
-        
+
         //Perform to locate exact location in the supply list(Need to skip row 3 which is supply_name)
-        if(choice >= 2 && choice <= 6)
+        if (choice >= 2 && choice <= 6)
             choice++;
         while (1)
         {
-
+            char selection_buffer[1000];
             char title[30] = "Confirm Your Record";
             char menu[][30] = {"Confirm", "Cancel"};
             clrscr();
@@ -308,7 +330,12 @@ void EditDonationSupply()
             Print_SupplyList(&SupplyHead[search_index], choice, buffer);
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
             printf("Choice: ");
-            scanf("%d", &selection);
+            scanf("%s", selection_buffer);
+            if (validation_isdigit(1000, selection_buffer, strlen(selection_buffer)))
+                selection = atoi(selection_buffer);
+            else
+                continue;
+
             if ((selection >= 1) && (selection <= sizeof(menu) / sizeof(menu[0])))
                 break;
         }
@@ -347,8 +374,14 @@ void EditDonationSupply()
     }
 }
 
-void ViewHistoryRecord_Supply()
+void ViewCurrentStock_Supply()
 {
+    clrscr();
+    char title[100] = "View Current Stocks";
+    Print_Title(TITLELENGTH, strlen(title), title);
+    PrintTable(3, STOCKCOLUMN, Space_Stock, StockColumnName, StockLength, 0);
+    Exit_Phrase();
+    return;
 }
 
 void SearchDonationSupplies()

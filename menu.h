@@ -15,7 +15,7 @@ void DistributedDonation();
 //Secondary Menus for DonationSupplies()
 void AddDonationSupply();
 void EditDonationSupply();
-void ViewHistoryRecord_Supply();
+void ViewCurrentStock_Supply();
 void SearchDonationSupplies();
 void SearchStocks();
 void SearchSupplyHistory();

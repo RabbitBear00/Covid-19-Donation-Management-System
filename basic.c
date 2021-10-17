@@ -1145,6 +1145,7 @@ int validation_supply_code(char *input)
 void ConfirmSupplySection(supply *input)
 {
     int choice;
+    char choice_buffer[1000];
     char title[30] = "Confirm Your Record";
     char menu[][30] = {"Confirm", "Cancel"};
     char buffer[100];
@@ -1157,7 +1158,11 @@ void ConfirmSupplySection(supply *input)
 
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
             printf("Choice: ");
-            scanf("%d", &choice);
+            scanf("%s", choice_buffer);
+            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
+                choice = atoi(choice_buffer);
+            else
+                continue;
             //printf("%d %d", sizeof(menu), sizeof(menu[0]));
             //printf("%d\n",CHOICE_CONDITION);
             if (CHOICE_CONDITION)
