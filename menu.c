@@ -63,7 +63,7 @@ void DonationSupplies()
             char title[100] = "Manage Donation Supplies";
             char menu[][30] = {"Add donation supply", "Edit donation supply", "View Current Stocks", "Search donation supply", "Return"};
             Print_Title(TITLELENGTH, strlen(title), title);
-            PrintTable(1, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength, 0);
+            PrintTable(1, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength);
             putchar('\n');
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
             printf("Choice: ");
@@ -96,7 +96,7 @@ void DonationSupplies()
 
         case 5:
             return;
-        
+
         default:
             break;
         }
@@ -214,7 +214,7 @@ void EditDonationSupply()
             clrscr();
 
             Print_Title(TITLELENGTH, strlen(title), title);
-            PrintTable(1, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength, 0);
+            PrintTable(1, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength);
             printf("\nEnter Donation ID: ");
             scanf("%s", donation_ID);
             for (int i = 0; i < SupplyLength; i++)
@@ -379,16 +379,89 @@ void ViewCurrentStock_Supply()
     clrscr();
     char title[100] = "View Current Stocks";
     Print_Title(TITLELENGTH, strlen(title), title);
-    PrintTable(3, STOCKCOLUMN, Space_Stock, StockColumnName, StockLength, 0);
+    PrintTable(3, STOCKCOLUMN, Space_Stock, StockColumnName, StockLength);
     Exit_Phrase();
     return;
 }
 
 void SearchDonationSupplies()
 {
+    while (1)
+    {
+        int choice;
+        char choice_buffer[1000];
+        while (1)
+        {
+            clrscr();
+            char title[100] = "Search Donation Supply";
+            char menu[][30] = {"Search in current stocks", "Search in history records", "Return"};
+            Print_Title(TITLELENGTH, strlen(title), title);
+            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
+            printf("Choice: ");
+            scanf("%s", choice_buffer);
+            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
+                choice = atoi(choice_buffer);
+            else
+                continue;
+            if (CHOICE_CONDITION)
+                break;
+        }
+
+        switch (choice)
+        {
+        case 1:
+            SearchStocks();
+            break;
+
+        case 2:
+            SearchSupplyHistory();
+            break;
+
+        case 3:
+            return;
+
+        default:
+            break;
+        }
+        return;
+    }
 }
+
 void SearchStocks()
 {
+    int i, k;
+    int sum = 0;
+    char search_target[1000];
+    struct stocks *search_index = NULL;
+    char title[100] = "Search Current Stocks";
+    struct stocks *ptr;
+    while (1)
+    {
+        clrscr();
+        Print_Title(TITLELENGTH, strlen(title), title);
+        printf("**\nFormat of stocks ID is TXXXXXX, where X are numbers");
+        printf("\nEnter Stocks ID: ");
+        scanf("%s", search_target);
+        Stock_Generator();
+        search_index = NULL;
+        for (struct stocks *ptr = StockHead; ptr != NULL; ptr = ptr->link)
+            if (strcmp(ptr->stock_ID, search_target) == 0)
+            {
+                search_index = ptr;
+                break;
+            }
+        freeList(StockHead);
+        if (search_index != NULL)
+            break;
+        else
+            printf("Stocks ID doesnt exist. Please enter again.\n");
+
+        Exit_Phrase();
+    }
+    clrscr();
+    //Printing the table
+    int sum = PrintTableHeader(STOCKCOLUMN, Space_Stock, StockColumnName);
+    
 }
 
 void SearchSupplyHistory()

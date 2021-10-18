@@ -160,11 +160,9 @@ void print_donation()
         printf("%s:%s:%s:%f\n", SupplyHead[i].donation_ID, SupplyHead[i].donator, SupplyHead[i].supply_name, SupplyHead[i].init_quantity);
     }
 }*/
-
-void PrintTable(int mode, int col_count, int *space, char col_name[][30], int row_count, int skipdate)
+int PrintTableHeader(int col_count, int *space, char col_name[][30])
 {
     int i, k, sum = 0;
-    int sequence[MAXDIST];
     //Iterate the whole list and calculate the sum of spaces of the whole table
     for (i = 0; i < col_count; i++)
         sum += space[i];
@@ -177,32 +175,42 @@ void PrintTable(int mode, int col_count, int *space, char col_name[][30], int ro
         printf("-");
     putchar('\n');
 
-    printTableTitle(space, col_count, col_name, skipdate);
+    printTableTitle(space, col_count, col_name);
 
     for (i = 0; i < sum; i++)
         printf("-");
     putchar('\n');
 
+    return sum;
+}
+void PrintTable(int mode, int col_count, int *space, char col_name[][30], int row_count)
+{
+    int i, k, sum = 0;
+    int sequence[MAXDIST];
+    sum = PrintTableHeader(col_count, space, col_name);
     //Printing Table Rows(Mode 1: Supply, Mode 2: Dist, Mode 3: Stocks)
     switch (mode)
     {
     case 1:
+        //Mode 1: Supply sort according to Supply ID(ascending)
         for (i = 0; i < row_count; i++)
         {
-            printTableSupplyRow(space, SupplyHead[i], skipdate);
+            printTableSupplyRow(space, SupplyHead[i]);
             putchar('\n');
         }
         break;
 
     case 2:
+        //Mode 2: Dist sort according to Distributed ID(ascending)
         for (i = 0; i < row_count; i++)
         {
-            printTableDistRow(space, DistHead[i], skipdate);
+            printTableDistRow(space, DistHead[i]);
             putchar('\n');
         }
         break;
 
     case 3:
+        //Mode 3: Stocks sort according to Stock ID(ascending)
         //Autogenerate table every time(Because Supply Will be updated if changes are made)
         Stock_Generator();
         for (struct stocks *ptr = StockHead; ptr != NULL; ptr = ptr->link)
@@ -215,19 +223,99 @@ void PrintTable(int mode, int col_count, int *space, char col_name[][30], int ro
         break;
 
     case 4:
-        //Autogenerate table every time(Because Supply Will be updated if changes are made)
-        Stock_Generator();
-        Sort_StockQuan(&StockHead, StockLength, "curr_quantity");
-        for (struct stocks *ptr = StockHead; ptr != NULL; ptr = ptr->link)
+        //Mode 4: DistTotal sort according to DistTotal ID(ascending)
+        //Autogenerate table every time(Because Dist Will be updated if changes are made)
+        DistTotal_Generator();
+        for (struct dist_total *ptr = DistTotalHead; ptr != NULL; ptr = ptr->link)
         {
-            printTableStockRow(Space_Stock, ptr);
+            printTableDistTotalRow(Space_DistTotal, ptr);
             putchar('\n');
         }
         //Free the memory
-        freeList(StockHead);
-        break;
+        freeList_disttotal(DistTotalHead);
 
     case 5:
+        //Mode 5: Supply Sort according to Initial Quantity(Descending)
+        sequence_generator(sequence, SupplyLength);
+        Sort_SupplyQuan(sequence, 1);
+        //Go through sequence
+        for (i = 0; i < SupplyLength; i++)
+        {
+            //Go through DistHead
+            for (k = 0; k < SupplyLength; k++)
+            {
+                if (sequence[i] == k)
+                {
+                    printTableSupplyRow(Space_Supply, SupplyHead[k]);
+                    putchar('\n');
+                    break;
+                }
+            }
+        }
+        break;
+
+    case 6:
+        //Mode 6: Supply Sort according to Current Quantity(Descending)
+        sequence_generator(sequence, SupplyLength);
+        Sort_SupplyQuan(sequence, 2);
+        //Go through sequence
+        for (i = 0; i < SupplyLength; i++)
+        {
+            //Go through DistHead
+            for (k = 0; k < SupplyLength; k++)
+            {
+                if (sequence[i] == k)
+                {
+                    printTableSupplyRow(Space_Supply, SupplyHead[k]);
+                    putchar('\n');
+                    break;
+                }
+            }
+        }
+        break;
+
+    case 7:
+        //Mode 7: Dist Sort according to Quantity(Descending)
+        sequence_generator(sequence, DistLength);
+        Sort_DistQuan(sequence, 1);
+        //Go through sequence
+        for (i = 0; i < DistLength; i++)
+        {
+            //Go through DistHead
+            for (k = 0; k < DistLength; k++)
+            {
+                if (sequence[i] == k)
+                {
+                    printTableDistRow(Space_Dist, DistHead[k]);
+                    putchar('\n');
+                    break;
+                }
+            }
+        }
+        break;
+
+    case 8:
+        //Mode 8: Dist Sort according to Accumulative Quantity(Descending)
+        sequence_generator(sequence, DistLength);
+        Sort_DistQuan(sequence, 2);
+        //Go through sequence
+        for (i = 0; i < DistLength; i++)
+        {
+            //Go through DistHead
+            for (k = 0; k < DistLength; k++)
+            {
+                if (sequence[i] == k)
+                {
+                    printTableDistRow(Space_Dist, DistHead[k]);
+                    putchar('\n');
+                    break;
+                }
+            }
+        }
+        break;
+
+    case 9:
+        //Mode 9: Stock Sort according to Initial Quantity(Descending)
         //Autogenerate table every time(Because Supply Will be updated if changes are made)
         Stock_Generator();
         Sort_StockQuan(&StockHead, StockLength, "init_quantity");
@@ -240,50 +328,22 @@ void PrintTable(int mode, int col_count, int *space, char col_name[][30], int ro
         freeList(StockHead);
         break;
 
-    case 6:
-        //Distributed quantity aggregated table
-        //quantity
-        sequence_generator(sequence, DistLength);
-        Sort_DistQuan(sequence, 1);
-        //Go through sequence
-        for (i = 0; i < DistLength; i++)
+    case 10:
+        //Mode 10: Stock Sort according to Current Quantity(Descending)
+        //Autogenerate table every time(Because Supply Will be updated if changes are made)
+        Stock_Generator();
+        Sort_StockQuan(&StockHead, StockLength, "curr_quantity");
+        for (struct stocks *ptr = StockHead; ptr != NULL; ptr = ptr->link)
         {
-            //Go through DistHead
-            for (k = 0; k < DistLength; k++)
-            {
-                if (sequence[i] == k)
-                {
-                    printTableDistRow(Space_Dist, DistHead[k], 0);
-                    putchar('\n');
-                    break;
-                }
-            }
+            printTableStockRow(Space_Stock, ptr);
+            putchar('\n');
         }
+        //Free the memory
+        freeList(StockHead);
         break;
 
-    case 7:
-        //Distributed quantity aggregated table
-        //accumulated quantity
-        sequence_generator(sequence, DistLength);
-        Sort_DistQuan(sequence, 2);
-        //Go through sequence
-        for (i = 0; i < DistLength; i++)
-        {
-            //Go through DistHead
-            for (k = 0; k < DistLength; k++)
-            {
-                if (sequence[i] == k)
-                {
-                    printTableDistRow(Space_Dist, DistHead[k], 0);
-                    putchar('\n');
-                    break;
-                }
-            }
-        }
-        break;
-
-    case 8:
-        //Aggregated table of dist.txt
+    case 11:
+        //Mode 11: dist_total Sort according to Quantity(Descending)
         //Autogenerate table every time(Because dist Will be updated if changes are made)
         DistTotal_Generator();
         Sort_DistTotalQuan(&DistTotalHead, DistTotalLength, "quantity");
@@ -296,8 +356,8 @@ void PrintTable(int mode, int col_count, int *space, char col_name[][30], int ro
         freeList_disttotal(DistTotalHead);
         break;
 
-    case 9:
-        //Aggregated table of dist.txt
+    case 12:
+        //Mode 12: dist_total Sort according to Accumulative Quantity(Descending)
         //Autogenerate table every time(Because dist Will be updated if changes are made)
         DistTotal_Generator();
         Sort_DistTotalQuan(&DistTotalHead, DistTotalLength, "accu_quantity");
@@ -322,7 +382,7 @@ void PrintTable(int mode, int col_count, int *space, char col_name[][30], int ro
     return;
 }
 
-static void printTableSupplyRow(int space[], supply input, int skipdate)
+static void printTableSupplyRow(int space[], supply input)
 {
     int i = 1;
     int daterow = 5;
@@ -333,12 +393,6 @@ static void printTableSupplyRow(int space[], supply input, int skipdate)
     //Iterate over supply
     while (i < SUPPLYCOLUMN + 1)
     {
-        //Skip date column if skipdate == true
-        if (skipdate == 1 && i == daterow)
-        {
-            i++;
-            space_index++;
-        }
 
         switch (i++)
         {
@@ -391,7 +445,7 @@ static void printTableSupplyRow(int space[], supply input, int skipdate)
     return;
 }
 
-static void printTableDistRow(int space[], dist input, int skipdate)
+static void printTableDistRow(int space[], dist input)
 {
     int i = 1;
     int daterow = 5;
@@ -402,13 +456,6 @@ static void printTableDistRow(int space[], dist input, int skipdate)
     //Iterate over supply
     while (i < DISTCOLUMN + 1)
     {
-        //Skip date column if skipdate == true
-        if (skipdate == 1 && i == daterow)
-        {
-            i++;
-            space_index++;
-        }
-
         switch (i++)
         {
         //Could consider adding protection(check input length) to prevent buffer overflow
@@ -579,7 +626,7 @@ static void printTableDistTotalRow(int space[], struct dist_total *input)
     return;
 }
 
-static void printTableTitle(int space[], int argc, char argv[MAXCOLUMN][30], int skipdate)
+static void printTableTitle(int space[], int argc, char argv[MAXCOLUMN][30])
 {
     int space_index = 0;
     int daterow = 5;
@@ -588,10 +635,6 @@ static void printTableTitle(int space[], int argc, char argv[MAXCOLUMN][30], int
     //Printing all the values
     for (int i = 0; i < argc; i++)
     {
-        //Skip date column if skipdate == true
-        if (skipdate && (i == daterow))
-            i++;
-
         //Print column names
         printf("%s", argv[i]);
         for (int k = 0; k < space[space_index] - strlen(argv[i]); k++)
@@ -920,6 +963,33 @@ static void Sort_DistQuan(int *sequence, int mode)
     }
 }
 
+static void Sort_SupplyQuan(int *sequence, int mode)
+
+{
+    //mode 1: Init Quantity
+    //mode 2: Curr Quantity
+    for (int i = 0; i < SupplyLength - 1; i++)
+    {
+        //index positions
+        for (int k = 0; k < SupplyLength - i - 1; k++)
+        {
+            if (mode == 1 && SupplyHead[sequence[k]].init_quantity < SupplyHead[sequence[k + 1]].init_quantity)
+            {
+                int temp = sequence[k];
+                sequence[k] = sequence[k + 1];
+                sequence[k + 1] = temp;
+            }
+
+            if (mode == 2 && SupplyHead[sequence[k]].curr_quantity < SupplyHead[sequence[k + 1]].curr_quantity)
+            {
+                int temp = sequence[k];
+                sequence[k] = sequence[k + 1];
+                sequence[k + 1] = temp;
+            }
+        }
+    }
+}
+
 static void sequence_generator(int *sequence, int length)
 {
     for (int i = 0; i < length; i++)
@@ -1195,27 +1265,26 @@ void Exit_Phrase()
     getchar();
 }
 
-void Print_SupplyList(supply *input, int choice, char* edited_data)
+void Print_SupplyList(supply *input, int choice, char *edited_data)
 {
     char buffer[1000];
     for (int i = 0; i < SUPPLYCOLUMN; i++)
     {
         //Print the edited data
-        if(i == choice)
+        if (i == choice)
         {
             printf("%s: %s\n", SupplyColumnName[i], edited_data);
-            if(choice == 1)
+            if (choice == 1)
             {
                 //Need to find the string of certain supply code
                 int k = 0;
-                for(k = 0; i < SUPPLYTYPES; k++)
-                    if(strcmp(edited_data, Supply_Type[k][0]) == 0)
+                for (k = 0; i < SUPPLYTYPES; k++)
+                    if (strcmp(edited_data, Supply_Type[k][0]) == 0)
                         break;
-                printf("%s: %s\n",SupplyColumnName[i], Supply_Type[k][1]);
+                printf("%s: %s\n", SupplyColumnName[i], Supply_Type[k][1]);
                 i++;
             }
             i++;
-            
         }
         switch (i)
         {

@@ -112,10 +112,10 @@ void ReadFile_Donation();
 void ReadFile_Dist();
 
 //Printing donation supply stocks table
-void PrintTable(int mode, int col_count, int *space, char col_name[][30], int row_count, int skipdate);
-static void printTableTitle(int space[], int argc, char argv[MAXCOLUMN][30], int skipdate);
-static void printTableSupplyRow(int space[], supply input, int skipdate);
-static void printTableDistRow(int space[], dist input, int skipdate);
+void PrintTable(int mode, int col_count, int *space, char col_name[][30], int row_count);
+static void printTableTitle(int space[], int argc, char argv[MAXCOLUMN][30]);
+static void printTableSupplyRow(int space[], supply input);
+static void printTableDistRow(int space[], dist input);
 static void printTableStockRow(int space[], struct stocks *input);
 static void printTableDistTotalRow(int space[], struct dist_total *input);
 
@@ -152,8 +152,10 @@ static void freeList(struct stocks *head);
 static int skip_key(int i, int *finish, int finish_count);
 
 //Dist type functions
-//Sorting dist type's initial quantity and current quantity
+//Sorting dist type's quantity and accumulative quantity
 static void Sort_DistQuan(int *sequence, int mode);
+//Sorting supply type's initial quantity and current quantity
+static void Sort_SupplyQuan(int *sequence, int mode);
 //Generate an array sequence pf [0, length-1] to be sorted in Sort_DistQuan
 static void sequence_generator(int *sequence, int length);
 
@@ -177,6 +179,9 @@ void SupplyToFile();
 
 //Print List Out
 void Print_SupplyList(supply *input, int choice, char* edited_data);
+
+//Print Table header, return the sum of length of the table
+int PrintTableHeader(int col_count, int *space, char col_name[][30]);
 
 
 #endif
