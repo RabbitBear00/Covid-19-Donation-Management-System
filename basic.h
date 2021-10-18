@@ -18,6 +18,7 @@
 #define DIST_2IDFORMAT "I%06d"
 #define TITLELENGTH 50
 #define SUPPLYTYPES 5
+#define MAXSUPPLYTYPES 100
 #define CHOICE_CONDITION (choice >= 1) && (choice <= sizeof(menu) / sizeof(menu[0]))
 
 //Data Structure for date
@@ -102,7 +103,7 @@ char DistTotalColumnName[MAXCOLUMN][50] = {"Distributed ID", "Donee Name", "Done
 char StockColumnName[MAXCOLUMN][50] = {"Stock ID", "Supply Code", "Supply Name", "Donator", "Shipment No.", "Initial Quantity(mil.)", "Current Quantity(mil.)"};
 
 //Supply Types that can donate
-char Supply_Type[][2][50] = {{"CT", "Contactless Thermometer"}, {"HS", "Hand Sanitizers"}, {"FM", "Face Mask"}, {"SM", "Surgical Mask"}, {"OM", "Oxygen Mask"}};
+char Supply_Type[MAXSUPPLYTYPES][2][50] = {{"CT", "Contactless Thermometer"}, {"HS", "Hand Sanitizers"}, {"FM", "Face Mask"}, {"SM", "Surgical Mask"}, {"OM", "Oxygen Mask"}};
 
 //Function Declaration
 //Get data from donation.txt, save in array: SupplyHead
@@ -136,6 +137,7 @@ int Validation_CharLength(int limit, int input_length);
 int validation_isdigit(int limit, char *input, int input_length);
 int validation_isfloat(char *input, int input_length);
 int validation_supply_code(char* input);
+int validation_stockID(char *input);
 
 //Functions for stock list
 //Generate list for struct stocks
@@ -180,8 +182,17 @@ void SupplyToFile();
 //Print List Out
 void Print_SupplyList(supply *input, int choice, char* edited_data);
 
+//Print list out
+void Print_DistList(dist *input, int choice, char *edited_data, int mode);
+
 //Print Table header, return the sum of length of the table
 int PrintTableHeader(int col_count, int *space, char col_name[][50]);
+
+//Ensure quantity of distributed donation is correct
+int ensureQuantity(int *ID_store, float quantity, int supply_index);
+
+int ConfirmDistSection(dist *input, int mode);
+void ConfirmSupplySection(supply *input);
 
 
 #endif

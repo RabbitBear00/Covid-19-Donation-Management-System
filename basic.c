@@ -233,6 +233,7 @@ void PrintTable(int mode, int col_count, int *space, char col_name[][50], int ro
         }
         //Free the memory
         freeList_disttotal(DistTotalHead);
+        break;
 
     case 5:
         //Mode 5: Supply Sort according to Initial Quantity(Descending)
@@ -1011,9 +1012,9 @@ void DistTotal_Generator()
     //ptr = DistTotalHead;
     for (i = 0; i < DistLength; i++)
     {
-        ptr = insertNode_dist(i, DistHead[i].quantity, DistHead[i].accu_quantity);
         DistTotalLength++;
-
+        ptr = insertNode_dist(i, DistHead[i].quantity, DistHead[i].accu_quantity);
+        
         //When the list has only one data, need to skip this step
         if (ptr->link != NULL)
             ptr = ptr->link;
@@ -1115,7 +1116,7 @@ int Validation_Date(struct date input)
             //check days
             if ((input.day >= 1 && input.day <= 31) && (input.month == 1 || input.month == 3 || input.month == 5 || input.month == 7 || input.month == 8 || input.month == 10 || input.month == 12))
                 return 1;
-            else if ((input.day >= 1 && input.day <= 50) && (input.month == 4 || input.month == 6 || input.month == 9 || input.month == 11))
+            else if ((input.day >= 1 && input.day <= 30) && (input.month == 4 || input.month == 6 || input.month == 9 || input.month == 11))
                 return 1;
             else if ((input.day >= 1 && input.day <= 28) && (input.month == 2))
                 return 1;
@@ -1229,6 +1230,7 @@ void ConfirmSupplySection(supply *input)
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
             printf("Choice: ");
             scanf("%s", choice_buffer);
+            fflush(stdin);
             if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
                 choice = atoi(choice_buffer);
             else
@@ -1255,6 +1257,100 @@ void ConfirmSupplySection(supply *input)
         default:
             break;
         }
+    }
+}
+
+int ConfirmDistSection(dist *input, int mode)
+{
+    int choice;
+    char choice_buffer[1000];
+    char title[50] = "Confirm Your Record";
+    char menu[][50] = {"Confirm", "Cancel"};
+    char buffer[100];
+    while (1)
+    {
+        while (1)
+        {
+            Print_Title(TITLELENGTH, strlen(title), title);
+            Print_DistList(input, -1, NULL, mode);
+
+            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
+            printf("Choice: ");
+            scanf("%s", choice_buffer);
+            fflush(stdin);
+            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
+                choice = atoi(choice_buffer);
+            else
+                continue;
+            //printf("%d %d", sizeof(menu), sizeof(menu[0]));
+            //printf("%d\n",CHOICE_CONDITION);
+            if (CHOICE_CONDITION)
+                break;
+        }
+
+        switch (choice)
+        {
+        case 1:
+            //Return
+            return 1;
+
+        case 2:
+            SupplyLength--;
+            printf("You have cancelled this record.\n");
+            Exit_Phrase();
+            return 0;
+
+        default:
+            break;
+        }
+    }
+}
+
+void Print_DistList(dist *input, int choice, char *edited_data, int mode)
+{
+    //Mode 1: For adding
+    //Mode 2: For editing
+    char buffer[1000];
+    for (int i = 0; i < DISTCOLUMN; i++)
+    {
+        //Print the edited data
+        if (i == choice)
+        {
+            printf("%s: %s\n",DistColumnName[i], edited_data);
+            i++;
+        }
+        switch (i)
+        {
+        case 0:
+            strcpy(buffer, input->distributed_ID);
+            break;
+        case 1:
+            strcpy(buffer, input->donee_name);
+            break;
+        case 2:
+            strcpy(buffer, input->donee_location);
+            break;
+        case 3:
+            snprintf(buffer, 50, DATEFORMAT, input->donation_date.day, input->donation_date.month, input->donation_date.year);
+            break;
+        case 4:
+            strcpy(buffer, input->stocks_ID);
+            break;
+        case 5:
+            snprintf(buffer, 99, FLOATFORMAT, input->quantity);
+            break;
+        
+        case 6:
+            snprintf(buffer, 99, FLOATFORMAT, input->quantity);
+            break;
+        
+        default:
+            break;
+        }
+        //skip accumulative quantity for adding 
+        if(mode == 1 && i == 6)
+            continue;
+        printf("%s: %s\n", DistColumnName[i], buffer);
     }
 }
 
@@ -1319,6 +1415,21 @@ void Print_SupplyList(supply *input, int choice, char *edited_data)
     }
 }
 
+int validation_stockID(char *input)
+{
+    Stock_Generator();
+    for (struct stocks *ptr = StockHead; ptr != NULL; ptr = ptr->link)
+    {
+        if (strcmp(ptr->stock_ID, input) == 0)
+        {
+            return ptr->supply_index;
+        }
+    }
+    printf("Stock ID does not exist\n");
+    freeList(StockHead);
+    return -1;
+}
+
 void SupplyToFile()
 {
     FILE *fp;
@@ -1331,6 +1442,47 @@ void SupplyToFile()
     }
     fclose(fp);
 }
+
+void DistToFile()
+{
+    FILE *fp;
+
+    fp = fopen("./data/dist.txt", "w+");
+    for (int i = 0; i < DistLength; i++)
+    {
+        fprintf(fp, "%s\t%s\t%s\t%d/%d/%d\t%s\t%s\t%f\t%f\t%d\n", DistHead[i].distributed_ID, DistHead[i].donee_name, DistHead[i].donee_location, DistHead[i].donation_date.day,
+                  DistHead[i].donation_date.month, DistHead[i].donation_date.year, DistHead[i].donation_ID, DistHead[i].stocks_ID, DistHead[i].quantity, DistHead[i].accu_quantity, DistHead[i].transaction_no);
+    }
+    fclose(fp);
+}
+
+int ensureQuantity(int *ID_store, float quantity, int supply_index)
+{
+    int i, k = supply_index;
+    int ID_store_index = 0;
+    float quan_remainder = quantity;
+
+    for (i = supply_index; i < SupplyLength; i++)
+    {
+        if (!strcmp(SupplyHead[i].supply_code, SupplyHead[k].supply_code) && !strcmp(SupplyHead[i].donator, SupplyHead[k].donator) && (SupplyHead[i].shipment_no == SupplyHead[k].shipment_no))
+        {
+            //Minus the quantity
+            quan_remainder -= SupplyHead[i].curr_quantity;
+            ID_store[ID_store_index] = i;
+            ID_store_index++;
+            //current quantity is able to deduct
+            if (quan_remainder <= 0)
+            {
+                //Make it become the length;
+                return ID_store_index;
+            }
+        }
+    }
+
+    printf("The quantity entered cannot exceed the stock's current quantity.\n");
+    return -1;
+}
+
 /*int main()
 {
     int choice;
