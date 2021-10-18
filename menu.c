@@ -101,7 +101,6 @@ void DonationSupplies()
             break;
         }
 
-        return;
     }
 }
 
@@ -367,7 +366,7 @@ void EditDonationSupply()
 
         else if (choice == 7)
             SupplyHead[search_index].curr_quantity = atof(buffer);
-
+        //Write into file
         SupplyToFile();
 
         return;
@@ -423,7 +422,6 @@ void SearchDonationSupplies()
         default:
             break;
         }
-        return;
     }
 }
 
@@ -439,7 +437,7 @@ void SearchStocks()
     {
         clrscr();
         Print_Title(TITLELENGTH, strlen(title), title);
-        printf("**\nFormat of stocks ID is TXXXXXX, where X are numbers");
+        printf("**Format of stocks ID is TXXXXXX, where X are numbers");
         printf("\nEnter Stocks ID: ");
         scanf("%s", search_target);
         Stock_Generator();
@@ -450,22 +448,69 @@ void SearchStocks()
                 search_index = ptr;
                 break;
             }
-        freeList(StockHead);
         if (search_index != NULL)
             break;
         else
+        
             printf("Stocks ID doesnt exist. Please enter again.\n");
-
+        freeList(StockHead);
         Exit_Phrase();
+        return;
     }
     clrscr();
     //Printing the table
-    int sum = PrintTableHeader(STOCKCOLUMN, Space_Stock, StockColumnName);
-    
+    sum = PrintTableHeader(STOCKCOLUMN, Space_Stock, StockColumnName);
+    printTableStockRow(Space_Stock, search_index);
+    putchar('\n');
+    for(i = 0; i < sum; i++)
+        printf("-");
+    putchar('\n');
+    Exit_Phrase();
+    freeList(StockHead);
+    return;
 }
 
 void SearchSupplyHistory()
 {
+    int i, k;
+    int sum = 0;
+    char search_target[1000];
+    int search_index = -1;
+    char title[100] = "Search History Records";
+    struct stocks *ptr;
+    while (1)
+    {
+        clrscr();
+        Print_Title(TITLELENGTH, strlen(title), title);
+        printf("**Format of Donation ID is SXXXXXX, where X are numbers");
+        printf("\nEnter Donation ID: ");
+        scanf("%s", search_target);
+        for(i = 0; i < SupplyLength; i++)
+        {
+            if(strcmp(SupplyHead[i].donation_ID, search_target) == 0)
+            {   
+                search_index = i;
+                break;
+            }
+        }
+        if (search_index >= 0)
+            break;
+        else
+            printf("Donation ID doesnt exist. Please enter again.\n");
+
+        Exit_Phrase();
+        return;
+    }
+    clrscr();
+    //Printing the table
+    sum = PrintTableHeader(SUPPLYCOLUMN, Space_Supply, SupplyColumnName);
+    printTableSupplyRow(Space_Supply, SupplyHead[i]);
+    putchar('\n');
+    for(i = 0; i < sum; i++)
+        printf("-");
+    putchar('\n');
+    Exit_Phrase();
+    return;
 }
 
 void AddDistDonation()
