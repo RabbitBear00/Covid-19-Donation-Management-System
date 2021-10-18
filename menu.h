@@ -16,6 +16,8 @@ void DistributedDonation();
 void AddDonationSupply();
 void EditDonationSupply();
 void ViewCurrentStock_Supply();
+static void viewCurrentStocks();
+static void viewSupplyHistoryRecord();
 void SearchDonationSupplies();
 void SearchStocks();
 void SearchSupplyHistory();

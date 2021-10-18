@@ -10,7 +10,7 @@ void MainMenu()
     {
         clrscr();
         char title[100] = "Covid-19 Inventory Management System";
-        char menu[][30] = {"Dahsboard", "Manage Donation Supplies", "Manage Distributed Donation", "Exit"};
+        char menu[][50] = {"Dahsboard", "Manage Donation Supplies", "Manage Distributed Donation", "Exit"};
         Print_Title(TITLELENGTH, strlen(title), title);
         Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
         printf("Choice: ");
@@ -61,7 +61,7 @@ void DonationSupplies()
         {
             clrscr();
             char title[100] = "Manage Donation Supplies";
-            char menu[][30] = {"Add donation supply", "Edit donation supply", "View Current Stocks", "Search donation supply", "Return"};
+            char menu[][50] = {"Add donation supply", "Edit donation supply", "View records", "Search donation supply", "Return"};
             Print_Title(TITLELENGTH, strlen(title), title);
             PrintTable(1, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength);
             putchar('\n');
@@ -100,7 +100,6 @@ void DonationSupplies()
         default:
             break;
         }
-
     }
 }
 
@@ -237,7 +236,7 @@ void EditDonationSupply()
         {
             clrscr();
 
-            char menu[][30] = {"Supply code", "Donator", "Donation date", "Shipment no", "Quantity received(millions)", "Current Quantity(millions)", "Return"};
+            char menu[][50] = {"Supply code", "Donator", "Donation date", "Shipment no", "Quantity received(millions)", "Current Quantity(millions)", "Return"};
             Print_Title(TITLELENGTH, strlen(title), title);
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
             printf("Choice: ");
@@ -322,8 +321,8 @@ void EditDonationSupply()
         while (1)
         {
             char selection_buffer[1000];
-            char title[30] = "Confirm Your Record";
-            char menu[][30] = {"Confirm", "Cancel"};
+            char title[50] = "Confirm Your Record";
+            char menu[][50] = {"Confirm", "Cancel"};
             clrscr();
             Print_Title(TITLELENGTH, strlen(title), title);
             Print_SupplyList(&SupplyHead[search_index], choice, buffer);
@@ -375,12 +374,132 @@ void EditDonationSupply()
 
 void ViewCurrentStock_Supply()
 {
-    clrscr();
-    char title[100] = "View Current Stocks";
-    Print_Title(TITLELENGTH, strlen(title), title);
-    PrintTable(3, STOCKCOLUMN, Space_Stock, StockColumnName, StockLength);
-    Exit_Phrase();
-    return;
+    int choice;
+    char choice_buffer[1000];
+    while (1)
+    {
+        while (1)
+        {
+            clrscr();
+            char title[100] = "View records";
+            char menu[][50] = {"View current stocks", "View history records", "Return"};
+            Print_Title(TITLELENGTH, strlen(title), title);
+            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
+            printf("Choice: ");
+            scanf("%s", choice_buffer);
+            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
+                choice = atoi(choice_buffer);
+            else
+                continue;
+            if (CHOICE_CONDITION)
+                break;
+        }
+        switch (choice)
+        {
+        case 1:
+            viewCurrentStocks();
+            break;
+        case 2:
+            viewSupplyHistoryRecord();
+        case 3:
+            return;
+        default:
+            break;
+        }
+    }
+}
+
+static void viewCurrentStocks()
+{
+    int choice;
+    char choice_buffer[1000];
+    while (1)
+    {
+        while (1)
+        {
+            clrscr();
+            char title[100] = "View Current Stocks";
+            char menu[][50] = {"Stock ID - Ascending", "Quantity Received(millions) - Descending", "Current Quantity(millions) - Descending", "Return"};
+            Print_Title(TITLELENGTH, strlen(title), title);
+            printf("Sort according to:\n");
+            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
+            printf("Choice: ");
+            scanf("%s", choice_buffer);
+            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
+                choice = atoi(choice_buffer);
+            else
+                continue;
+            if (CHOICE_CONDITION)
+                break;
+        }
+        clrscr();
+        switch (choice)
+        {
+        case 1:
+            PrintTable(3, STOCKCOLUMN, Space_Stock, StockColumnName, StockLength);
+            Exit_Phrase();
+            break;
+        case 2:
+            PrintTable(9, STOCKCOLUMN, Space_Stock, StockColumnName, StockLength);
+            Exit_Phrase();
+            break;
+        case 3:
+            PrintTable(10, STOCKCOLUMN, Space_Stock, StockColumnName, StockLength);
+            Exit_Phrase();
+            break;
+        case 4:
+            return;
+        default:
+            break;
+        }
+    }
+}
+
+static void viewSupplyHistoryRecord()
+{
+    int choice;
+    char choice_buffer[1000];
+    while (1)
+    {
+        while (1)
+        {
+            clrscr();
+            char title[100] = "View History Records";
+            char menu[][50] = {"Donation ID - Ascending", "Quantity Received(millions) - Descending", "Current Quantity(millions) - Descending", "Return"};
+            Print_Title(TITLELENGTH, strlen(title), title);
+            printf("Sort according to:\n");
+            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
+            printf("Choice: ");
+            scanf("%s", choice_buffer);
+            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
+                choice = atoi(choice_buffer);
+            else
+                continue;
+            if (CHOICE_CONDITION)
+                break;
+            
+        }
+        clrscr();
+        switch (choice)
+        {
+        case 1:
+            PrintTable(1, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength);
+            Exit_Phrase();
+            break;
+        case 2:
+            PrintTable(5, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength);
+            Exit_Phrase();
+            break;
+        case 3:
+            PrintTable(6, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength);
+            Exit_Phrase();
+            break;
+        case 4:
+            return;
+        default:
+            break;
+        }
+    }
 }
 
 void SearchDonationSupplies()
@@ -393,7 +512,7 @@ void SearchDonationSupplies()
         {
             clrscr();
             char title[100] = "Search Donation Supply";
-            char menu[][30] = {"Search in current stocks", "Search in history records", "Return"};
+            char menu[][50] = {"Search in current stocks", "Search in history records", "Return"};
             Print_Title(TITLELENGTH, strlen(title), title);
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
             printf("Choice: ");
@@ -451,7 +570,7 @@ void SearchStocks()
         if (search_index != NULL)
             break;
         else
-        
+
             printf("Stocks ID doesnt exist. Please enter again.\n");
         freeList(StockHead);
         Exit_Phrase();
@@ -462,7 +581,7 @@ void SearchStocks()
     sum = PrintTableHeader(STOCKCOLUMN, Space_Stock, StockColumnName);
     printTableStockRow(Space_Stock, search_index);
     putchar('\n');
-    for(i = 0; i < sum; i++)
+    for (i = 0; i < sum; i++)
         printf("-");
     putchar('\n');
     Exit_Phrase();
@@ -485,10 +604,10 @@ void SearchSupplyHistory()
         printf("**Format of Donation ID is SXXXXXX, where X are numbers");
         printf("\nEnter Donation ID: ");
         scanf("%s", search_target);
-        for(i = 0; i < SupplyLength; i++)
+        for (i = 0; i < SupplyLength; i++)
         {
-            if(strcmp(SupplyHead[i].donation_ID, search_target) == 0)
-            {   
+            if (strcmp(SupplyHead[i].donation_ID, search_target) == 0)
+            {
                 search_index = i;
                 break;
             }
@@ -506,7 +625,7 @@ void SearchSupplyHistory()
     sum = PrintTableHeader(SUPPLYCOLUMN, Space_Supply, SupplyColumnName);
     printTableSupplyRow(Space_Supply, SupplyHead[i]);
     putchar('\n');
-    for(i = 0; i < sum; i++)
+    for (i = 0; i < sum; i++)
         printf("-");
     putchar('\n');
     Exit_Phrase();

@@ -160,7 +160,7 @@ void print_donation()
         printf("%s:%s:%s:%f\n", SupplyHead[i].donation_ID, SupplyHead[i].donator, SupplyHead[i].supply_name, SupplyHead[i].init_quantity);
     }
 }*/
-int PrintTableHeader(int col_count, int *space, char col_name[][30])
+int PrintTableHeader(int col_count, int *space, char col_name[][50])
 {
     int i, k, sum = 0;
     //Iterate the whole list and calculate the sum of spaces of the whole table
@@ -183,7 +183,7 @@ int PrintTableHeader(int col_count, int *space, char col_name[][30])
 
     return sum;
 }
-void PrintTable(int mode, int col_count, int *space, char col_name[][30], int row_count)
+void PrintTable(int mode, int col_count, int *space, char col_name[][50], int row_count)
 {
     int i, k, sum = 0;
     int sequence[MAXDIST];
@@ -626,7 +626,7 @@ static void printTableDistTotalRow(int space[], struct dist_total *input)
     return;
 }
 
-static void printTableTitle(int space[], int argc, char argv[MAXCOLUMN][30])
+static void printTableTitle(int space[], int argc, char argv[MAXCOLUMN][50])
 {
     int space_index = 0;
     int daterow = 5;
@@ -850,7 +850,7 @@ void Print_Title(int title_length, int argv_length, char *argv)
     return;
 }
 
-void Print_Menu(int argc, char argv[][30])
+void Print_Menu(int argc, char argv[][50])
 {
     for (int i = 1; i <= argc; i++)
     {
@@ -1115,7 +1115,7 @@ int Validation_Date(struct date input)
             //check days
             if ((input.day >= 1 && input.day <= 31) && (input.month == 1 || input.month == 3 || input.month == 5 || input.month == 7 || input.month == 8 || input.month == 10 || input.month == 12))
                 return 1;
-            else if ((input.day >= 1 && input.day <= 30) && (input.month == 4 || input.month == 6 || input.month == 9 || input.month == 11))
+            else if ((input.day >= 1 && input.day <= 50) && (input.month == 4 || input.month == 6 || input.month == 9 || input.month == 11))
                 return 1;
             else if ((input.day >= 1 && input.day <= 28) && (input.month == 2))
                 return 1;
@@ -1216,8 +1216,8 @@ void ConfirmSupplySection(supply *input)
 {
     int choice;
     char choice_buffer[1000];
-    char title[30] = "Confirm Your Record";
-    char menu[][30] = {"Confirm", "Cancel"};
+    char title[50] = "Confirm Your Record";
+    char menu[][50] = {"Confirm", "Cancel"};
     char buffer[100];
     while (1)
     {

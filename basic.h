@@ -33,7 +33,7 @@ typedef struct supply
 {
     char donation_ID[8];
     char supply_code[3];
-    char supply_name[30];
+    char supply_name[50];
     char donator[20];
     struct date donation_date;
     int shipment_no;
@@ -46,7 +46,7 @@ typedef struct supply
 typedef struct dist
 {
     char distributed_ID[8];
-    char donee_name[30];
+    char donee_name[50];
     char donee_location[20];
     struct date donation_date;
     char donation_ID[8];
@@ -96,13 +96,13 @@ int Space_DistTotal[MAXCOLUMN] = {15, 31, 21, 16, 12, 16, 32};
 int Space_Stock[MAXCOLUMN] = {12, 12, 31, 21, 14, 24, 24};
 
 //Column names
-char SupplyColumnName[MAXCOLUMN][30] = {"Donation ID", "Supply Code", "Supply Name", "Donator", "Donation Date", "Shipment No.", "Quantity Received(mil.)", "Current Quantity(mil.)"};
-char DistColumnName[MAXCOLUMN][30] = {"Distributed ID", "Donee Name", "Donee Location", "Donation Date", "Donation ID", "Quantity(mil.)", "Accumulative Quantity(mil.)"};
-char DistTotalColumnName[MAXCOLUMN][30] = {"Distributed ID", "Donee Name", "Donee Location", "Donation Date", "Stock ID", "Quantity(mil.)", "Accumulative Quantity(mil.)"};
-char StockColumnName[MAXCOLUMN][30] = {"Stock ID", "Supply Code", "Supply Name", "Donator", "Shipment No.", "Initial Quantity(mil.)", "Current Quantity(mil.)"};
+char SupplyColumnName[MAXCOLUMN][50] = {"Donation ID", "Supply Code", "Supply Name", "Donator", "Donation Date", "Shipment No.", "Quantity Received(mil.)", "Current Quantity(mil.)"};
+char DistColumnName[MAXCOLUMN][50] = {"Distributed ID", "Donee Name", "Donee Location", "Donation Date", "Donation ID", "Quantity(mil.)", "Accumulative Quantity(mil.)"};
+char DistTotalColumnName[MAXCOLUMN][50] = {"Distributed ID", "Donee Name", "Donee Location", "Donation Date", "Stock ID", "Quantity(mil.)", "Accumulative Quantity(mil.)"};
+char StockColumnName[MAXCOLUMN][50] = {"Stock ID", "Supply Code", "Supply Name", "Donator", "Shipment No.", "Initial Quantity(mil.)", "Current Quantity(mil.)"};
 
 //Supply Types that can donate
-char Supply_Type[][2][30] = {{"CT", "Contactless Thermometer"}, {"HS", "Hand Sanitizers"}, {"FM", "Face Mask"}, {"SM", "Surgical Mask"}, {"OM", "Oxygen Mask"}};
+char Supply_Type[][2][50] = {{"CT", "Contactless Thermometer"}, {"HS", "Hand Sanitizers"}, {"FM", "Face Mask"}, {"SM", "Surgical Mask"}, {"OM", "Oxygen Mask"}};
 
 //Function Declaration
 //Get data from donation.txt, save in array: SupplyHead
@@ -112,8 +112,8 @@ void ReadFile_Donation();
 void ReadFile_Dist();
 
 //Printing donation supply stocks table
-void PrintTable(int mode, int col_count, int *space, char col_name[][30], int row_count);
-static void printTableTitle(int space[], int argc, char argv[MAXCOLUMN][30]);
+void PrintTable(int mode, int col_count, int *space, char col_name[][50], int row_count);
+static void printTableTitle(int space[], int argc, char argv[MAXCOLUMN][50]);
 static void printTableSupplyRow(int space[], supply input);
 static void printTableDistRow(int space[], dist input);
 static void printTableStockRow(int space[], struct stocks *input);
@@ -121,7 +121,7 @@ static void printTableDistTotalRow(int space[], struct dist_total *input);
 
 //Printing menus tool
 void Print_Title(int title_length, int argv_size, char argv[100]);
-void Print_Menu(int argc, char argv[][30]);
+void Print_Menu(int argc, char argv[][50]);
 
 //Comparing Dataes: d1 < d2: -1; d1 == d2: 0; d1 > d2: 1;
 int compare_dates(struct date d1, struct date d2);
@@ -181,7 +181,7 @@ void SupplyToFile();
 void Print_SupplyList(supply *input, int choice, char* edited_data);
 
 //Print Table header, return the sum of length of the table
-int PrintTableHeader(int col_count, int *space, char col_name[][30]);
+int PrintTableHeader(int col_count, int *space, char col_name[][50]);
 
 
 #endif
