@@ -33,5 +33,7 @@ void SearchDistHistory();
 void SearchDistTotal();
 
 //Secondary Menus for Dashboard
+void SupplyAccuDonation();
+void DistAccuDonation();
 
 #endif

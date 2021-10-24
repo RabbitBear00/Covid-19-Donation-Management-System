@@ -1,9 +1,8 @@
-#include "basic.h"
-#include "basic.c"
+#include "menu.h"
+#include "menu.c"
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
 
 void MainMenu();
 

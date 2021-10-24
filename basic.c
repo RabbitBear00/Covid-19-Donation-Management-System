@@ -1204,7 +1204,7 @@ int validation_isfloat(char *input, int input_length)
 
 int validation_supply_code(char *input)
 {
-    for (int i = 0; i < SUPPLYTYPES; i++)
+    for (int i = 0; i < SupplyTypeLength; i++)
     {
         if (strcmp(input, Supply_Type[i][0]) == 0)
             return i;
@@ -1393,7 +1393,7 @@ void Print_SupplyList(supply *input, int choice, char *edited_data)
             {
                 //Need to find the string of certain supply code
                 int k = 0;
-                for (k = 0; i < SUPPLYTYPES; k++)
+                for (k = 0; i < SupplyTypeLength; k++)
                     if (strcmp(edited_data, Supply_Type[k][0]) == 0)
                         break;
                 printf("%s: %s\n", SupplyColumnName[i], Supply_Type[k][1]);

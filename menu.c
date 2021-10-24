@@ -10,7 +10,7 @@ void MainMenu()
     {
         clrscr();
         char title[100] = "Covid-19 Inventory Management System";
-        char menu[][50] = {"Dahsboard", "Manage Donation Supplies", "Manage Distributed Donation", "Exit"};
+        char menu[][50] = {"Dashboard", "Manage Donation Supplies", "Manage Distributed Donation", "Exit"};
         Print_Title(TITLELENGTH, strlen(title), title);
         Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
         printf("Choice: ");
@@ -27,15 +27,15 @@ void MainMenu()
     switch (choice)
     {
     case 1:
-        //Dashboard();
+        Dashboard();
         break;
 
     case 2:
-        //DonationSupplies();
+        DonationSupplies();
         break;
 
     case 3:
-        //DistributedDonation();
+        DistributedDonation();
         break;
 
     case 4:
@@ -49,6 +49,46 @@ void MainMenu()
 
 void Dashboard()
 {
+    int choice;
+    char choice_buffer[1000];
+    clrscr();
+    while (1)
+    {
+        while (1)
+        {
+            clrscr();
+            char title[100] = "Dashboard";
+            char menu[][50] = {"Accumulated donation received for each supply", "Accumulated distributed donation for each supply", "Return"};
+            Print_Title(TITLELENGTH, strlen(title), title);
+            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
+            printf("Choice: ");
+            scanf("%s", choice_buffer);
+            fflush(stdin);
+            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
+                choice = atoi(choice_buffer);
+            else
+                continue;
+            if (CHOICE_CONDITION)
+                break;
+        }
+
+        switch (choice)
+        {
+        case 1:
+            SupplyAccuDonation();
+            break;
+
+        case 2:
+            DistAccuDonation();
+            break;
+
+        case 3:
+            return;
+
+        default:
+            break;
+        }
+    }
 }
 
 void DonationSupplies()
@@ -174,10 +214,10 @@ void AddDonationSupply()
     clrscr();
     char title[100] = "Add Donation Supply";
     Print_Title(TITLELENGTH, strlen(title), title);
-    printf("Currently there are only %d types of supplies that you can donate.\n", SUPPLYTYPES);
+    printf("Currently there are only %d types of supplies that you can donate.\n", SupplyTypeLength);
     printf("Supply Code - Supply Name\n");
     //Print all the available supplies out
-    for (int i = 0; i < SUPPLYTYPES; i++)
+    for (int i = 0; i < SupplyTypeLength; i++)
     {
         printf("%s - %s\n", Supply_Type[i][0], Supply_Type[i][1]);
     }
@@ -326,7 +366,7 @@ void EditDonationSupply()
             do
             {
                 printf("Donator: ");
-                scanf("%s", buffer);
+                scanf("%[^\n]", buffer);
                 fflush(stdin);
             } while (!Validation_CharLength(20, strlen(buffer)));
             break;
@@ -1254,9 +1294,64 @@ void SearchDistTotal()
     return;
 }
 
-int main()
+void SupplyAccuDonation()
 {
-    ReadFile_Donation();
-    ReadFile_Dist();
-    DistributedDonation();
+    double count[MAXSUPPLYTYPES] = {0};
+
+    clrscr();
+    char title[100] = "Accumulated Donation Received For Each Supply";
+    Print_Title(TITLELENGTH, strlen(title), title);
+    //Calculate quantity for each supply
+    for (int i = 0; i < SupplyLength; i++)
+    {
+        for (int k = 0; k < SupplyTypeLength; k++)
+        {
+            if (strcmp(SupplyHead[i].supply_code, Supply_Type[k][0]) == 0)
+            {
+                count[k] += SupplyHead[i].init_quantity;
+                break;
+            }
+        }
+    }
+
+    for (int i = 0; i < SupplyTypeLength; i++)
+    {
+        printf("%s|%s - %f\n", Supply_Type[i][0], Supply_Type[i][1], count[i]);
+    }
+    putchar('\n');
+    Exit_Phrase();
+}
+
+void DistAccuDonation()
+{
+    double count[MAXSUPPLYTYPES] = {0};
+
+    clrscr();
+    char title[100] = "Accumulated Distributed Donation for Each Supply";
+    Print_Title(TITLELENGTH, strlen(title), title);
+    //Calculate quantity for each supply
+    for (int i = 0; i < DistLength; i++)
+    {
+        for (int k = 0; k < SupplyLength; k++)
+        {
+            if (strcmp(DistHead[i].donation_ID, SupplyHead[k].donation_ID) == 0)
+            {
+                for (int j = 0; j < SupplyTypeLength; j++)
+                {
+                    if (strcmp(SupplyHead[k].supply_code, Supply_Type[j][0]) == 0)
+                    {
+                        count[j] += DistHead[i].quantity;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < SupplyTypeLength; i++)
+    {
+        printf("%s|%s - %f\n", Supply_Type[i][0], Supply_Type[i][1], count[i]);
+    }
+    putchar('\n');
+    Exit_Phrase();
 }

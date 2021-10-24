@@ -17,7 +17,6 @@
 #define DISTIDFORMAT "D%06d"
 #define DIST_2IDFORMAT "I%06d"
 #define TITLELENGTH 50
-#define SUPPLYTYPES 5
 #define MAXSUPPLYTYPES 100
 #define CHOICE_CONDITION (choice >= 1) && (choice <= sizeof(menu) / sizeof(menu[0]))
 
@@ -89,6 +88,7 @@ int SupplyLength = 0;
 int DistLength = 0;
 int StockLength = 0;
 int DistTotalLength = 0;
+int SupplyTypeLength = 5;
 
 //Space and length of the table
 int Space_Supply[MAXCOLUMN] = {12, 12, 31, 21, 16, 14, 24, 24};
