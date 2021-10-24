@@ -27,7 +27,7 @@ void AddDistDonation();
 void EditDistDonation();
 void ViewHistoryRecord_Dist();
 static void viewCurrentDistTotal();
-static void viewDistHistoryRecord();
+static void viewDistDetailedRecord();
 void SearchDistDonation();
 void SearchDistHistory();
 void SearchDistTotal();

@@ -447,7 +447,7 @@ void ViewCurrentStock_Supply()
         while (1)
         {
             clrscr();
-            char title[100] = "View records";
+            char title[100] = "View Records";
             char menu[][50] = {"View current stocks", "View history records", "Return"};
             Print_Title(TITLELENGTH, strlen(title), title);
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
@@ -980,7 +980,7 @@ void EditDistDonation()
 
                 if (edit_index == 3)
                     DistHead[k].donation_date = donation_date;
-                
+
                 k++;
             }
 
@@ -991,6 +991,136 @@ void EditDistDonation()
 
 void ViewHistoryRecord_Dist()
 {
+    int choice;
+    char choice_buffer[1000];
+    while (1)
+    {
+        while (1)
+        {
+            clrscr();
+            char title[100] = "View Records";
+            char menu[][50] = {"View current distributed donation", "View detailed distributed donation", "Return"};
+            Print_Title(TITLELENGTH, strlen(title), title);
+            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
+            printf("Choice: ");
+            scanf("%s", choice_buffer);
+            fflush(stdin);
+            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
+                choice = atoi(choice_buffer);
+            else
+                continue;
+            if (CHOICE_CONDITION)
+                break;
+        }
+        switch (choice)
+        {
+        case 1:
+            viewCurrentDistTotal();
+            break;
+        case 2:
+            viewDistDetailedRecord();
+            break;
+        case 3:
+            return;
+        default:
+            break;
+        }
+    }
+}
+
+static void viewCurrentDistTotal()
+{
+    int choice;
+    char choice_buffer[1000];
+    while (1)
+    {
+        while (1)
+        {
+            clrscr();
+            char title[100] = "View Current Distributed Donation";
+            char menu[][50] = {"Distributed ID - Ascending", "Quantity(millions) - Descending", "Accumulative Quantity(millions) - Descending", "Return"};
+            Print_Title(TITLELENGTH, strlen(title), title);
+            printf("Sort according to:\n");
+            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
+            printf("Choice: ");
+            scanf("%s", choice_buffer);
+            fflush(stdin);
+            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
+                choice = atoi(choice_buffer);
+            else
+                continue;
+            if (CHOICE_CONDITION)
+                break;
+        }
+        clrscr();
+        switch (choice)
+        {
+        case 1:
+            PrintTable(4, DISTCOLUMN, Space_DistTotal, DistTotalColumnName, DistTotalLength);
+            Exit_Phrase();
+            break;
+        case 2:
+            PrintTable(11, DISTCOLUMN, Space_DistTotal, DistTotalColumnName, DistTotalLength);
+            Exit_Phrase();
+            break;
+        case 3:
+            PrintTable(12, DISTCOLUMN, Space_DistTotal, DistTotalColumnName, DistTotalLength);
+            Exit_Phrase();
+            break;
+        case 4:
+            return;
+
+        default:
+            break;
+        }
+    }
+}
+
+static void viewDistDetailedRecord()
+{
+    int choice;
+    char choice_buffer[1000];
+    while (1)
+    {
+        while (1)
+        {
+            clrscr();
+            char title[100] = "View Detailed Distributed Donation";
+            char menu[][50] = {"Distributed ID - Ascending", "Quantity(millions) - Descending", "Accumulative Quantity(millions) - Descending", "Return"};
+            Print_Title(TITLELENGTH, strlen(title), title);
+            printf("Sort according to:\n");
+            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
+            printf("Choice: ");
+            scanf("%s", choice_buffer);
+            fflush(stdin);
+            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
+                choice = atoi(choice_buffer);
+            else
+                continue;
+            if (CHOICE_CONDITION)
+                break;
+        }
+        clrscr();
+        switch (choice)
+        {
+        case 1:
+            PrintTable(2, DISTCOLUMN, Space_Dist, DistColumnName, DistLength);
+            Exit_Phrase();
+            break;
+        case 2:
+            PrintTable(7, DISTCOLUMN, Space_Dist, DistColumnName, DistLength);
+            Exit_Phrase();
+            break;
+        case 3:
+            PrintTable(8, DISTCOLUMN, Space_Dist, DistColumnName, DistLength);
+            Exit_Phrase();
+            break;
+        case 4:
+            return;
+        default:
+            break;
+        }
+    }
 }
 
 void SearchDistDonation()
