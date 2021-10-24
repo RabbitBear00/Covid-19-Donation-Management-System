@@ -620,7 +620,6 @@ void SearchStocks()
     char search_target[1000];
     struct stocks *search_index = NULL;
     char title[100] = "Search Current Stocks";
-    struct stocks *ptr;
     while (1)
     {
         clrscr();
@@ -1125,14 +1124,134 @@ static void viewDistDetailedRecord()
 
 void SearchDistDonation()
 {
+    while (1)
+    {
+        int choice;
+        char choice_buffer[1000];
+        while (1)
+        {
+            clrscr();
+            char title[100] = "Search Distributed Donation";
+            char menu[][50] = {"Search in current distributed donation", "Search in detailed distirbuted donation", "Return"};
+            Print_Title(TITLELENGTH, strlen(title), title);
+            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
+            printf("Choice: ");
+            scanf("%s", choice_buffer);
+            fflush(stdin);
+            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
+                choice = atoi(choice_buffer);
+            else
+                continue;
+            if (CHOICE_CONDITION)
+                break;
+        }
+
+        switch (choice)
+        {
+        case 1:
+            SearchDistTotal();
+            break;
+
+        case 2:
+            SearchDistHistory();
+            break;
+
+        case 3:
+            return;
+
+        default:
+            break;
+        }
+    }
 }
 
 void SearchDistHistory()
 {
+    int i, k;
+    int sum = 0;
+    char search_target[1000];
+    int search_index = -1;
+    char title[100] = "Search in Detailed Distirbuted Donation";
+    struct stocks *ptr;
+    while (1)
+    {
+        clrscr();
+        Print_Title(TITLELENGTH, strlen(title), title);
+        printf("**Format of Donation ID is DXXXXXX, where X are numbers");
+        printf("\nEnter Distributed ID: ");
+        scanf("%s", search_target);
+        fflush(stdin);
+        for (i = 0; i < DistLength; i++)
+        {
+            if (strcmp(DistHead[i].distributed_ID, search_target) == 0)
+            {
+                search_index = i;
+                break;
+            }
+        }
+        if (search_index >= 0)
+            break;
+        else
+            printf("Distributed ID doesnt exist. Please enter again.\n");
+
+        Exit_Phrase();
+        return;
+    }
+    clrscr();
+    //Printing the table
+    sum = PrintTableHeader(DISTCOLUMN, Space_Dist, DistColumnName);
+    printTableDistRow(Space_Dist, DistHead[i]);
+    putchar('\n');
+    for (i = 0; i < sum; i++)
+        printf("-");
+    putchar('\n');
+    Exit_Phrase();
+    return;
 }
 
 void SearchDistTotal()
 {
+    int i, k;
+    int sum = 0;
+    char search_target[1000];
+    struct dist_total *search_index = NULL;
+    char title[100] = "Search in Current Distributed Donation";
+    while (1)
+    {
+        clrscr();
+        Print_Title(TITLELENGTH, strlen(title), title);
+        printf("**Format of stocks ID is IXXXXXX, where X are numbers");
+        printf("\nEnter Distributed ID: ");
+        scanf("%s", search_target);
+        fflush(stdin);
+        DistTotal_Generator();
+        search_index = NULL;
+        for (struct dist_total *ptr = DistTotalHead; ptr != NULL; ptr = ptr->link)
+            if (strcmp(ptr->disttotal_ID, search_target) == 0)
+            {
+                search_index = ptr;
+                break;
+            }
+        if (search_index != NULL)
+            break;
+        else
+
+            printf("Distributed ID doesnt exist. Please enter again.\n");
+        freeList_disttotal(DistTotalHead);
+        Exit_Phrase();
+        return;
+    }
+    clrscr();
+    //Printing the table
+    sum = PrintTableHeader(DISTCOLUMN, Space_DistTotal, DistTotalColumnName);
+    printTableDistTotalRow(Space_DistTotal, search_index);
+    putchar('\n');
+    for (i = 0; i < sum; i++)
+        printf("-");
+    putchar('\n');
+    Exit_Phrase();
+    freeList_disttotal(DistTotalHead);
+    return;
 }
 
 int main()
