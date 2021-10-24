@@ -794,7 +794,7 @@ void AddDistDonation()
     temp.quantity = atof(quantity);
 
     //Mode 1 for adding; mode 2 for editing
-    int result = ConfirmDistSection(&temp, 1);
+    int result = ConfirmDistSection(&temp, -1, NULL, NULL);
 
     //Exit the add distributed donation
     if (result == 0)
@@ -814,7 +814,7 @@ void AddDistDonation()
         DistHead[DistLength - 1].donation_date = donation_date;
         strcpy(DistHead[DistLength - 1].donation_ID, SupplyHead[ID_array[i]].donation_ID);
         strcpy(DistHead[DistLength - 1].stocks_ID, stocks_ID);
-        //Calculate quantitty
+        //Calculate quantitty(ID length is the number of element in the array ID_array which store the index of donation ID of the same stock ID)
         if (ID_length > 1 && i != ID_length - 1)
         {
             quan_remainder -= SupplyHead[ID_array[i]].curr_quantity;
@@ -828,20 +828,22 @@ void AddDistDonation()
         }
 
         //Calculate accumulative quantity
-        //Distlength - 2 because need to skip the current one
-        for(k = DistLength - 2; k >= 0; k--)
+        //Distlength - 2 because need to skip the current one which is index DistLength - 1
+        for (k = DistLength - 2; k >= 0; k--)
             //Same stock ID means come from the supply of same donator and supply type
-            if(!strcmp(DistHead[DistLength-1].stocks_ID, DistHead[k].stocks_ID))
+            //Accumulative quantity must be the same stock ID, donee name and donee location
+            if (!strcmp(DistHead[DistLength - 1].stocks_ID, DistHead[k].stocks_ID) && !strcmp(DistHead[DistLength - 1].donee_name, DistHead[k].donee_name) && !strcmp(DistHead[DistLength - 1].donee_location, DistHead[k].donee_location))
             {
-                DistHead[DistLength-1].accu_quantity = DistHead[k].accu_quantity + DistHead[DistLength - 1].quantity;
+                DistHead[DistLength - 1].accu_quantity = DistHead[k].accu_quantity + DistHead[DistLength - 1].quantity;
                 break;
             }
-        if( k < 0)
-            DistHead[DistLength-1].accu_quantity = DistHead[DistLength - 1].quantity;
-        
+        //Did not find records with the same stock ID, donee name and donee location
+        //accu quantity equals quantity
+        if (k < 0)
+            DistHead[DistLength - 1].accu_quantity = DistHead[DistLength - 1].quantity;
+
         //Add transaction no
         DistHead[DistLength - 1].transaction_no = transaction_no;
-        
     }
     SupplyToFile();
     DistToFile();
@@ -849,6 +851,142 @@ void AddDistDonation()
 
 void EditDistDonation()
 {
+    int supply_code_index;
+    struct date donation_date;
+    char date_buffer[1000];
+    char buffer[1000];
+    char distributed_ID[1000];
+    int search_index = -1;
+    char title[100] = "Edit Donation Supply";
+    int selection;
+    int edit_index = -1;
+
+    while (1)
+    {
+        int choice;
+        char choice_buffer[1000];
+
+        //User enter donation ID part
+        while (1)
+        {
+            clrscr();
+
+            Print_Title(TITLELENGTH, strlen(title), title);
+            PrintTable(4, DISTCOLUMN, Space_Dist, DistColumnName, DistLength);
+            printf("\nEnter Distributed ID: ");
+            scanf("%s", distributed_ID);
+            fflush(stdin);
+            //Locate the index of the distributed ID
+            DistTotal_Generator();
+            for (struct dist_total *ptr = DistTotalHead; ptr != NULL; ptr = ptr->link)
+            {
+                if (strcmp(ptr->disttotal_ID, distributed_ID) == 0)
+                {
+                    search_index = ptr->dist_index;
+                    break;
+                }
+            }
+            freeList_disttotal(DistTotalHead);
+            if (search_index >= 0)
+                break;
+            else
+                printf("Distributed ID doesnt exist. Please enter again.\n");
+
+            Exit_Phrase();
+        }
+
+        //Choosing which attribute to edit part
+        while (1)
+        {
+            clrscr();
+
+            char menu[][50] = {"Donee name", "Donee location", "Donation date", "Return"};
+            Print_Title(TITLELENGTH, strlen(title), title);
+            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
+            printf("Choice: ");
+            scanf("%s", choice_buffer);
+            fflush(stdin);
+            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
+                choice = atoi(choice_buffer);
+            else
+                continue;
+            if (CHOICE_CONDITION)
+                break;
+        }
+
+        switch (choice)
+        {
+        //Supply Code
+        case 1:
+            do
+            {
+                printf("Donee name: ");
+                scanf("%[^\n]", buffer);
+                fflush(stdin);
+                edit_index = 1;
+            } while (!Validation_CharLength(20, strlen(buffer)));
+            break;
+        //Donator
+        case 2:
+            do
+            {
+                printf("Donee location: ");
+                scanf("%[^\n]", buffer);
+                fflush(stdin);
+                edit_index = 2;
+            } while (!Validation_CharLength(20, strlen(buffer)));
+            break;
+        //Donation date
+        case 3:
+            do
+            {
+                printf("Enter Date in format: dd/mm/yyyy\n");
+                printf("Date: ");
+                //Get the string
+                scanf("%s", buffer);
+                fflush(stdin);
+                //Write inside donation_date according to the format
+                sscanf(buffer, "%d/%d/%d", &donation_date.day, &donation_date.month, &donation_date.year);
+                edit_index = 3;
+            } while (!Validation_Date(donation_date));
+            break;
+
+        case 4:
+            edit_index = -1;
+            return;
+
+        default:
+            break;
+        }
+
+        //prints the confirm section
+        clrscr();
+        int result = ConfirmDistSection(&DistHead[search_index], edit_index, buffer, distributed_ID);
+
+        //Exit the add distributed donation
+        if (result == 0)
+            return;
+        else
+        {
+            //Need to replace every single record with the same transaction no.
+            int k = search_index;
+            while (DistHead[search_index].transaction_no == DistHead[k].transaction_no)
+            {
+                if (edit_index == 1)
+                    strcpy(DistHead[k].donee_name, buffer);
+
+                if (edit_index == 2)
+                    strcpy(DistHead[k].donee_location, buffer);
+
+                if (edit_index == 3)
+                    DistHead[k].donation_date = donation_date;
+                
+                k++;
+            }
+
+            DistToFile();
+        }
+    }
 }
 
 void ViewHistoryRecord_Dist()

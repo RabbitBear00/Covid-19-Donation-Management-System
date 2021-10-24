@@ -1014,7 +1014,7 @@ void DistTotal_Generator()
     {
         DistTotalLength++;
         ptr = insertNode_dist(i, DistHead[i].quantity, DistHead[i].accu_quantity);
-        
+
         //When the list has only one data, need to skip this step
         if (ptr->link != NULL)
             ptr = ptr->link;
@@ -1260,7 +1260,7 @@ void ConfirmSupplySection(supply *input)
     }
 }
 
-int ConfirmDistSection(dist *input, int mode)
+int ConfirmDistSection(dist *input, int edit_index, char *edited_data, char *distributed_ID)
 {
     int choice;
     char choice_buffer[1000];
@@ -1272,7 +1272,7 @@ int ConfirmDistSection(dist *input, int mode)
         while (1)
         {
             Print_Title(TITLELENGTH, strlen(title), title);
-            Print_DistList(input, -1, NULL, mode);
+            Print_DistList(input, edit_index, edited_data, distributed_ID);
 
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
             printf("Choice: ");
@@ -1306,24 +1306,38 @@ int ConfirmDistSection(dist *input, int mode)
     }
 }
 
-void Print_DistList(dist *input, int choice, char *edited_data, int mode)
+void Print_DistList(dist *input, int edit_index, char *edited_data, char *distributed_ID)
 {
-    //Mode 1: For adding
-    //Mode 2: For editing
+    //To replace values of quantity and accu quantity in edit dist function
+    struct dist_total *ptr;
+    DistTotal_Generator();
+    if(distributed_ID != NULL)
+        //Find the pointer of the selected edit data piece
+        for (ptr = DistTotalHead; ptr != NULL; ptr = ptr->link)
+            if (strcmp(ptr->disttotal_ID, distributed_ID) == 0)
+                break;
+
     char buffer[1000];
     for (int i = 0; i < DISTCOLUMN; i++)
     {
         //Print the edited data
-        if (i == choice)
+        if (i == edit_index)
         {
-            printf("%s: %s\n",DistColumnName[i], edited_data);
+            printf("%s: %s\n", DistTotalColumnName[i], edited_data);
             i++;
         }
         switch (i)
         {
         case 0:
-            strcpy(buffer, input->distributed_ID);
+            //It's in add mode(Needa show dist total ID instead of dist ID)
+            if (distributed_ID == NULL)
+                snprintf(buffer, 50, DIST_2IDFORMAT, DistTotalLength + 1);
+            //It's in edit mode
+            else
+                strcpy(buffer, distributed_ID);
+
             break;
+            
         case 1:
             strcpy(buffer, input->donee_name);
             break;
@@ -1337,27 +1351,32 @@ void Print_DistList(dist *input, int choice, char *edited_data, int mode)
             strcpy(buffer, input->stocks_ID);
             break;
         case 5:
-            snprintf(buffer, 99, FLOATFORMAT, input->quantity);
+            //It's in add mode
+            if (distributed_ID == NULL)
+                snprintf(buffer, 99, FLOATFORMAT, input->quantity);
+            //It's in edit mode
+            else
+                snprintf(buffer, 99, FLOATFORMAT, ptr->quantity);
+
             break;
-        
+
         case 6:
-            snprintf(buffer, 99, FLOATFORMAT, input->quantity);
-            break;
-        
+            //Only edit need to print accumulative quantity;
+            snprintf(buffer, 99, FLOATFORMAT, ptr->accu_quantity);
         default:
             break;
         }
-        //skip accumulative quantity for adding 
-        if(mode == 1 && i == 6)
-            continue;
-        printf("%s: %s\n", DistColumnName[i], buffer);
+
+        printf("%s: %s\n", DistTotalColumnName[i], buffer);
+        if (distributed_ID == NULL && i == 5)
+            i++;
     }
+    freeList_disttotal(DistTotalHead);
 }
 
 void Exit_Phrase()
 {
     printf("Press any key to continue......");
-    getchar();
     getchar();
 }
 
@@ -1451,7 +1470,7 @@ void DistToFile()
     for (int i = 0; i < DistLength; i++)
     {
         fprintf(fp, "%s\t%s\t%s\t%d/%d/%d\t%s\t%s\t%f\t%f\t%d\n", DistHead[i].distributed_ID, DistHead[i].donee_name, DistHead[i].donee_location, DistHead[i].donation_date.day,
-                  DistHead[i].donation_date.month, DistHead[i].donation_date.year, DistHead[i].donation_ID, DistHead[i].stocks_ID, DistHead[i].quantity, DistHead[i].accu_quantity, DistHead[i].transaction_no);
+                DistHead[i].donation_date.month, DistHead[i].donation_date.year, DistHead[i].donation_ID, DistHead[i].stocks_ID, DistHead[i].quantity, DistHead[i].accu_quantity, DistHead[i].transaction_no);
     }
     fclose(fp);
 }

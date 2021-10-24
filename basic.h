@@ -183,7 +183,7 @@ void SupplyToFile();
 void Print_SupplyList(supply *input, int choice, char* edited_data);
 
 //Print list out
-void Print_DistList(dist *input, int choice, char *edited_data, int mode);
+void Print_DistList(dist *input, int edit_index, char *edited_data, char *distributed_ID);
 
 //Print Table header, return the sum of length of the table
 int PrintTableHeader(int col_count, int *space, char col_name[][50]);
@@ -191,7 +191,7 @@ int PrintTableHeader(int col_count, int *space, char col_name[][50]);
 //Ensure quantity of distributed donation is correct
 int ensureQuantity(int *ID_store, float quantity, int supply_index);
 
-int ConfirmDistSection(dist *input, int mode);
+int ConfirmDistSection(dist *input, int edit_index, char *edited_data, char *distributed_ID);
 void ConfirmSupplySection(supply *input);
 
 
