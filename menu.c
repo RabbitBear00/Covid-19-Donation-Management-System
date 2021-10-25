@@ -681,7 +681,7 @@ void SearchStocks()
         else
 
             printf("Stocks ID doesnt exist. Please enter again.\n");
-        freeList(StockHead);
+        freeList_Stock(StockHead);
         Exit_Phrase();
         return;
     }
@@ -694,7 +694,7 @@ void SearchStocks()
         printf("-");
     putchar('\n');
     Exit_Phrase();
-    freeList(StockHead);
+    freeList_Stock(StockHead);
     return;
 }
 
@@ -808,7 +808,7 @@ void AddDistDonation()
         //The function will return supply index if stock ID exists, else it would return -1
         supply_index = validation_stockID(stocks_ID);
     } while (supply_index == -1);
-    freeList(StockHead);
+    freeList_Stock(StockHead);
 
     //Quantity Donated
     do
@@ -819,7 +819,7 @@ void AddDistDonation()
         fflush(stdin);
         validation_result = validation_isfloat(quantity, strlen(quantity));
         if (validation_result)
-            ID_length = ensureQuantity(ID_array, atof(quantity), supply_index);
+            ID_length = EnsureQuantity(ID_array, atof(quantity), supply_index);
 
     } while (validation_result && (ID_length == -1));
 
@@ -925,7 +925,7 @@ void EditDistDonation()
                     break;
                 }
             }
-            freeList_disttotal(DistTotalHead);
+            freeList_DistTotal(DistTotalHead);
             if (search_index >= 0)
                 break;
             else
@@ -1277,7 +1277,7 @@ void SearchDistTotal()
         else
 
             printf("Distributed ID doesnt exist. Please enter again.\n");
-        freeList_disttotal(DistTotalHead);
+        freeList_DistTotal(DistTotalHead);
         Exit_Phrase();
         return;
     }
@@ -1290,7 +1290,7 @@ void SearchDistTotal()
         printf("-");
     putchar('\n');
     Exit_Phrase();
-    freeList_disttotal(DistTotalHead);
+    freeList_DistTotal(DistTotalHead);
     return;
 }
 
@@ -1355,3 +1355,4 @@ void DistAccuDonation()
     putchar('\n');
     Exit_Phrase();
 }
+

@@ -124,9 +124,6 @@ static void printTableDistTotalRow(int space[], struct dist_total *input);
 void Print_Title(int title_length, int argv_size, char argv[100]);
 void Print_Menu(int argc, char argv[][50]);
 
-//Comparing Dataes: d1 < d2: -1; d1 == d2: 0; d1 > d2: 1;
-int compare_dates(struct date d1, struct date d2);
-
 //Clear console
 void clrscr();
 
@@ -149,35 +146,38 @@ static struct stocks *swap(struct stocks *ptr1, struct stocks *ptr2);
 //Sort nodes for struct stocks(initial quantity, current quantity)
 static void Sort_StockQuan(struct stocks **head, int count, char *mode);
 //free list for struct stocks
-static void freeList(struct stocks *head);
+static void freeList_Stock(struct stocks *head);
 //Check if the row is recorded in array finish, if it is recorded skip the current loop
 static int skip_key(int i, int *finish, int finish_count);
 
-//Dist type functions
+//Supply and Dist type sort functions
 //Sorting dist type's quantity and accumulative quantity
-static void Sort_DistQuan(int *sequence, int mode);
+static void sort_DistQuan(int *sequence, int mode);
 //Sorting supply type's initial quantity and current quantity
-static void Sort_SupplyQuan(int *sequence, int mode);
-//Generate an array sequence pf [0, length-1] to be sorted in Sort_DistQuan
-static void sequence_generator(int *sequence, int length);
+static void sort_SupplyQuan(int *sequence, int mode);
+//Generate an array sequence pf [0, length-1] to be sorted in sort_DistQuan
+static void sequence_Generator(int *sequence, int length);
 
 //Functions for dist_total list
 //Generate list for struct dist_total
 void DistTotal_Generator();
 //Insert node for struct dist_total
-static struct dist_total *insertNode_dist(int i, float quan, float accu_quan);
+static struct dist_total *insertNode_Dist(int i, float quan, float accu_quan);
 //Sort nodes for struct dist_total(quantity, accumulative quantity)
-static void Sort_DistTotalQuan(struct dist_total **head, int count, char *mode_name);
+static void sort_DistTotalQuan(struct dist_total **head, int count, char *mode_name);
 //Swap nodes for struct dist_total
-static struct dist_total *swap_disttotal(struct dist_total *ptr1, struct dist_total *ptr2);
+static struct dist_total *swap_DistTotal(struct dist_total *ptr1, struct dist_total *ptr2);
 //Free list for struct dist_total
-static void freeList_disttotal(struct dist_total *head);
+static void freeList_DistTotal(struct dist_total *head);
 
 //Press any key to continue
 void Exit_Phrase();
 
-//Write data into file
+//Write supply type into donation.txt
 void SupplyToFile();
+
+//Write dist type into dist.txt
+void DistToFile();
 
 //Print List Out
 void Print_SupplyList(supply *input, int choice, char* edited_data);
@@ -188,9 +188,10 @@ void Print_DistList(dist *input, int edit_index, char *edited_data, char *distri
 //Print Table header, return the sum of length of the table
 int PrintTableHeader(int col_count, int *space, char col_name[][50]);
 
-//Ensure quantity of distributed donation is correct
-int ensureQuantity(int *ID_store, float quantity, int supply_index);
+//Ensure quantity of distributed donation doesn't exceed
+int EnsureQuantity(int *ID_store, float quantity, int supply_index);
 
+//Printing the confirmation
 int ConfirmDistSection(dist *input, int edit_index, char *edited_data, char *distributed_ID);
 void ConfirmSupplySection(supply *input);
 

@@ -219,7 +219,7 @@ void PrintTable(int mode, int col_count, int *space, char col_name[][50], int ro
             putchar('\n');
         }
         //Free the memory
-        freeList(StockHead);
+        freeList_Stock(StockHead);
         break;
 
     case 4:
@@ -232,13 +232,13 @@ void PrintTable(int mode, int col_count, int *space, char col_name[][50], int ro
             putchar('\n');
         }
         //Free the memory
-        freeList_disttotal(DistTotalHead);
+        freeList_DistTotal(DistTotalHead);
         break;
 
     case 5:
         //Mode 5: Supply Sort according to Initial Quantity(Descending)
-        sequence_generator(sequence, SupplyLength);
-        Sort_SupplyQuan(sequence, 1);
+        sequence_Generator(sequence, SupplyLength);
+        sort_SupplyQuan(sequence, 1);
         //Go through sequence
         for (i = 0; i < SupplyLength; i++)
         {
@@ -257,8 +257,8 @@ void PrintTable(int mode, int col_count, int *space, char col_name[][50], int ro
 
     case 6:
         //Mode 6: Supply Sort according to Current Quantity(Descending)
-        sequence_generator(sequence, SupplyLength);
-        Sort_SupplyQuan(sequence, 2);
+        sequence_Generator(sequence, SupplyLength);
+        sort_SupplyQuan(sequence, 2);
         //Go through sequence
         for (i = 0; i < SupplyLength; i++)
         {
@@ -277,8 +277,8 @@ void PrintTable(int mode, int col_count, int *space, char col_name[][50], int ro
 
     case 7:
         //Mode 7: Dist Sort according to Quantity(Descending)
-        sequence_generator(sequence, DistLength);
-        Sort_DistQuan(sequence, 1);
+        sequence_Generator(sequence, DistLength);
+        sort_DistQuan(sequence, 1);
         //Go through sequence
         for (i = 0; i < DistLength; i++)
         {
@@ -297,8 +297,8 @@ void PrintTable(int mode, int col_count, int *space, char col_name[][50], int ro
 
     case 8:
         //Mode 8: Dist Sort according to Accumulative Quantity(Descending)
-        sequence_generator(sequence, DistLength);
-        Sort_DistQuan(sequence, 2);
+        sequence_Generator(sequence, DistLength);
+        sort_DistQuan(sequence, 2);
         //Go through sequence
         for (i = 0; i < DistLength; i++)
         {
@@ -319,56 +319,56 @@ void PrintTable(int mode, int col_count, int *space, char col_name[][50], int ro
         //Mode 9: Stock Sort according to Initial Quantity(Descending)
         //Autogenerate table every time(Because Supply Will be updated if changes are made)
         Stock_Generator();
-        Sort_StockQuan(&StockHead, StockLength, "init_quantity");
+        sort_StockQuan(&StockHead, StockLength, "init_quantity");
         for (struct stocks *ptr = StockHead; ptr != NULL; ptr = ptr->link)
         {
             printTableStockRow(Space_Stock, ptr);
             putchar('\n');
         }
         //Free the memory
-        freeList(StockHead);
+        freeList_Stock(StockHead);
         break;
 
     case 10:
         //Mode 10: Stock Sort according to Current Quantity(Descending)
         //Autogenerate table every time(Because Supply Will be updated if changes are made)
         Stock_Generator();
-        Sort_StockQuan(&StockHead, StockLength, "curr_quantity");
+        sort_StockQuan(&StockHead, StockLength, "curr_quantity");
         for (struct stocks *ptr = StockHead; ptr != NULL; ptr = ptr->link)
         {
             printTableStockRow(Space_Stock, ptr);
             putchar('\n');
         }
         //Free the memory
-        freeList(StockHead);
+        freeList_Stock(StockHead);
         break;
 
     case 11:
         //Mode 11: dist_total Sort according to Quantity(Descending)
         //Autogenerate table every time(Because dist Will be updated if changes are made)
         DistTotal_Generator();
-        Sort_DistTotalQuan(&DistTotalHead, DistTotalLength, "quantity");
+        sort_DistTotalQuan(&DistTotalHead, DistTotalLength, "quantity");
         for (struct dist_total *ptr = DistTotalHead; ptr != NULL; ptr = ptr->link)
         {
             printTableDistTotalRow(Space_DistTotal, ptr);
             putchar('\n');
         }
         //Free the memory
-        freeList_disttotal(DistTotalHead);
+        freeList_DistTotal(DistTotalHead);
         break;
 
     case 12:
         //Mode 12: dist_total Sort according to Accumulative Quantity(Descending)
         //Autogenerate table every time(Because dist Will be updated if changes are made)
         DistTotal_Generator();
-        Sort_DistTotalQuan(&DistTotalHead, DistTotalLength, "accu_quantity");
+        sort_DistTotalQuan(&DistTotalHead, DistTotalLength, "accu_quantity");
         for (struct dist_total *ptr = DistTotalHead; ptr != NULL; ptr = ptr->link)
         {
             printTableDistTotalRow(Space_DistTotal, ptr);
             putchar('\n');
         }
         //Free the memory
-        freeList_disttotal(DistTotalHead);
+        freeList_DistTotal(DistTotalHead);
         break;
 
     default:
@@ -665,13 +665,13 @@ void Stock_Generator()
         same_stock_count = 0;
         //Skip already recorded values
         //Skip this round if the current index is ald recorded
-        if (skip_key(i, finish, finish_count))
+        if (skip_Key(i, finish, finish_count))
             continue;
 
         for (k = i + 1; k < SupplyLength; k++)
         {
             //Skip already recorded values
-            if (skip_key(k, finish, finish_count))
+            if (skip_Key(k, finish, finish_count))
                 continue;
 
             //If supply code, donator and date are the same, record the row number inside same_stock and finish, also calculate the sum of quantity
@@ -743,7 +743,7 @@ static void insertNode(int i, float total_init_quan, float total_curr_quan)
     return;
 }
 
-static struct dist_total *insertNode_dist(int i, float quan, float accu_quan)
+static struct dist_total *insertNode_Dist(int i, float quan, float accu_quan)
 {
     struct dist_total *node, *curr;
 
@@ -774,7 +774,7 @@ static struct dist_total *insertNode_dist(int i, float quan, float accu_quan)
     return node;
 }
 
-static int skip_key(int i, int *finish, int finish_count)
+static int skip_Key(int i, int *finish, int finish_count)
 {
     for (int j = 0; j < finish_count; j++)
     {
@@ -787,7 +787,7 @@ static int skip_key(int i, int *finish, int finish_count)
     return 0;
 }
 
-static void freeList(struct stocks *head)
+static void freeList_Stock(struct stocks *head)
 {
     struct stocks *curr = head, *link;
     while (curr != NULL)
@@ -801,28 +801,6 @@ static void freeList(struct stocks *head)
     return;
 }
 
-int compare_dates(struct date d1, struct date d2)
-{
-    if (d1.year < d2.year)
-        return -1;
-
-    else if (d1.year > d2.year)
-        return 1;
-
-    if (d1.year == d2.year)
-    {
-        if (d1.month < d2.month)
-            return -1;
-        else if (d1.month > d2.month)
-            return 1;
-        else if (d1.day < d2.day)
-            return -1;
-        else if (d1.day > d2.day)
-            return 1;
-        else
-            return 0;
-    }
-}
 
 void clrscr()
 {
@@ -861,7 +839,7 @@ void Print_Menu(int argc, char argv[][50])
     return;
 }
 
-static void Sort_StockQuan(struct stocks **head, int count, char *mode_name)
+static void sort_StockQuan(struct stocks **head, int count, char *mode_name)
 {
     struct stocks **h;
     int i, j, swapped;
@@ -937,7 +915,7 @@ static struct stocks *swap(struct stocks *ptr1, struct stocks *ptr2)
     
 }*/
 
-static void Sort_DistQuan(int *sequence, int mode)
+static void sort_DistQuan(int *sequence, int mode)
 
 {
     //mode 1: Quantity(Desc)
@@ -964,7 +942,7 @@ static void Sort_DistQuan(int *sequence, int mode)
     }
 }
 
-static void Sort_SupplyQuan(int *sequence, int mode)
+static void sort_SupplyQuan(int *sequence, int mode)
 
 {
     //mode 1: Init Quantity
@@ -991,7 +969,7 @@ static void Sort_SupplyQuan(int *sequence, int mode)
     }
 }
 
-static void sequence_generator(int *sequence, int length)
+static void sequence_Generator(int *sequence, int length)
 {
     for (int i = 0; i < length; i++)
     {
@@ -1008,12 +986,12 @@ void DistTotal_Generator()
     int i, k;
 
     //Let the list exist first
-    //insertNode_dist(0, DistHead[0].quantity, DistHead[0].accu_quantity);
+    //insertNode_Dist(0, DistHead[0].quantity, DistHead[0].accu_quantity);
     //ptr = DistTotalHead;
     for (i = 0; i < DistLength; i++)
     {
         DistTotalLength++;
-        ptr = insertNode_dist(i, DistHead[i].quantity, DistHead[i].accu_quantity);
+        ptr = insertNode_Dist(i, DistHead[i].quantity, DistHead[i].accu_quantity);
 
         //When the list has only one data, need to skip this step
         if (ptr->link != NULL)
@@ -1030,7 +1008,7 @@ void DistTotal_Generator()
     return;
 }
 
-static struct dist_total *swap_disttotal(struct dist_total *ptr1, struct dist_total *ptr2)
+static struct dist_total *swap_DistTotal(struct dist_total *ptr1, struct dist_total *ptr2)
 {
     struct dist_total *tmp = ptr2->link;
     ptr2->link = ptr1;
@@ -1038,7 +1016,7 @@ static struct dist_total *swap_disttotal(struct dist_total *ptr1, struct dist_to
     return ptr2;
 }
 
-static void Sort_DistTotalQuan(struct dist_total **head, int count, char *mode_name)
+static void sort_DistTotalQuan(struct dist_total **head, int count, char *mode_name)
 {
     struct dist_total **h;
     int i, j, swapped;
@@ -1071,14 +1049,14 @@ static void Sort_DistTotalQuan(struct dist_total **head, int count, char *mode_n
             if (mode == 1 && (p1->quantity < p2->quantity))
             {
                 //update the link after swapping
-                *h = swap_disttotal(p1, p2);
+                *h = swap_DistTotal(p1, p2);
                 swapped = 1;
             }
 
             if (mode == 2 && (p1->accu_quantity < p2->accu_quantity))
             {
                 //update the link after swapping
-                *h = swap_disttotal(p1, p2);
+                *h = swap_DistTotal(p1, p2);
                 swapped = 1;
             }
 
@@ -1092,7 +1070,7 @@ static void Sort_DistTotalQuan(struct dist_total **head, int count, char *mode_n
     }
 }
 
-static void freeList_disttotal(struct dist_total *head)
+static void freeList_DistTotal(struct dist_total *head)
 {
     struct dist_total *curr = head, *link;
     while (curr != NULL)
@@ -1371,7 +1349,7 @@ void Print_DistList(dist *input, int edit_index, char *edited_data, char *distri
         if (distributed_ID == NULL && i == 5)
             i++;
     }
-    freeList_disttotal(DistTotalHead);
+    freeList_DistTotal(DistTotalHead);
 }
 
 void Exit_Phrase()
@@ -1445,7 +1423,7 @@ int validation_stockID(char *input)
         }
     }
     printf("Stock ID does not exist\n");
-    freeList(StockHead);
+    freeList_Stock(StockHead);
     return -1;
 }
 
@@ -1475,7 +1453,7 @@ void DistToFile()
     fclose(fp);
 }
 
-int ensureQuantity(int *ID_store, float quantity, int supply_index)
+int EnsureQuantity(int *ID_store, float quantity, int supply_index)
 {
     int i, k = supply_index;
     int ID_store_index = 0;
