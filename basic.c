@@ -674,7 +674,7 @@ void Stock_Generator()
             if (skip_Key(k, finish, finish_count))
                 continue;
 
-            //If supply code, donator and date are the same, record the row number inside same_stock and finish, also calculate the sum of quantity
+            //If supply code, donator, shipment no are the same, record the row number inside same_stock and finish, also calculate the sum of quantity
             if (!strcmp(SupplyHead[i].supply_code, SupplyHead[k].supply_code) && !strcmp(SupplyHead[i].donator, SupplyHead[k].donator) && (SupplyHead[i].shipment_no == SupplyHead[k].shipment_no))
             {
                 //Add value of i into quantity
@@ -697,11 +697,13 @@ void Stock_Generator()
         }
 
         //Creating a new node to store quantity of stocks
+        //If multiple records are the same
         if (same_stock_count)
         {
             StockLength += 1;
             insertNode(i, total_init_quan, total_curr_quan);
         }
+        //If no record matches
         else
         {
             StockLength += 1;
@@ -715,7 +717,7 @@ void Stock_Generator()
 static void insertNode(int i, float total_init_quan, float total_curr_quan)
 {
     struct stocks *node, *curr;
-
+    
     //Formatting of Stock ID
     char buffer[10];
     snprintf(buffer, 8, STOCKIDFORMAT, StockLength);

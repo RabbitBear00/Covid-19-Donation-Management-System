@@ -29,3 +29,13 @@ int main()
 #include <stdio.h>
 #include <stdlib.h>
 #include<string.h>
+
+int main()
+{
+    int ctr;
+    char str[5] = "APU";
+    for(ctr = 0; str[ctr] != '\0'; ctr++)
+    
+    for (ctr--; ctr >= 0; ctr--);
+        printf("%c ", str[ctr]);
+}

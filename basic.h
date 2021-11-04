@@ -144,11 +144,11 @@ static void insertNode(int i, float total_init_quan, float total_curr_quan);
 //swap nodes for struct stocks
 static struct stocks *swap(struct stocks *ptr1, struct stocks *ptr2);
 //Sort nodes for struct stocks(initial quantity, current quantity)
-static void Sort_StockQuan(struct stocks **head, int count, char *mode);
+static void sort_StockQuan(struct stocks **head, int count, char *mode);
 //free list for struct stocks
 static void freeList_Stock(struct stocks *head);
 //Check if the row is recorded in array finish, if it is recorded skip the current loop
-static int skip_key(int i, int *finish, int finish_count);
+static int skip_Key(int i, int *finish, int finish_count);
 
 //Supply and Dist type sort functions
 //Sorting dist type's quantity and accumulative quantity

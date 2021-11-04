@@ -1,0 +1,1204 @@
+ReadFile_Donation()
+
+    DECLARE i = 0
+    DECLARE temp
+
+    REPEAT
+
+        COPY VALUES FROM THE donation.txt INTO TEMP
+
+        temp.donation_ID = SupplyHead[i].donation_ID
+        temp.supply_code = SupplyHead[i].supply_code
+        temp.supply_name = SupplyHead[i].supply_name
+        temp.donator = SupplyHead[i].donator
+        SupplyHead[i].donation_date = temp.donation_date
+        SupplyHead[i].shipment_no = temp.shipment_no
+        SupplyHead[i].init_quantity = temp.init_quantity
+        SupplyHead[i].curr_quantity = temp.curr_quantity
+
+        i = i + 1
+    UNTIL(END OF FILE IS REACHED)
+    SupplyLength = i
+    ClOSE THE FILE
+
+    RETURN
+
+ReadFile_Dist()
+
+    DECLARE i = 0
+    DECLARE temp
+
+    REPEAT
+    
+        COPY VALUES FROM dist.txt INTO TEMP
+
+        temp.distributed_ID = DistHead[i].distributed_ID
+        temp.donee_name = DistHead[i].donee_name
+        temp.donee_location = DistHead[i].donee_location
+        DistHead[i].donation_date = temp.donation_date
+        temp.donation_ID = DistHead[i].donation_ID
+        temp.stocks_ID = DistHead[i].stocks_ID
+        DistHead[i].quantity = temp.quantity
+        DistHead[i].accu_quantity = temp.accu_quantity
+        DistHead[i].transaction_no = temp.transaction_no
+
+        i = i + 1
+    UNTIL(END OF FILE IS REACHED)
+    DistLength = i
+    ClOSE THE FILE
+
+    RETURN
+
+PrintTableHeader(col_count, space, col_name[][50])
+
+    DECLARE i, k, sum = 0
+
+    FOR (i = 0 TO col_count - 1) STEP 1
+        sum = sum + space[i]
+    ENDFOR
+
+    sum = sum + i
+
+    FOR (i = 0 TO sum - 1) STEP 1
+        PRINT("-")
+    ENDFOR
+
+    PRINT NEWLINE
+
+    CALL printTableTitle(space, col_count, col_name)
+
+    FOR (i = 0 TO sum - 1) STEP 1
+        PRINT("-")
+    ENDFOR
+
+    PRINT NEWLINE
+
+    RETURN sum
+
+PrintTable(mode, col_count, space, char col_name[][50], row_count)
+
+    DECLARE i, k, sum = 0
+    DECLARE sequence[MAXDIST]
+    sum = CALL PrintTableHeader(col_count, space, col_name)
+    
+    IF mode EQUALS 1
+        FOR (i = 0 TO row_count - 1) STEP 1
+            CALL rintTableSupplyRow(space, SupplyHead[i])
+            PRINT NEWLINE
+        ENDFOR
+    ENDIF
+
+    IF mode EQUALS 2
+        FOR (i = 0 TO row_count - 1) STEP 1
+            printTableDistRow(space, DistHead[i])
+            PRINT NEWLINE
+        ENDFOR
+    ENDIF
+
+    IF mode EQUALS 3
+        CALL Stock_Generator()
+
+        LOOP FROM StockHead TILL END OF RECORDS
+            CALL printTableStockRow(Space_Stock, ptr)
+            PRINT NEWLINE
+        ENDLOOP
+
+        CALL freeList_Stock(StockHead)
+    ENDIF
+
+    IF mode EQUALS 4
+        CALL DistTotal_Generator()
+
+        LOOP FROM DistTotalHead TILL END OF RECORDS
+            CALL printTableDistTotalRow(Space_DistTotal, ptr)
+            PRINT NEWLINE
+        ENDLOOP
+
+        CALL freeList_DistTotal(DistTotalHead)
+    ENDIF
+
+    IF mode EQUALS 5
+        CALL sequence_Generator(sequence, SupplyLength)
+        CALL sort_SupplyQuan(sequence, 1)
+
+        FOR (i = 0 TO SupplyLength - 1) STEP 1
+            FOR (k = 0 TO SupplyLength - 1) STEP 1
+                IF (sequence[i] EQUALS k)
+                    CALL printTableSupplyRow(Space_Supply, SupplyHead[k])
+                    PRINT NEWLINE
+                    END THIS LOOP
+
+                ENDIF
+            ENDFOR
+        ENDFOR
+    
+    ENDIF
+
+    IF mode EQUALS 6
+        CALL sequence_Generator(sequence, SupplyLength)
+        CALL sort_SupplyQuan(sequence, 2)
+
+        FOR (i = 0 TO SupplyLength - 1) STEP 1
+            FOR (k = 0 TO SupplyLength - 1) STEP 1
+                IF (sequence[i] EQUALS k)
+                    CALL printTableSupplyRow(Space_Supply, SupplyHead[k])
+                    PRINT NEWLINE
+                    END THIS LOOP
+
+                ENDIF
+            ENDFOR
+        ENDFOR
+
+    ENDIF
+
+    IF mode EQUALS 7
+        CALL sequence_Generator(sequence, DistLength)
+        CALL sort_DistQuan(sequence, 1)
+
+        FOR (i = 0 TO DistLength - 1) STEP 1
+            FOR (k = 0 TO DistLength - 1) STEP 1
+                IF (sequence[i] EQUALS k)
+                    CALL printTableDistRow(Space_Dist, DistHead[k])
+                    PRINT NEWLINE
+                    END THIS LOOP
+
+                ENDIF
+            ENDFOR
+        ENDFOR
+
+    ENDIF
+
+    IF mode EQUALS 8
+        CALL sequence_Generator(sequence, DistLength)
+        CALL sort_DistQuan(sequence, 2)
+
+        FOR (i = 0 TO DistLength - 1) STEP 1
+            FOR (k = 0 TO DistLength - 1) STEP 1
+                IF (sequence[i] EQUALS k)
+                    CALL printTableDistRow(Space_Dist, DistHead[k])
+                    PRINT NEWLINE
+                    END THIS LOOP
+                    
+                ENDIF
+            ENDFOR
+        ENDFOR
+
+    ENDIF
+
+    IF mode EQUALS 9
+        CALL Stock_Generator()
+        CALL sort_StockQuan(&StockHead, StockLength, "init_quantity")
+
+        LOOP FROM StockHead TILL END OF RECORDS
+            CALL printTableStockRow(Space_Stock, ptr)
+            PRINT NEWLINE
+        ENDLOOP
+
+        freeList_Stock(StockHead)
+    ENDIF
+
+    IF mode EQUALS 10
+        CALL Stock_Generator()
+        CALL sort_StockQuan(&StockHead, StockLength, "curr_quantity")
+
+        LOOP FROM StockHead TILL END OF RECORDS
+            CALL printTableStockRow(Space_Stock, ptr)
+            PRINT NEWLINE
+        ENDLOOP
+
+        CALL freeList_Stock(StockHead)
+    ENDIF
+
+    IF mode EQUALS 11
+        CALL DistTotal_Generator()
+        CALL sort_DistTotalQuan(&DistTotalHead, DistTotalLength, "quantity")
+
+        LOOP FROM DistTotalHead TILL END OF RECORDS
+            CALL printTableDistTotalRow(Space_DistTotal, ptr)
+            PRINT NEWLINE
+        ENDLOOP
+
+        CALL freeList_DistTotal(DistTotalHead)
+    ENDIF
+
+    IF mode EQUALS 12
+        CALL DistTotal_Generator()
+        CALL sort_DistTotalQuan(&DistTotalHead, DistTotalLength, "accu_quantity")
+
+        LOOP FROM DistTotalHead TILL END OF RECORDS
+            CALL printTableDistTotalRow(Space_DistTotal, ptr)
+            PRINT NEWLINE
+        ENDLOOP
+
+        CALL freeList_DistTotal(DistTotalHead)
+    ENDIF
+
+    FOR (i = 0 TO sum - 1) STEP 1
+        PRINT("-")
+    ENDFOR
+
+    PRINT NEWLINE
+
+printTableSupplyRow(space[], input)
+
+    DECLARE i = 1
+    DECLARE daterow = 5
+    DECLARE space_index = 0
+    DECLARE buffer[100]
+
+    PRINT("|")
+
+    REPEAT
+        
+        IF i EQUALS 1
+            buffer = input.donation_ID
+
+        ELSE IF i EQUALS 2
+            buffer = input.supply_code
+
+        ELSE IF i EQUALS 3
+            buffer = input.supply_name
+
+        ELSE IF i EQUALS 4
+            buffer = input.donator
+
+        ELSE IF i EQUALS 5
+            buffer = input.donation_date
+
+        ELSE IF i EQUALS 6
+            buffer = input.shipment_no
+
+        ELSE IF i EQUALS 7
+            buffer = input.init_quantity
+
+        ELSE 
+            buffer = input.curr_quantity
+
+        ENDIF
+
+        PRINT(buffer)
+        FOR (k = 0 TO space[space_index] - LENGTH OF buffer) - 1 STEP 1
+            PRINT(" ")
+        ENDFOR
+
+        space_index = space_index + 1
+        PRINT("|")
+        i = i + 1
+    UNTIL(i EQUALS SUPPLYCOLUMN + 1)
+
+    RETURN
+
+printTableDistRow(space[], input)
+
+    DECLARE i = 1
+    DECLARE daterow = 5
+    DECLARE space_index = 0
+    DECLARE buffer[100]
+
+    PRINT("|")
+
+    REPEAT
+        
+        IF i EQUALS 1
+            buffer = input.distributed_ID
+
+        ELSE IF i EQUALS 2
+            buffer = input.donee_name
+
+        ELSE IF i EQUALS 3
+            buffer = input.donee_location
+
+        ELSE IF i EQUALS 4
+            buffer = input.donation_date
+
+        ELSE IF i EQUALS 5
+            buffer = input.donation_ID
+
+        ELSE IF i EQUALS 6
+            buffer = input.quantity
+
+        ELSE
+            buffer = input.accu_quantity
+
+        ENDIF
+
+        PRINT(buffer)
+
+        FOR (k = 0 TO space[space_index] - LENGTH OF buffer) - 1 STEP 1
+            PRINT(" ")
+        ENDFOR
+
+        space_index = space_index + 1
+        PRINT("|")
+        i = i + 1
+    UNTIL(i EQUALS DISTCOLUMN + 1)
+
+printTableStockRow(space[], input)
+
+    DECLARE i = 1
+    DECLARE index = input->supply_index
+    DECLARE space_index = 0
+    DECLARE buffer[100]
+
+    PRINT("|")
+
+    REPEAT
+        
+        IF i EQUALS 1
+            buffer = input->stock_ID
+
+        ELSE IF i EQUALS 2
+            buffer = SupplyHead[index].supply_code
+
+        ELSE IF i EQUALS 3
+            buffer = SupplyHead[index].supply_name
+
+        ELSE IF i EQUALS 4
+            buffer = SupplyHead[index].donator
+
+        ELSE IF i EQUALS 5
+            buffer = SupplyHead[index].shipment_no
+
+        ELSE IF i EQUALS 6
+            buffer = input.init_quantity
+
+        ELSE
+            buffer = input.curr_quantity
+
+        ENDIF
+
+        PRINT(buffer)
+
+        FOR (k = 0 TO space[space_index] - length of - 1) STEP 1
+            PRINT(" ")
+        ENDFOR
+
+        space_index = space_index + 1
+        PRINT("|")
+        i = i + 1
+
+    UNTIL(i EQUALS STOCKCOLUMN + 1)
+
+printTableDistTotalRow(space[], input)
+
+    DECLARE i = 1
+    DECLARE index = input->dist_index
+    DECLARE space_index = 0
+    DECLARE buffer[100]
+
+    PRINT("|")
+
+    REPEAT
+        
+        IF i EQUALS 1
+            buffer = input->disttotal_ID
+
+        ELSE IF i EQUALS 2
+            buffer = DistHead[index].donee_name
+
+        ELSE IF i EQUALS 3
+            buffer = DistHead[index].donee_location
+
+        ELSE IF i EQUALS 4
+            buffer = DistHead[index].donation_date
+
+        ELSE IF i EQUALS 5
+            buffer = DistHead[index].stocks_ID
+
+        ELSE IF i EQUALS 6
+            buffer = input->quantity
+
+        ELSE
+            buffer = input->accu_quantity
+
+        ENDIF
+
+        PRINT(buffer)
+
+        FOR (k = 0 TO space[space_index] - LENGTH OF buffer) - 1 STEP 1
+            PRINT(" ")
+        ENDFOR
+
+        space_index = space_index + 1
+        PRINT("|")
+        i = i + 1
+
+    UNTIL(i EQUALS DISTCOLUMN + 1)
+
+    RETURN
+
+printTableTitle(space[], argc, argv[MAXCOLUMN][50])
+
+    DECLARE space_index = 0
+    DECLARE daterow = 5
+    PRINT("|")
+
+    FOR (i = 0 TO argc - 1) STEP 1
+    
+        PRINT(argv[i])
+        FOR (k = 0 TO space[space_index] - LENGTH OF argv[i] - 1) STEP 1
+            PRINT(" ")
+        ENDFOR
+
+        space_index = space_index + 1
+        PRINT("|")
+    ENDFOR
+
+    PRINT NEWLINE
+
+Stock_Generator()
+
+    DECLARE StockHead = NULL
+    DECLARE total_curr_quan = 0
+    DECLARE total_init_quan = 0
+    DECLARE same_stock_count = 0
+    DECLARE finish[MAXSUPPLY]
+    DECLARE finish_count = 0
+    DECLARE list_count = 1
+    DECLARE i, k
+
+    FOR (i = 0 TO SupplyLength - 1) STEP 1
+    
+        same_stock_count = 0
+        IF (skip_Key(i, finish, finish_count))
+            ENTER NEXT ROUND
+        ENDIF
+
+        FOR (k = i + 1 TO SupplyLength - 1) STEP 1
+        
+            IF (skip_Key(k, finish, finish_count))
+                ENTER NEXT ROUND
+            ENDIF
+
+            IF ((SupplyHead[i].supply_code NOT EQUALS SupplyHead[k].supply_code) AND (SupplyHead[i].donator NOT EQUALS SupplyHead[k].donator) AND (SupplyHead[i].shipment_no EQUALS SupplyHead[k].shipment_no))
+            
+                IF (same_stock_count EQUALS 0)
+                
+                    same_stock_count = same_stock_count + 1
+                    finish[finish_count] = i
+                    finish_count = finish_count + 1
+                    total_init_quan += SupplyHead[i].init_quantity
+                    total_curr_quan += SupplyHead[i].curr_quantity
+                ENDIF
+
+                same_stock_count = same_stock_count + 1
+                finish[finish_count] = k
+                finish_count = finish_count + 1
+                total_init_quan += SupplyHead[k].init_quantity
+                total_curr_quan += SupplyHead[k].curr_quantity
+
+            ENDIF
+        ENDFOR
+
+        IF (same_stock_count)
+        
+            StockLength += 1
+            CALL insertNode(i, total_init_quan, total_curr_quan)
+
+        ELSE
+        
+            StockLength += 1
+            insertNode(i, SupplyHead[i].init_quantity, SupplyHead[i].curr_quantity)
+        ENDIF
+    
+    ENDFOR
+
+
+insertNode(i, total_init_quan, total_curr_quan)
+
+    DECLARE node, curr
+    DECLARE buffer[10] = current_stock_ID
+
+    node->supply_index = i
+    buffer = node->stock_ID
+    node->init_quantity = total_init_quan
+    node->curr_quantity = total_curr_quan
+    node->link = NULL
+
+    IF (StockHead EQUALS NULL)
+    
+        StockHead = node
+        curr = node
+    
+    ELSE
+    
+        curr->link = node
+        curr = node
+    
+    ENDIF
+
+    RETURN
+
+
+insertNode_Dist(i, quan, accu_quan)
+
+    DECLARE node, curr
+
+    DECLARE buffer[10] = current_disttotalID
+
+    node->dist_index = i
+    buffer = node->disttotal_ID
+    node->quantity = quan
+    node->accu_quantity = accu_quan
+    node->link = NULL
+
+    IF (DistTotalHead EQUALS NULL)
+    
+        DistTotalHead = node
+        curr = node
+    
+    ELSE
+    
+        curr->link = node
+        curr = node
+    
+    ENDIF
+
+    RETURN node
+
+
+skip_Key(i, finish, finish_count)
+
+    DECLARE j
+
+    FOR (j = 0 TO finish_count - 1) STEP 1
+    
+        IF (i EQUALS finish[j])
+            RETURN 1
+
+        ENDIF
+    ENDFOR
+
+    RETURN 0
+
+
+freeList_Stock(head)
+
+    DECLARE curr = head, link
+    REPEAT 
+    
+        link = curr->link
+        CALL free(curr)
+        curr = link
+
+    UNTIL(curr EQUALS NULL)
+
+    StockLength = 0
+
+clrscr()
+
+    PRINT("\033[1J\033[H")
+
+
+Print_Title(title_length, argv_length, argv)
+
+    DECLARE i
+    DECLARE space = (title_length - argv_length) / 2
+
+    FOR (i = 0 TO title_length - 1) STEP 1
+        PRINT("-")
+    ENDFOR
+    PRINT NEWLINE
+
+    FOR (i = 0 TO space - 1) STEP 1
+        PRINT(" ")
+    ENDFOR
+    PRINT(argv)
+
+    FOR (i = 0 TO title_length - 1) STEP 1
+        PRINT("-")
+    ENDFOR
+    PRINT NEWLINE
+
+Print_Menu(argc, argv[][50])
+
+    DECLARE i
+    FOR (i = 1 TO argc - 1) STEP 1
+    
+        PRINT( i - argv[i - 1])
+    ENDFOR
+    PRINT NEWLINE
+
+sort_StockQuan(head, count, mode_name)
+
+    DECLARE h
+    DECLARE i, j, swapped
+
+    DECLARE mode
+
+    IF (mode_name EQUALS "init_quantity")
+        mode = 1
+    ENDIF
+
+    IF (mode_name EQULAS "curr_quantity")
+        mode = 2
+    ENDIF
+
+    FOR (i = 0 TO COUNT) STEP 1    
+        h = head
+        swapped = 0
+
+        FOR (j = 0 TO count - i - 2) STEP 1
+
+            p1 = h
+            p2 = p1->link
+            IF (p2 EQUALS NULL)
+                ENTER NEXT ROUND
+            ENDIF
+
+            IF (mode EQUALS 1 AND (p1->init_quantity < p2->init_quantity))
+                h = CALL swap(p1, p2)
+                swapped = 1
+            ENDIF
+
+            IF (mode EQUALS 2 AND (p1->curr_quantity < p2->curr_quantity))
+                h = CALL swap(p1, p2)
+                swapped = 1
+            ENDIF
+
+            h = &(*h)->link
+
+        ENDFOR
+
+        IF (swapped EQUALS 0)
+            END THIS LOOP
+        ENDIF
+    ENDFOR
+
+
+swap(ptr1, ptr2)
+
+    SWAP ptr1 AND ptr2
+
+    RETURN ptr2
+
+
+sort_DistQuan(sequence, mode)
+
+
+    FOR (i = 0 TO DistLength - 1 - 1) STEP 1
+    
+        FOR (k = 0 TO DistLength - i - 1 - 1) STEP 1
+        
+            IF (mode EQUALS 1 AND DistHead[sequence[k]].quantity < DistHead[sequence[k + 1]].quantity)
+                SWAP sequence[k] AND sequence[k+1]
+
+            ENDIF
+
+            IF (mode EQUALS 2 AND DistHead[sequence[k]].accu_quantity < DistHead[sequence[k + 1]].accu_quantity)
+                SWAP sequence[k] AND sequence[k+1]
+
+            ENDIF
+        ENDFOR
+    ENDFOR
+
+
+sort_SupplyQuan(sequence, mode)
+
+    FOR (i = 0 TO SupplyLength - 1 - 1) STEP 1
+    
+        FOR (k = 0 TO SupplyLength - i - 1 - 1) STEP 1
+        
+            IF (mode EQUALS 1 AND SupplyHead[sequence[k]].init_quantity < SupplyHead[sequence[k + 1]].init_quantity)
+                
+                SWAP sequence[k] AND sequence[k+1]
+            
+            ENDIF
+
+            IF (mode EQUALS 2 AND SupplyHead[sequence[k]].curr_quantity < SupplyHead[sequence[k + 1]].curr_quantity)
+                
+                SWAP sequence[k] AND sequence[k+1]
+            
+            ENDIF
+        ENDFOR
+    ENDFOR
+
+
+sequence_Generator(sequence, length)
+
+    FOR (i = 0 TO length - 1) STEP 1
+    
+        sequence[i] = i
+    
+    ENDFOR
+
+DistTotal_Generator()
+
+    DECLARE DistTotalHead = NULL
+    DECLARE ptr
+    DECLARE quan = 0
+    DECLARE accu_quan = 0
+    DECLARE i, k
+
+    FOR (i = 0 TO DistLength - 1) STEP 1
+    
+        DistTotalLength = DistTotalLength + 1
+        ptr = insertNode_Dist(i, DistHead[i].quantity, DistHead[i].accu_quantity)
+
+        IF (ptr->link NOT EQUALS NULL)
+            ptr = ptr->link
+        ENDIF
+
+        REPEAT 
+        
+            ptr->quantity += DistHead[i + 1].quantity
+            ptr->accu_quantity += DistHead[i + 1].accu_quantity
+
+            i = i + 1
+        UNTIL(DistHead[i].transaction_no EQUALS DistHead[i + 1].transaction_no)
+    
+    ENDFOR
+
+swap_DistTotal(ptr1, ptr2)
+
+    SWAP ptr1 AND ptr2
+
+    RETURN ptr2
+
+
+sort_DistTotalQuan(head, count, mode_name)
+
+    DECLARE h
+    DECLARE i, j, swapped
+    DECLARE mode
+
+    IF (mode_name EQUALS "quantity")
+        mode = 1
+    ENDIF
+
+    IF (mode_name EQUALS "accu_quantity")
+        mode = 2
+    ENDIF
+
+    FOR(i = 0 TO COUNT) STEP 1
+
+        h = head
+        swapped = 0
+
+        FOR (j = 0 TO count - i - 1 - 1) STEP 1
+
+            p1 = h
+            p2 = p1->link
+            IF (p2 EQUALS NULL)
+                ENTER NEXT ROUND
+
+            ENDIF
+
+            IF (mode EQUALS 1 AND (p1->quantity < p2->quantity))
+    
+                h = CALL swap_DistTotal(p1, p2)
+                swapped = 1
+            
+            ENDIF
+
+            IF (mode EQUALS 2 AND (p1->accu_quantity < p2->accu_quantity))
+            
+                h = CALL swap_DistTotal(p1, p2)
+                swapped = 1
+            
+            ENDIF
+
+            h = &(*h)->link
+        
+        ENDFOR
+
+        IF (swapped EQUALS 0)
+
+            END THIS LOOP
+
+        ENDIF
+    ENDFOR
+
+
+freeList_DistTotal(head)
+
+    DECLARE curr = head, link
+    REPEAT 
+    
+        link = curr->link
+        CALL free(curr)
+        curr = link
+
+    UNTIL(curr EQUALS NULL)
+
+    DistTotalLength = 0
+
+Validation_Date(input)
+
+    IF (input.year >= 1000 AND input.year <= 9999)
+    
+        IF (input.month >= 1 AND input.month <= 12)
+        
+            IF ((input.day >= 1 AND input.day <= 31) AND (input.month EQUALS 1 || input.month EQUALS 3 || input.month EQUALS 5 || input.month EQUALS 7 || input.month EQUALS 8 || input.month EQUALS 10 || input.month EQUALS 12))
+                RETURN 1
+            ELSE IF ((input.day >= 1 AND input.day <= 30) AND (input.month EQUALS 4 || input.month EQUALS 6 || input.month EQUALS 9 || input.month EQUALS 11))
+                RETURN 1
+            ELSE IF ((input.day >= 1 AND input.day <= 28) AND (input.month EQUALS 2))
+                RETURN 1
+            ELSE IF (input.day EQUALS 29 AND input.month EQUALS 2 AND (input.year % 400 EQUALS 0 || (input.year % 4 EQUALS 0 AND input.year % 100 NOT EQUALS 0)))
+                RETURN 1
+            ELSE
+            
+                PRINT("Invalid Date Input/Format.\n")
+                RETURN 0
+            ENDIF
+        
+        ELSE
+        
+            PRINT("Invalid Date Input/Format.\n")
+            RETURN 0
+        ENDIF
+    
+    ELSE
+    
+        PRINT("Invalid Date Input/Format.\n")
+        RETURN 0
+    
+    ENDIF
+
+    PRINT("Invalid Date Input/Format.\n")
+    RETURN 0
+
+Validation_CharLength(limit, input_length)
+
+    IF (input_length > limit)
+    
+        PRINT(The length can only be within limit characters.)
+        RETURN 0
+    
+    ENDIF
+
+    RETURN 1
+
+validation_isdigit(limit, input, input_length)
+
+    DECLARE i
+    IF (input_length > limit)
+    
+        PRINT(The length can only be within limit characters)
+        RETURN 0
+    
+    ENDIF
+
+    FOR (i = 0 TO input_length - 1) STEP 1
+    
+        IF (isdigit(input[i]) EQUALS 0)
+        
+            PRINT(Only numbers can be accepted.)
+            RETURN 0
+        
+        ENDIF
+    ENDFOR
+
+    RETURN 1
+
+validation_isfloat(input, input_length)
+
+    DECLARE dotted = 0, i
+    FOR (i = 0 TO input_length - 1) STEP 1
+    
+        IF (input[i] EQUALS '.' AND DOTTED EQUALS 0)
+        
+            dotted = 1
+            ENTER NEXT ROUND
+        
+        ENDIF
+
+        IF (isdigit(input[i]) EQUALS 0)
+        
+            PRINT("Only numbers can be accepted.\n")
+            RETURN 0
+        
+        ENDIF
+    ENDFOR
+
+    IF (input < 10000000)
+        RETURN 1
+    ELSE
+    
+        PRINT("Cannot exceed 10000000.")
+        RETURN 0
+    ENDIF
+
+
+validation_supply_code(input)
+
+    DECLARE i
+
+    FOR (i = 0 TO SupplyTypeLength - 1) STEP 1
+    
+        IF (input EQUALS Supply_Type[i][0])
+            RETURN i
+        ENDIF
+    
+    ENDFOR
+    PRINT("Invalid Supply Code.")
+    RETURN -1
+
+
+ConfirmSupplySection(input)
+
+    DECLARE choice
+    DECLARE choice_buffer[1000]
+    DECLARE title[50] = "Confirm Your Record"
+    DECLARE menu[][50] = {"Confirm", "Cancel"}
+    DECLARE buffer[100]
+    REPEAT
+    
+        REPEAT
+        
+            CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+            CALL Print_SupplyList(input, -1, NULL)
+
+            CALL Print_Menu(sizeof(menu) / sizeof(menu[0]), menu)
+            PRINT("Choice: ")
+            ACCEPT choice_buffer
+            IF (validation_isdigit(1000, choice_buffer, LENGTH OF choice_buffer))
+                choice = choice_buffer
+            ELSE
+                ENTER NEXT ROUND
+            ENDIF
+
+            IF (CHOICE_CONDITION)
+                END THIS LOOP
+            ENDIF
+
+            IF(choice EQUALS 1)
+                CALL SupplyToFile()
+            
+            ELSE IF(choice EQUALS 2)
+                SupplyLength--
+                PRINT("You have cancelled this record.")
+                CALL Exit_Phrase()
+                RETURN 0
+            ENDIF
+
+        UNTIL(1)
+    UNTIL(1)
+
+
+ConfirmDistSection(input, edit_index, edited_data, distributed_ID)
+
+    DECLARE choice
+    DECLARE choice_buffer[1000]
+    DECLARE title[50] = "Confirm Your Record"
+    DECLARE menu[][50] = "Confirm", "Cancel"}
+    DECLARE buffer[100]
+
+    REPEAT
+    
+        REPEAT
+        
+            CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+            CALL Print_DistList(input, edit_index, edited_data, distributed_ID)
+
+            CALL Print_Menu(sizeof(menu) / sizeof(menu[0]), menu)
+            PRINT("Choice: ")
+            ACCEPT choice_buffer
+
+            IF (validation_isdigit(1000, choice_buffer, LENGTH OF choice_buffer))
+                choice = choice_buffer
+            ELSE
+                ENTER NEXT ROUND
+            ENDIF
+
+            IF (CHOICE_CONDITION)
+                END THIS LOOP
+            ENDIF
+        UNTIL(1)
+
+        IF choice EQUALS 1
+            RETURN 1
+        
+        ELSE IF choice EQUALS 2
+            SupplyLength--
+            PRINT("You have cancelled this record.")
+            CALL Exit_Phrase()
+        
+        ENDIF
+        
+        UNTIL(1)
+    UNTIL(1)
+
+
+Print_DistList(input, edit_index, edited_data, distributed_ID)
+
+    DECLARE ptr, i
+    DECLARE buffer[1000]
+
+    CALL DistTotal_Generator()
+
+    IF(distributed_ID NOT EQUALS NULL)
+        LOOP DistTotalHead TILL THE END OF RECORDS
+            IF (ptr->disttotal_ID EQUALS distributed_ID)
+                END THIS LOOP
+            ENDIF
+        ENDLOOP
+    ENDIF
+
+    FOR (i = 0 TO DISTCOLUMN - 1) STEP 1
+    
+        IF (i EQUALS edit_index)
+        
+            PRINT(DistTotalColumnName[i]: edited_data)
+            i = i + 1
+        
+        ENDIF
+
+        IF i EQUALS 0 
+            IF (distributed_ID EQUALS NULL)
+                buffer = current_disttotalID
+            ELSE
+               buffer = distributed_ID
+
+            ENDIF
+        
+        ELSE IF i EQUALS 1
+            buffer = input->donee_name
+        
+        ELSE IF i EQUALS 2
+            buffer = input->donee_location
+        
+        ELSE IF i EQUALS 3
+            buffer = input->donation_date
+
+        ELSE IF i EQUALS 4
+            buffer = input->stock_ID
+
+        ELSE IF i EQUALS 5
+            IF(distributed_ID EQUALS NULL)
+                buffer = input->quantity
+            ELSE
+                buffer = ptr->quantity
+            ENDIF
+        
+        ELSE IF i EQUALS 6
+            buffer = ptr->accu_quantity
+        ENDIF
+
+        PRINT(DistTotalColumnName[i]: buffer)
+        IF (distributed_ID EQUALS NULL AND i EQUALS 5)
+            i = i + 1
+        ENDIF
+    ENDFOR
+
+    CALL freeList_DistTotal(DistTotalHead)
+
+
+Exit_Phrase()
+
+    PRINT("Press any key to ENTER NEXT ROUND......")
+    ACCEPT A CHARACTER
+
+
+Print_SupplyList(input, choice, edited_data)
+
+    DECLARE buffer[1000]
+    DECLARE i, k 
+    FOR (i = 0 TO SUPPLYCOLUMN - 1) STEP 1
+    
+        IF (i EQUALS choice)
+        
+            PRINT(SupplyColumnName[i]: edited_data)
+            IF (choice EQUALS 1)
+            
+                FOR (k = 0 TO SupplyTypeLength - 1) STEP 1
+                    IF (edited_data EQUALS Supply_Type[k][0])
+                        END THIS LOOP
+                    ENDIF
+                ENDFOR
+                PRINT(SupplyColumnName[i]: Supply_Type[k][1])
+                i = i + 1
+            ENDIF
+            i = i + 1
+        ENDIF
+
+        IF i EQUALS 0 
+            buffer = input->donation_ID
+        
+        ELSE IF i EQUALS 1
+            buffer = input->supply_code
+        
+        ELSE IF i EQUALS 2
+            buffer = input->supply_name
+        
+        ELSE IF i EQUALS 3
+            buffer = input->donator
+
+        ELSE IF i EQUALS 4
+            buffer = input->donation_date
+
+        ELSE IF i EQUALS 5
+            buffer = input->shipment_no
+        
+        ELSE IF i EQUALS 6
+            buffer = input->init_quantity
+        
+        ELSE IF i EQUALS 7
+            buffer = input->curr_quantity
+
+        ENDIF
+
+        PRINT(SupplyColumnName[i]: buffer)
+    ENDFOR
+
+
+validation_stockID(input)
+
+    DECLARE ptr
+    CALL Stock_Generator()
+    LOOP StockHead TILL END OF RECORDS
+    
+        IF (ptr->stock_ID EQUALS input)
+        
+            RETURN ptr->supply_index
+        ENDIF
+    ENDLOOP
+    PRINT("Stock ID does not exist\n")
+    CALL freeList_Stock(StockHead)
+    RETURN -1
+
+
+SupplyToFile()
+
+    FOR (i = 0 TO SupplyLength - 1) STEP 1
+    
+        PRINT SupplyHead TO donation.txt
+    
+    ENDFOR
+    CLOSE THE FILE
+
+
+DistToFile()
+
+    FOR (i = 0 TO DistLength - 1) STEP 1
+
+        PRINT DistHead TO dist.txt
+    
+    ENDFOR
+    CLOSE THE FILE
+
+
+EnsureQuantity(ID_store, quantity, supply_index)
+
+    DECLARE i, k = supply_index
+    DECLARE ID_store_index = 0
+    DECLARE quan_remainder = quantity
+
+    FOR (i = supply_index TO SupplyLength - 1) STEP 1
+    
+        IF ((SupplyHead[i].supply_code EQUALS SupplyHead[k].supply_code) AND (SupplyHead[i].donator, SupplyHead[k].donator) AND (SupplyHead[i].shipment_no EQUALS SupplyHead[k].shipment_no))
+        
+            quan_remainder -= SupplyHead[i].curr_quantity
+            ID_store[ID_store_index] = i
+            ID_store_index = ID_store_index + 1
+            IF (quan_remainder <= 0)
+            
+                RETURN ID_store_index
+            ENDIF
+        ENDIF
+    ENDFOR
+
+    PRINT("The quantity entered cannot exceed the stock's current quantity.")
+    RETURN -1
+
