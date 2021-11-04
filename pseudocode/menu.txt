@@ -1,1360 +1,1267 @@
-#include "basic.h"
-#include "basic.c"
-#include "menu.h"
 
-void MainMenu()
-{
-    int choice;
-    char choice_buffer[1000];
-    while (1)
-    {
-        clrscr();
-        char title[100] = "Covid-19 Inventory Management System";
-        char menu[][50] = {"Dashboard", "Manage Donation Supplies", "Manage Distributed Donation", "Exit"};
-        Print_Title(TITLELENGTH, strlen(title), title);
-        Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-        printf("Choice: ");
-        scanf("%s", choice_buffer);
-        fflush(stdin);
-        if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
-            choice = atoi(choice_buffer);
-        else
-            continue;
-        if (CHOICE_CONDITION)
-            break;
-    }
+MainMenu()
 
-    switch (choice)
-    {
-    case 1:
-        Dashboard();
-        break;
+    DECLARE choice
+    DECLARE choice_buffer[1000]
+    REPEAT
+    
+        CALL clrscr()
+        title[100] = "Covid-19 Inventory Management System"
+        menu[][50] = {"Dashboard", "Manage Donation Supplies", "Manage Distributed Donation", "Exit"}
+        CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+        CALL Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
+        PRINT("Choice: ")
+        ACCEPT choice_buffer
 
-    case 2:
-        DonationSupplies();
-        break;
+        IF (validation_isdigit(1000, choice_buffer, LENGTH OF choice_buffer))
+            choice = choice_buffer
 
-    case 3:
-        DistributedDonation();
-        break;
+        ELSE
+            ENTER NEXT ROUND
+        
+        ENDIF
 
-    case 4:
-        printf("Program Successfully Exited......\n");
-        exit(0);
+        IF (CHOICE_CONDITION)
+            END THIS LOOP
+        ENDIF
 
-    default:
-        break;
-    }
-}
+    UNTIL(1)
 
-void Dashboard()
-{
-    int choice;
-    char choice_buffer[1000];
-    clrscr();
-    while (1)
-    {
-        while (1)
-        {
-            clrscr();
-            char title[100] = "Dashboard";
-            char menu[][50] = {"Accumulated donation received for each supply", "Accumulated distributed donation for each supply", "Return"};
-            Print_Title(TITLELENGTH, strlen(title), title);
-            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            printf("Choice: ");
-            scanf("%s", choice_buffer);
-            fflush(stdin);
-            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
-                choice = atoi(choice_buffer);
-            else
-                continue;
-            if (CHOICE_CONDITION)
-                break;
+    IF choice EQUALS 1
+        CALL Dashboard()
+    
+    ELSE IF choice EQUALS 2
+        CALL DonationSupplies()
+    
+    ELSE IF choice EQUALS 3
+        CALL DistributedDonation()
+    
+    ELSE IF choice EQUALS 4
+        PRINT("Program Successfully Exited......")
+        EXIT PROGRAM 
+    ENDIF
+
+Dashboard()
+
+    DECLARE choice
+    DECLARE choice_buffer[1000]
+    CALL clrscr()
+    REPEAT
+    
+        REPEAT
+        
+            CALL clrscr()
+            DECLARE title[100] = "Dashboard"
+            DECLARE menu[][50] = {"Accumulated donation received for each supply", "Accumulated distributed donation for each supply", "Return"}
+            CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+            CALL Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
+            PRINT("Choice: ")
+            ACCEPT choice_buffer
+            
+            IF (validation_isdigit(1000, choice_buffer, LENGTH OF choice_buffer))
+                choice = choice_buffer
+            ELSE
+                ENTER NEXT ROUND
+            ENDIF
+
+            IF (CHOICE_CONDITION)
+                END THIS LOOP
+            ENDIF
+
+        UNTIL(1)
+
+        IF choice EQUALS 1
+            CALL SupplyAccuDonation()
+    
+        ELSE IF choice EQUALS 2
+            CALL DistAccuDonation()
+    
+        ELSE IF choice EQUALS 3
+            RETURN
+
+        ENDIF
+        
+
+    UNTIL(1)
+
+DonationSupplies()
+
+    DECLARE choice
+    DECLARE choice_buffer[1000]
+    CALL clrscr()
+    REPEAT 
+    
+        REPEAT
+        
+            CALL clrscr()
+            DECLARE title[100] = "Manage Donation Supplies"
+            DECLARE menu[][50] = {"Add donation supply", "Edit donation supply", "View records", "Search donation supply", "Return"}
+            CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+            CALL PrintTable(1, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength)
+            PRINT NEWLINE
+            CALL Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
+            PRINT("Choice: ")
+            ACCEPT choice_buffer
+            IF (validation_isdigit(1000, choice_buffer, LENGTH OF choice_buffer))
+                choice = choice_buffer
+            ELSE
+                ENTER NEXT ROUND
+            ENDIF
+
+            IF (CHOICE_CONDITION)
+                END THIS LOOP
+            ENDIF
+        UNTIL(1)
+        
+        IF choice EQUALS 1
+            CALL AddDonationSupply()
+    
+        ELSE IF choice EQUALS 2
+            CALL EditDonationSupply()
+    
+        ELSE IF choice EQUALS 3
+            CALL ViewCurrentStock_Supply()
+        
+        ELSE IF choice EQUALS 4
+            CALL SearchDonationSupplies()
+        
+        ELSE IF choice EQUALS 5
+            RETURN
+        
+        ENDIF
+    UNTIL(1)
+
+
+DistributedDonation()
+
+    DECLARE choice
+    DECLARE choice_buffer[1000]
+    CALL clrscr()
+    REPEAT
+    
+        REPEAT
+        
+            CALL clrscr()
+            DECALRE title[100] = "Manage Distributed Donation"
+            DECLARE menu[][50] = {"Add distributed donation", "Edit distributed donation", "View records", "Search distributed donation", "Return"}
+            CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+            CALL PrintTable(4, DISTCOLUMN, Space_Dist, DistColumnName, DistLength)
+            PRINT NEWLINE
+            CALL Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
+            PRINT("Choice: ")
+            ACCEPT choice_buffer
+            IF (validation_isdigit(1000, choice_buffer, LENGTH OF choice_buffer))
+                choice = choice_buffer
+            ELSE
+                ENTER NEXT ROUND
+            ENDIF
+
+            IF (CHOICE_CONDITION)
+                END THIS LOOP
+            ENDIF
+        UNTIL(1)
+
+        IF choice EQUALS 1
+            CALL AddDistDonation()
+    
+        ELSE IF choice EQUALS 2
+            CALL EditDistDonation()
+    
+        ELSE IF choice EQUALS 3
+            CALL ViewHistoryRecord_Dist()
+        
+        ELSE IF choice EQUALS 4
+            CALL SearchDistDonation()
+        
+        ELSE IF choice EQUALS 5
+            RETURN
+        
+    UNTIL(1)
+
+
+AddDonationSupply()
+
+    DECLARE supply_code[1000]
+    DECLARE supply_code_index
+    DECLARE donator[1000]
+    DECLARE donation_date
+    DECLARE date_buffer[1000]
+    DECLARE shipment_buffer[1000]
+    DECLARE quantity_buffer[1000]
+    DECLARE buffer[100]
+
+    CALL clrscr()
+    DECLARE title[100] = "Add Donation Supply"
+    CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+    PRINT(Currently there are only SupplyTypeLength types of supplies that you can donate)
+    PRINT("Supply Code - Supply Name")
+    FOR (int i = 0 TO SupplyTypeLength - 1) STEP 1
+    
+        PRINT(Supply_Type[i][0]: Supply_Type[i][1])
+        PRINT NEWLINE
+
+    ENDFOR
+
+    PRINT("Please fill up the details of the donation: ")
+
+    DOWHILE(supply_code_index < 0)
+    
+        PRINT("Supply Code: ")
+        ACCEPT supply_code
+        supply_code_index = CALL validation_supply_code(supply_code)
+   
+   ENDDO
+
+    DOWHILE(Validation_CharLength(20, LENGTH OF donator) EQUALS 0)
+    
+        PRINT("Donator: ")
+        ACCEPT donator
+    ENDDO
+
+    DOWHILE(Validation_Date(donation_date) EQUALS 0)
+    
+        PRINT("Enter Date in format: dd/mm/yyyy\n")
+        PRINT("Date: ")
+        ACCEPT date_buffer
+        ACCEPT donation_date
+
+    ENDDO
+
+    DOWHILE(validation_isdigit(7, shipment_buffer, LENGTH OF shipment_buffer) EQUALS 0)
+    
+        PRINT("Shipment No.: ")
+        ACCEPT  shipment_buffer
+    ENDDO
+
+    DOWHILE(validation_isfloat(quantity_buffer, LENGTH OF quantity_buffer) EQUALS 0)
+    
+        PRINT("Quantity(millions): ")
+        ACCEPT  quantity_buffer
+
+    ENDDO
+
+    SupplyLength = SupplyLength + 1
+    buffer = SupplyID
+    SupplyHead[SupplyLength - 1].donation_ID =  buffer
+    SupplyHead[SupplyLength - 1].supply_code =  supply_code
+    SupplyHead[SupplyLength - 1].supply_name =  Supply_Type[supply_code_index][1]
+    SupplyHead[SupplyLength - 1].donator =  donator
+    SupplyHead[SupplyLength - 1].donation_date = donation_date
+    SupplyHead[SupplyLength - 1].shipment_no = shipment_buffer
+    SupplyHead[SupplyLength - 1].init_quantity = quantity_buffer
+    SupplyHead[SupplyLength - 1].curr_quantity = quantity_buffer
+
+    CALL ConfirmSupplySection(&SupplyHead[SupplyLength - 1])
+
+
+EditDonationSupply()
+
+    DECLARE supply_code_index
+    DECLARE donation_date
+    DECLARE date_buffer[1000]
+    DECLARE buffer[1000]
+    DECLARE donation_ID[1000]
+    DECLARE search_index = -1
+    DECLARE title[100] = "Edit Donation Supply"
+    DECLARE selection
+    DECLARE i
+
+    REPEAT
+    
+        DECLARE choice
+        DECLARE choice_buffer[1000]
+
+        REPEAT        
+            CALL clrscr()
+
+            CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+            CALL PrintTable(1, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength)
+            CALL PRINT("\nEnter Donation ID: ")
+            ACCEPT donation_ID
+            FOR (i = 0 TO SupplyLength - 1) STEP 1
+            
+                IF (SupplyHead[i].donation_ID EQUALS donation_ID)
+                
+                    search_index = i
+                    END THIS LOOP
+                ENDIF
+            
+            ENDFOR
+
+            IF (search_index >= 0)
+                END THIS LOOP
+            ELSE
+                PRINT("Donation ID doesnt exist. Please enter again.")
+            ENDIF
+
+            CALL Exit_Phrase()
+        UNTIL(1)
+
+        REPEAT
+        
+            CALL clrscr()
+
+            DECLARE menu[][50] = {"Supply code", "Donator", "Donation date", "Shipment no", "Quantity received(millions)", "Current Quantity(millions)", "Return"}
+            CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+            CALL Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
+            PRINT("Choice: ")
+            ACCEPT choice_buffer
+            IF (validation_isdigit(1000, choice_buffer, LENGTH OF choice_buffer))
+                choice = atoi(choice_buffer)
+            ELSE
+                ENTER NEXT ROUND
+            ENDIF
+
+            IF (CHOICE_CONDITION)
+                END THIS LOOP
+            ENDIF
+
+        UNTIL(1)
+        
+        IF choice EQUALS 1
+            DOWHILE(supply_code_index < 0)
+            
+                PRINT("Supply name will be changed automatically")
+                PRINT("Supply Code: ")
+                ACCEPT buffer
+                supply_code_index = CALL validation_supply_code(buffer)
+            ENDDO
+
+        ELSE IF choice EQUALS 2
+            DOWHILE(Validation_CharLength(20, LENGTH OF buffer) EQUALS 0)
+            
+                PRINT("Donator: ")
+                ACCEPT buffer
+            ENDDO
+
+        ELSE IF choice EQUALS 3
+            DOWHILE(Validation_Date(donation_date) EQUALS 0)
+            
+                PRINT("Enter Date in format: dd/mm/yyyy\n")
+                PRINT("Date: ")
+                ACCEPT buffer
+                ACCEPT donation_date 
+            ENDDO
+
+        ELSE IF choice EQUALS 4
+            DOWHILE(validation_isdigit(7, buffer, LENGTH OF buffer) EQUALS 0)
+            
+                PRINT("Shipment No.: ")
+                ACCEPT buffer
+            ENDDO
+
+        ELSE IF choice EQUALS 5
+            DOWHILE(validation_isfloat(buffer, LENGTH OF buffer) EQUALS 0)
+            
+                PRINT("Quantity Received(millions): ")
+                ACCEPT buffer
+
+            ENDDO
+
+        ELSE IF choice EQUALS 6
+            DOWHILE(validation_isfloat(buffer, LENGTH OF buffer) EQUALS 0)
+            
+                PRINT("Current Quantity(millions): ")
+                ACCEPT buffer
+
+            ENDDO
+
+        ELSE IF choice EQUALS 7
+            RETURN
+
+        ENDIF
+
+        IF (choice >= 2 AND choice <= 6)
+            choice = choice + 1
+        ENDIF
+        
+        REPEAT
+        
+            DECLARE selection_buffer[1000]
+            DECLARE title[50] = "Confirm Your Record"
+            DECLARE menu[][50] = {"Confirm", "Cancel"}
+            CALL clrscr()
+            CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+            CALL PRINT_SupplyList(&SupplyHead[search_index], choice, buffer)
+            CALL Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
+            PRINT("Choice: ")
+            ACCEPT selection_buffer
+            IF (validation_isdigit(1000, selection_buffer, LENGTH OF selection_buffer))
+                selection = selection_buffer
+            ELSE
+                ENTER NEXT ROUND
+            ENDIF
+
+            IF (CHOICE_CONDITION)
+                END THIS LOOP
+            ENDIF
+
+        UNTIL(1)
+
+        IF (selection EQUALS 2)
+        
+            PRINT("You have cancelled this record.\n")
+            CALL Exit_Phrase()
+            RETURN
+        ENDIF
+
+        IF (choice EQUALS 1)
+        
+            SupplyHead[search_index].supply_code =  buffer
+            SupplyHead[search_index].supply_name =  Supply_Type[supply_code_index][1]
+
+        ELSE IF (choice EQUALS 3)
+            SupplyHead[search_index].donator =  buffer
+
+        ELSE IF (choice EQUALS 4)
+            SupplyHead[search_index].donation_date = donation_date
+
+        ELSE IF (choice EQUALS 5)
+            SupplyHead[search_index].shipment_no = atoi(buffer)
+
+        ELSE IF (choice EQUALS 6)
+            SupplyHead[search_index].init_quantity = atof(buffer)
+
+        ELSE IF (choice EQUALS 7)
+            SupplyHead[search_index].curr_quantity = atof(buffer)
+        ENDIF
+        
+        CALL SupplyToFile()
+
+    UNTIL(1)
+
+
+ViewCurrentStock_Supply()
+
+    DECLARE choice
+    DECLARE choice_buffer[1000]
+    REPEAT
+    
+        REPEAT
+        
+            CALL clrscr()
+            DECLARE title[100] = "View Records"
+            DECLARE menu[][50] = {"View current stocks", "View history records", "Return"}
+            CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+            CALL Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
+            PRINT("Choice: ")
+            ACCEPT choice_buffer
+            IF (validation_isdigit(1000, choice_buffer, LENGTH OF choice_buffer))
+                choice = choice_buffer
+            ELSE
+                ENTER NEXT ROUND
+            ENDIF
+
+            IF (CHOICE_CONDITION)
+                END THIS LOOP
+            ENDIF
+        UNTIL(1)
+
+        IF choice EQUALS 1
+            CALL viewCurrentStocks()
+        
+        ELSE IF choice EQUALS 2
+            CALL viewSupplyHistoryRecord()
+
+        ELSE IF chocie EQUALS 3
+            RETURN
+
+        ENDIF
+    UNTIL(1)
+
+ viewCurrentStocks()
+
+    DECLARE choice
+    DECLARE choice_buffer[1000]
+    REPEAT
+    
+        REPEAT
+        
+            clrscr()
+            DECLARE title[100] = "View Current Stocks"
+            DECLARE menu[][50] = {"Stock ID - Ascending", "Quantity Received(millions) - Descending", "Current Quantity(millions) - Descending", "Return"}
+            Print_Title(TITLELENGTH, LENGTH OF title, title)
+            PRINT("Sort according to:\n")
+            Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
+            PRINT("Choice: ")
+            ACCEPT  choice_buffer
+            fflush(stdin)
+            IF (validation_isdigit(1000, choice_buffer, LENGTH OF choice_buffer))
+                choice = atoi(choice_buffer)
+            ELSE
+                ENTER NEXT ROUND
+            IF (CHOICE_CONDITION)
+                END THIS LOOP
         }
-
+        clrscr()
         switch (choice)
-        {
+        
         case 1:
-            SupplyAccuDonation();
-            break;
-
+            PrintTable(3, STOCKCOLUMN, Space_Stock, StockColumnName, StockLength)
+            Exit_Phrase()
+            END THIS LOOP
         case 2:
-            DistAccuDonation();
-            break;
-
+            PrintTable(9, STOCKCOLUMN, Space_Stock, StockColumnName, StockLength)
+            Exit_Phrase()
+            END THIS LOOP
         case 3:
-            return;
-
-        default:
-            break;
-        }
-    }
-}
-
-void DonationSupplies()
-{
-    int choice;
-    char choice_buffer[1000];
-    clrscr();
-    while (1)
-    {
-        while (1)
-        {
-            clrscr();
-            char title[100] = "Manage Donation Supplies";
-            char menu[][50] = {"Add donation supply", "Edit donation supply", "View records", "Search donation supply", "Return"};
-            Print_Title(TITLELENGTH, strlen(title), title);
-            PrintTable(1, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength);
-            putchar('\n');
-            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            printf("Choice: ");
-            scanf("%s", choice_buffer);
-            fflush(stdin);
-            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
-                choice = atoi(choice_buffer);
-            else
-                continue;
-            if (CHOICE_CONDITION)
-                break;
-        }
-
-        switch (choice)
-        {
-        case 1:
-            AddDonationSupply();
-            break;
-
-        case 2:
-            EditDonationSupply();
-            break;
-
-        case 3:
-            ViewCurrentStock_Supply();
-            break;
-
+            PrintTable(10, STOCKCOLUMN, Space_Stock, StockColumnName, StockLength)
+            Exit_Phrase()
+            END THIS LOOP
         case 4:
-            SearchDonationSupplies();
-            break;
-
-        case 5:
-            return;
-
+            return
         default:
-            break;
+            END THIS LOOP
         }
     }
-}
 
-void DistributedDonation()
-{
-    int choice;
-    char choice_buffer[1000];
-    clrscr();
-    while (1)
-    {
-        while (1)
-        {
-            clrscr();
-            char title[100] = "Manage Distributed Donation";
-            char menu[][50] = {"Add distributed donation", "Edit distributed donation", "View records", "Search distributed donation", "Return"};
-            Print_Title(TITLELENGTH, strlen(title), title);
-            PrintTable(4, DISTCOLUMN, Space_Dist, DistColumnName, DistLength);
-            putchar('\n');
-            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            printf("Choice: ");
-            scanf("%s", choice_buffer);
-            fflush(stdin);
-            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
-                choice = atoi(choice_buffer);
-            else
-                continue;
-            if (CHOICE_CONDITION)
-                break;
-        }
 
-        switch (choice)
-        {
-        case 1:
-            AddDistDonation();
-            break;
+viewSupplyHistoryRecord()
 
-        case 2:
-            EditDistDonation();
-            break;
+    DECLARE choice
+    DECLARE choice_buffer[1000]
+    REPEAT
+    
+        REPEAT
+        
+            CALL lrscr()
+            DECLARE title[100] = "View History Records"
+            DECLARE menu[][50] = {"Donation ID - Ascending", "Quantity Received(millions) - Descending", "Current Quantity(millions) - Descending", "Return"}
+            CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+            CALL PRINT("Sort according to:\n")
+            CALL Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
+            PRINT("Choice: ")
+            ACCEPT choice_buffer
+            IF (validation_isdigit(1000, choice_buffer, LENGTH OF choice_buffer))
+                choice = choice_buffer
+            ELSE
+                ENTER NEXT ROUND
+            ENDIF
+            IF (CHOICE_CONDITION)
+                END THIS LOOP
+            ENDIF
+        UNTIL(1)
+        CALL clrscr()
+        
+        IF choice EQUALS 1
+            CALL PrintTable(1, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength)
+            CALL Exit_Phrase()
 
-        case 3:
-            ViewHistoryRecord_Dist();
-            break;
+        ELSE IF choice EQUALS 2
+            CALLPrintTable(5, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength)
+            CALL Exit_Phrase()
+        
+        ELSE IF choice EQUALS 3
+            CALL PrintTable(6, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength)
+            CALL Exit_Phrase()
+        
+        ELSE IF choice EQUALS 4
+            RETURN
+        
+        ENDIF
+    UNTIL(1)
 
-        case 4:
-            SearchDistDonation();
-            break;
+SearchDonationSupplies()
 
-        case 5:
-            return;
+    REPEAT
+    
+        DECLARE choice
+        DECLARE choice_buffer[1000]
+        REPEAT
+        
+            CALL clrscr()
+            DECLARE title[100] = "Search Donation Supply"
+            DECLARE menu[][50] = {"Search in current stocks", "Search in history records", "Return"}
+            CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+            CALL Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
+            PRINT("Choice: ")
+            ACCEPT  choice_buffer
+            IF (validation_isdigit(1000, choice_buffer, LENGTH OF choice_buffer))
+                choice = choice_buffer
+            ELSE
+                ENTER NEXT ROUND
+            ENDIF
+            IF (CHOICE_CONDITION)
+                END THIS LOOP
+            ENDIF
+        UNTIL(1)
+        
+        IF choice EQUALS 1
+            CALL SearchStocks()
 
-        default:
-            break;
-        }
-    }
-}
+        ELSE IF choice EQUALS 2
+            CALL SearchSupplyHistory()
+        
+        ELSE IF choice EQUALS 3
+            RETURN
 
-void AddDonationSupply()
-{
-    //If the character length user enter is not larger than 1000 should not have a problem
-    char supply_code[1000];
-    int supply_code_index;
-    char donator[1000];
-    struct date donation_date;
-    char date_buffer[1000];
-    char shipment_buffer[1000];
-    char quantity_buffer[1000];
-    char buffer[100];
+       ENDIF
 
-    clrscr();
-    char title[100] = "Add Donation Supply";
-    Print_Title(TITLELENGTH, strlen(title), title);
-    printf("Currently there are only %d types of supplies that you can donate.\n", SupplyTypeLength);
-    printf("Supply Code - Supply Name\n");
-    //Print all the available supplies out
-    for (int i = 0; i < SupplyTypeLength; i++)
-    {
-        printf("%s - %s\n", Supply_Type[i][0], Supply_Type[i][1]);
-    }
-
-    //Prints stuffs and ask customer to enter
-    printf("\nPlease fill up the details of the donation: \n");
-
-    //Supply Code validation
-    do
-    {
-        printf("Supply Code: ");
-        scanf("%s", supply_code);
-        fflush(stdin);
-        supply_code_index = validation_supply_code(supply_code);
-    } while (supply_code_index < 0);
-
-    //Donator length validation(cannot exceed 20)
-    do
-    {
-        printf("Donator: ");
-        scanf("%s", donator);
-        fflush(stdin);
-    } while (!Validation_CharLength(20, strlen(donator)));
-
-    //Donation date validation(Format )
-    do
-    {
-        printf("Enter Date in format: dd/mm/yyyy\n");
-        printf("Date: ");
-        //Get the string
-        scanf("%s", date_buffer);
-        fflush(stdin);
-        //Write inside donation_date according to the format
-        sscanf(date_buffer, "%d/%d/%d", &donation_date.day, &donation_date.month, &donation_date.year);
-    } while (!Validation_Date(donation_date));
-
-    //Shipment no.
-    do
-    {
-        printf("Shipment No.: ");
-        scanf("%s", shipment_buffer);
-        fflush(stdin);
-    } while (!validation_isdigit(7, shipment_buffer, strlen(shipment_buffer)));
-
-    //Quantity Donated
-    do
-    {
-        printf("Quantity(millions): ");
-        scanf("%s", quantity_buffer);
-        fflush(stdin);
-
-    } while (!validation_isfloat(quantity_buffer, strlen(quantity_buffer)));
-
-    //Must add to ensure donationID is corect
-    SupplyLength++;
-    //Store everything inside a variable of type supply
-    snprintf(buffer, 10, SUPPLYIDFORMAT, SupplyLength);
-    strcpy(SupplyHead[SupplyLength - 1].donation_ID, buffer);
-    strcpy(SupplyHead[SupplyLength - 1].supply_code, supply_code);
-    strcpy(SupplyHead[SupplyLength - 1].supply_name, Supply_Type[supply_code_index][1]);
-    strcpy(SupplyHead[SupplyLength - 1].donator, donator);
-    SupplyHead[SupplyLength - 1].donation_date = donation_date;
-    SupplyHead[SupplyLength - 1].shipment_no = atoi(shipment_buffer);
-    SupplyHead[SupplyLength - 1].init_quantity = atof(quantity_buffer);
-    SupplyHead[SupplyLength - 1].curr_quantity = atof(quantity_buffer);
-
-    ConfirmSupplySection(&SupplyHead[SupplyLength - 1]);
-}
-
-void EditDonationSupply()
-{
-    int supply_code_index;
-    struct date donation_date;
-    char date_buffer[1000];
-    char buffer[1000];
-    char donation_ID[1000];
-    int search_index = -1;
-    char title[100] = "Edit Donation Supply";
-    int selection;
-
-    while (1)
-    {
-        int choice;
-        char choice_buffer[1000];
-
-        //User enter donation ID part
-        while (1)
-        {
-            clrscr();
-
-            Print_Title(TITLELENGTH, strlen(title), title);
-            PrintTable(1, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength);
-            printf("\nEnter Donation ID: ");
-            scanf("%s", donation_ID);
-            fflush(stdin);
-            for (int i = 0; i < SupplyLength; i++)
-            {
-                if (strcmp(SupplyHead[i].donation_ID, donation_ID) == 0)
-                {
-                    search_index = i;
-                    break;
-                }
-            }
-
-            if (search_index >= 0)
-                break;
-            else
-                printf("Donation ID doesnt exist. Please enter again.\n");
-            Exit_Phrase();
-        }
-
-        //Choosing which attribute to edit part
-        while (1)
-        {
-            clrscr();
-
-            char menu[][50] = {"Supply code", "Donator", "Donation date", "Shipment no", "Quantity received(millions)", "Current Quantity(millions)", "Return"};
-            Print_Title(TITLELENGTH, strlen(title), title);
-            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            printf("Choice: ");
-            scanf("%s", choice_buffer);
-            fflush(stdin);
-            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
-                choice = atoi(choice_buffer);
-            else
-                continue;
-            if (CHOICE_CONDITION)
-                break;
-        }
-
-        switch (choice)
-        {
-        //Supply Code
-        case 1:
-            do
-            {
-                printf("\nSupply name will be changed automatically");
-                printf("\nSupply Code: ");
-                scanf("%s", buffer);
-                fflush(stdin);
-                supply_code_index = validation_supply_code(buffer);
-            } while (supply_code_index < 0);
-            break;
-        //Donator
-        case 2:
-            do
-            {
-                printf("Donator: ");
-                scanf("%[^\n]", buffer);
-                fflush(stdin);
-            } while (!Validation_CharLength(20, strlen(buffer)));
-            break;
-        //Donation date
-        case 3:
-            do
-            {
-                printf("Enter Date in format: dd/mm/yyyy\n");
-                printf("Date: ");
-                //Get the string
-                scanf("%s", buffer);
-                fflush(stdin);
-                //Write inside donation_date according to the format
-                sscanf(buffer, "%d/%d/%d", &donation_date.day, &donation_date.month, &donation_date.year);
-            } while (!Validation_Date(donation_date));
-            break;
-        //shipment no
-        case 4:
-            do
-            {
-                printf("Shipment No.: ");
-                scanf("%s", buffer);
-                fflush(stdin);
-            } while (!validation_isdigit(7, buffer, strlen(buffer)));
-            break;
-        //Quantity Received
-        case 5:
-            do
-            {
-                printf("Quantity Received(millions): ");
-                scanf("%s", buffer);
-                fflush(stdin);
-
-            } while (!validation_isfloat(buffer, strlen(buffer)));
-            break;
-        //Current Quantity
-        case 6:
-            do
-            {
-                printf("Current Quantity(millions): ");
-                scanf("%s", buffer);
-                fflush(stdin);
-
-            } while (!validation_isfloat(buffer, strlen(buffer)));
-            break;
-
-        case 7:
-            return;
-
-        default:
-            break;
-        }
-
-        //Perform to locate exact location in the supply list(Need to skip row 3 which is supply_name)
-        if (choice >= 2 && choice <= 6)
-            choice++;
-        while (1)
-        {
-            char selection_buffer[1000];
-            char title[50] = "Confirm Your Record";
-            char menu[][50] = {"Confirm", "Cancel"};
-            clrscr();
-            Print_Title(TITLELENGTH, strlen(title), title);
-            Print_SupplyList(&SupplyHead[search_index], choice, buffer);
-            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            printf("Choice: ");
-            scanf("%s", selection_buffer);
-            fflush(stdin);
-            if (validation_isdigit(1000, selection_buffer, strlen(selection_buffer)))
-                selection = atoi(selection_buffer);
-            else
-                continue;
-
-            if ((selection >= 1) && (selection <= sizeof(menu) / sizeof(menu[0])))
-                break;
-        }
-
-        if (selection == 2)
-        {
-            printf("You have cancelled this record.\n");
-            Exit_Phrase();
-            return;
-        }
-        //Replace with the attribute in SuppleHead
-        if (choice == 1)
-        {
-            strcpy(SupplyHead[search_index].supply_code, buffer);
-            strcpy(SupplyHead[search_index].supply_name, Supply_Type[supply_code_index][1]);
-        }
-
-        else if (choice == 3)
-            strcpy(SupplyHead[search_index].donator, buffer);
-
-        else if (choice == 4)
-            SupplyHead[search_index].donation_date = donation_date;
-
-        else if (choice == 5)
-            SupplyHead[search_index].shipment_no = atoi(buffer);
-
-        else if (choice == 6)
-            SupplyHead[search_index].init_quantity = atof(buffer);
-
-        else if (choice == 7)
-            SupplyHead[search_index].curr_quantity = atof(buffer);
-        //Write into file
-        SupplyToFile();
-
-        return;
-    }
-}
-
-void ViewCurrentStock_Supply()
-{
-    int choice;
-    char choice_buffer[1000];
-    while (1)
-    {
-        while (1)
-        {
-            clrscr();
-            char title[100] = "View Records";
-            char menu[][50] = {"View current stocks", "View history records", "Return"};
-            Print_Title(TITLELENGTH, strlen(title), title);
-            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            printf("Choice: ");
-            scanf("%s", choice_buffer);
-            fflush(stdin);
-            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
-                choice = atoi(choice_buffer);
-            else
-                continue;
-            if (CHOICE_CONDITION)
-                break;
-        }
-        switch (choice)
-        {
-        case 1:
-            viewCurrentStocks();
-            break;
-        case 2:
-            viewSupplyHistoryRecord();
-        case 3:
-            return;
-        default:
-            break;
-        }
-    }
-}
-
-static void viewCurrentStocks()
-{
-    int choice;
-    char choice_buffer[1000];
-    while (1)
-    {
-        while (1)
-        {
-            clrscr();
-            char title[100] = "View Current Stocks";
-            char menu[][50] = {"Stock ID - Ascending", "Quantity Received(millions) - Descending", "Current Quantity(millions) - Descending", "Return"};
-            Print_Title(TITLELENGTH, strlen(title), title);
-            printf("Sort according to:\n");
-            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            printf("Choice: ");
-            scanf("%s", choice_buffer);
-            fflush(stdin);
-            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
-                choice = atoi(choice_buffer);
-            else
-                continue;
-            if (CHOICE_CONDITION)
-                break;
-        }
-        clrscr();
-        switch (choice)
-        {
-        case 1:
-            PrintTable(3, STOCKCOLUMN, Space_Stock, StockColumnName, StockLength);
-            Exit_Phrase();
-            break;
-        case 2:
-            PrintTable(9, STOCKCOLUMN, Space_Stock, StockColumnName, StockLength);
-            Exit_Phrase();
-            break;
-        case 3:
-            PrintTable(10, STOCKCOLUMN, Space_Stock, StockColumnName, StockLength);
-            Exit_Phrase();
-            break;
-        case 4:
-            return;
-        default:
-            break;
-        }
-    }
-}
-
-static void viewSupplyHistoryRecord()
-{
-    int choice;
-    char choice_buffer[1000];
-    while (1)
-    {
-        while (1)
-        {
-            clrscr();
-            char title[100] = "View History Records";
-            char menu[][50] = {"Donation ID - Ascending", "Quantity Received(millions) - Descending", "Current Quantity(millions) - Descending", "Return"};
-            Print_Title(TITLELENGTH, strlen(title), title);
-            printf("Sort according to:\n");
-            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            printf("Choice: ");
-            scanf("%s", choice_buffer);
-            fflush(stdin);
-            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
-                choice = atoi(choice_buffer);
-            else
-                continue;
-            if (CHOICE_CONDITION)
-                break;
-        }
-        clrscr();
-        switch (choice)
-        {
-        case 1:
-            PrintTable(1, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength);
-            Exit_Phrase();
-            break;
-        case 2:
-            PrintTable(5, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength);
-            Exit_Phrase();
-            break;
-        case 3:
-            PrintTable(6, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength);
-            Exit_Phrase();
-            break;
-        case 4:
-            return;
-        default:
-            break;
-        }
-    }
-}
-
-void SearchDonationSupplies()
-{
-    while (1)
-    {
-        int choice;
-        char choice_buffer[1000];
-        while (1)
-        {
-            clrscr();
-            char title[100] = "Search Donation Supply";
-            char menu[][50] = {"Search in current stocks", "Search in history records", "Return"};
-            Print_Title(TITLELENGTH, strlen(title), title);
-            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            printf("Choice: ");
-            scanf("%s", choice_buffer);
-            fflush(stdin);
-            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
-                choice = atoi(choice_buffer);
-            else
-                continue;
-            if (CHOICE_CONDITION)
-                break;
-        }
-
-        switch (choice)
-        {
-        case 1:
-            SearchStocks();
-            break;
-
-        case 2:
-            SearchSupplyHistory();
-            break;
-
-        case 3:
-            return;
-
-        default:
-            break;
-        }
-    }
-}
 
 void SearchStocks()
-{
-    int i, k;
-    int sum = 0;
-    char search_target[1000];
-    struct stocks *search_index = NULL;
-    char title[100] = "Search Current Stocks";
-    while (1)
-    {
-        clrscr();
-        Print_Title(TITLELENGTH, strlen(title), title);
-        printf("**Format of stocks ID is TXXXXXX, where X are numbers");
-        printf("\nEnter Stocks ID: ");
-        scanf("%s", search_target);
-        fflush(stdin);
-        Stock_Generator();
-        search_index = NULL;
-        for (struct stocks *ptr = StockHead; ptr != NULL; ptr = ptr->link)
-            if (strcmp(ptr->stock_ID, search_target) == 0)
-            {
-                search_index = ptr;
-                break;
-            }
-        if (search_index != NULL)
-            break;
-        else
 
-            printf("Stocks ID doesnt exist. Please enter again.\n");
-        freeList_Stock(StockHead);
-        Exit_Phrase();
-        return;
-    }
-    clrscr();
-    //Printing the table
-    sum = PrintTableHeader(STOCKCOLUMN, Space_Stock, StockColumnName);
-    printTableStockRow(Space_Stock, search_index);
-    putchar('\n');
-    for (i = 0; i < sum; i++)
-        printf("-");
-    putchar('\n');
-    Exit_Phrase();
-    freeList_Stock(StockHead);
-    return;
-}
+    DECLARE i, k
+    DECLARE sum = 0
+    DECLARE search_target[1000]
+    DECLARE search_index = NULL
+    DECLARE title[100] = "Search Current Stocks"
+    DECLARE ptr
+    REPEAT
+    
+        CALL clrscr()
+        Print_Title(TITLELENGTH, LENGTH OF title, title)
+        PRINT("**Format of stocks ID is TXXXXXX, where X are numbers")
+        PRINT("\Enter Stocks ID: ")
+        ACCEPT search_target
+        CALL Stock_Generator()
+        search_index = NULL
+        LOOP StockHead TILL END OF RECORDS 
+            IF (ptr->stock_ID EQUALS  search_target)
+            
+                search_index = ptr
+                END THIS LOOP
+            ENDIF
+        ENDLOOP
+
+        IF (search_index NOT EQUALS NULL)
+            END THIS LOOP
+        ELSE
+
+            PRINT("Stocks ID doesnt exist. Please enter again.\n")
+            CALL feeList_Stock(StockHead)
+            CALL Exit_Phrase()
+        ENDIF
+    UNTIL(0)
+
+    CALL clrscr()
+    sum = CALL PrintTableHeader(STOCKCOLUMN, Space_Stock, StockColumnName)
+    CALL printTableStockRow(Space_Stock, search_index)
+    PRINT NEWLINE
+
+    FOR (i = 0 TO sum - 1) STEP 1
+        PRINT("-")
+    ENDFOR
+    PRINT NEWLINE
+    CALL Exit_Phrase()
+    CALL freeList_Stock(StockHead)
+    
 
 void SearchSupplyHistory()
-{
-    int i, k;
-    int sum = 0;
-    char search_target[1000];
-    int search_index = -1;
-    char title[100] = "Search History Records";
-    struct stocks *ptr;
-    while (1)
-    {
-        clrscr();
-        Print_Title(TITLELENGTH, strlen(title), title);
-        printf("**Format of Donation ID is SXXXXXX, where X are numbers");
-        printf("\nEnter Donation ID: ");
-        scanf("%s", search_target);
-        fflush(stdin);
-        for (i = 0; i < SupplyLength; i++)
-        {
-            if (strcmp(SupplyHead[i].donation_ID, search_target) == 0)
-            {
-                search_index = i;
-                break;
-            }
+
+    DECLARE i, k
+    DECLARE sum = 0
+    DECLARE search_target[1000]
+    DECLARE search_index = -1
+    DECLARE title[100] = "Search History Records"
+    DECLARE ptr
+    REPEAT
+    
+        CALL clrscr()
+        CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+        PRINT("**Format of Donation ID is SXXXXXX, where X are numbers")
+        PRINT("Enter Donation ID: ")
+        ACCEPT search_target
+        FOR (i = 0 TO SupplyLength - 1) STEP 1
+        
+            IF (SupplyHead[i].donation_ID EQUALS search_target)
+            
+                search_index = i
+                END THIS LOOP
+            ENDIF
+        ENDFOR
+        IF (search_index >= 0)
+            END THIS LOOP
+        ELSE
+            PRINT("Donation ID doesnt exist. Please enter again.")
+        ENDIF
+
+        Exit_Phrase()
+        RETURN
+    UNTIL(1)
+    CALL clrscr()
+    sum = CALL PrintTableHeader(SUPPLYCOLUMN, Space_Supply, SupplyColumnName)
+    CALL printTableSupplyRow(Space_Supply, SupplyHead[i])
+    PRINT NEWLINE
+    FOR (i = 0 TO sum - 1) STEP 1
+        PRINT("-")
+    PRINT NEWLINE
+    CALL exit_Phrase()
+    
+
+AddDistDonation()
+
+    DECLARE donee_name[1000]
+    DECLARE supply_code_index
+    DECLARE donee_location[1000]
+    DECLARE donation_date
+    DECLARE stocks_ID[1000]
+    DECLARE quantity[1000]
+    DECLARE accu_quantity[1000]
+    DECLARE buffer[100]
+    DECLARE date_buffer[1000]
+    DECLARE supply_index
+    DECLARE validation_result
+    DECLARE ID_length
+    DECLARE ID_array[1000]
+    DECLARE quan_remainder
+    DECLARE temp
+    DECLARE k
+
+    CALL clrscr()
+    DECLARE title[100] = "Add Distributed Donation"
+    CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+    CALL PrintTable(3, STOCKCOLUMN, Space_Stock, StockColumnName, StockLength)
+
+    CALL PRINT("\nPlease fill up the details of the donation: \n")
+
+    DOWHILE(Validation_CharLength(30, LENGTH OF donee_name) EQUALS 0)
+    
+        PRINT("Donee's name: ")
+        ACCEPT donee_name
+    ENDDO
+
+    DOWHILE(Validation_CharLength(20, LENGTH OF donee_location) EQUALS 0)
+    
+        PRINT("Donee's location: ")
+        ACCEPT donee_location
+    ENDDO
+
+    DOWHILE(Validation_Date(donation_date) EQUALS 0)
+    
+        PRINT("Enter Date in format: dd/mm/yyyy\n")
+        PRINT("Date: ")
+        ACCEPT date_buffer
+        ACCEPT  donation_date
+    ENDDO
+
+    DOWHILE(supply_index EQUALS -1)
+    
+        PRINT("Stock ID: ")
+        ACCEPT stocks_ID
+        supply_index = validation_stockID(stocks_ID)
+    ENDDO
+    CALL freeList_Stock(StockHead)
+
+    DOWHILE(validation_result AND (ID_length EQUALS -1))
+    
+        ID_length = 0
+        PRINT("Quantity(millions): ")
+        ACCEPT quantity
+        validation_result = CALL validation_isfloat(quantity, LENGTH OF quantity)
+        IF (validation_result)
+            ID_length = EnsureQuantity(ID_array, quantity, supply_index)
+        ENDIF
+
+    ENDDO
+
+    buffer = DistID
+    temp.distributed_ID =  buffer
+    temp.donee_name =  donee_name
+    temp.donee_location =  donee_location
+    temp.donation_date = donation_date
+    temp.stocks_ID =  stocks_ID
+    temp.quantity = quantity
+
+    DECLARE result = CALL ConfirmDistSection(&temp, -1, NULL, NULL)
+
+    IF (result EQUALS 0)
+        RETURN
+
+    quan_remainder = quantity
+    DECLARE transaction_no = DistLength + 1
+    FOR (int i = 0 TO ID_length - 1) STEP 1
+    
+        DistLength = DistLength + 1
+        buffer = DistID
+        DistHead[DistLength - 1].distributed_ID =  buffer
+        DistHead[DistLength - 1].donee_name =  donee_name
+        DistHead[DistLength - 1].donee_location =  donee_location
+        DistHead[DistLength - 1].donation_date = donation_date
+        DistHead[DistLength - 1].donation_ID =  SupplyHead[ID_array[i]].donation_ID
+        DistHead[DistLength - 1].stocks_ID =  stocks_ID
+
+        IF (ID_length > 1 AND i NOT EQUALS ID_length - 1)
+        
+            quan_remainder = quan_remainder - SupplyHead[ID_array[i]].curr_quantity
+            DistHead[DistLength - 1].quantity = SupplyHead[ID_array[i]].curr_quantity
+            SupplyHead[ID_array[i]].curr_quantity = 0
+        
+        ELSE
+        
+            SupplyHead[ID_array[i]].curr_quantity -= quan_remainder
+            DistHead[DistLength - 1].quantity = quan_remainder
+        ENDIF
+
+        for (k = DistLength - 2 TO 0)STEP -1
+            IF (DistHead[DistLength - 1].stocks_ID EQUALS DistHead[k].stocks_ID AND DistHead[DistLength - 1].donee_name EQUALS DistHead[k].donee_name AND DistHead[DistLength - 1].donee_location EQUALS DistHead[k].donee_location)
+            
+                DistHead[DistLength - 1].accu_quantity = DistHead[k].accu_quantity + DistHead[DistLength - 1].quantity
+                END THIS LOOP
+            ENDIF
+
+        IF (k < 0)
+            DistHead[DistLength - 1].accu_quantity = DistHead[DistLength - 1].quantity
+        ENDIF
+
+        DistHead[DistLength - 1].transaction_no = transaction_no
+    ENDFOR
+    CALL SupplyToFile()
+    CALL DistToFile()
+
+
+EditDistDonation()
+
+    DECLARE supply_code_index
+    DECLARE donation_date
+    DECLARE date_buffer[1000]
+    DECLARE buffer[1000]
+    DECLARE distributed_ID[1000]
+    DECLARE search_index = -1
+    DECLARE title[100] = "Edit Donation Supply"
+    DECLARE selection
+    DECLARE edit_index = -1
+
+    REPEAT
+    
+        DECLARE choice, ptr
+        DECLARE choice_buffer[1000]
+
+        REPEAT
+        
+            CALL clrscr()
+
+            CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+            CALL PrintTable(4, DISTCOLUMN, Space_Dist, DistColumnName, DistLength)
+            PRINT("Enter Distributed ID: ")
+            ACCEPT  distributed_ID
+
+            CALL DistTotal_Generator()
+            LOOP DistTotalHead TILL END OF RECORDS
+            
+                IF (ptr->disttotal_ID EQUALS distributed_ID)
+                
+                    search_index = ptr->dist_index
+                    END THIS LOOP
+                ENDIF
+            ENDLOOP
+
+            CALL freeList_DistTotal(DistTotalHead)
+            IF (search_index >= 0)
+                END THIS LOOP
+            ELSE
+                PRINT("Distributed ID doesnt exist. Please enter again.")
+            ENDIF
+
+            CALL Exit_Phrase()
+        UNTIL(1)
+
+        REPEAT
+        
+            CALL clrscr()
+
+            DECLARE menu[][50] = {"Donee name", "Donee location", "Donation date", "Return"}
+            Print_Title(TITLELENGTH, LENGTH OF title, title)
+            Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
+            PRINT("Choice: ")
+            ACCEPT choice_buffer
+            IF (validation_isdigit(1000, choice_buffer, LENGTH OF choice_buffer))
+                choice = choice_buffer
+            ELSE
+                ENTER NEXT ROUND
+            ENDIF
+            IF (CHOICE_CONDITION)
+                END THIS LOOP
+            EMDIF
+        UNTIL(1)
+
+        
+        IF choice EQUALS 1
+            DOWHILE(Validation_CharLength(20, LENGTH OF buffer) EQUALS 0)
+            
+                PRINT("Donee name: ")
+                ACCEPT  buffer
+                edit_index = 1
+            ENDDO
+        ENDIF
+
+        IF choice EQUALS 2
+            DOWHILE(Validation_CharLength(20, LENGTH OF buffer) EQUALS 0)
+            
+                PRINT("Donee location: ")
+                ACCEPT buffer
+                edit_index = 2
+            ENDDO
+        ENDIF
+
+       IF choice EQUALS 3
+            DOWHILE(Validation_Date(donation_date))
+            
+                PRINT("Enter Date in format: dd/mm/yyyy\n")
+                PRINT("Date: ")
+                ACCEPT  buffer
+                ACCEPT  donation_date
+                edit_index = 3
+            ENDDO
+        ENDIF
+
+        IF choice EQUALS 4
+            edit_index = -1
+            RETURN
+        ENDIF
+        
+        CALL clrscr()
+        DECLARE result = ConfirmDistSection(&DistHead[search_index], edit_index, buffer, distributed_ID)
+
+        IF (result EQUALS 0)
+            RETURN
+        ELSE
+        
+            DECLARE k = search_index
+            REPEAT ()
+
+                IF (edit_index EQUALS 1)
+                    DistHead[k].donee_name =  buffer
+                ENDIF
+
+                IF (edit_index EQUALS 2)
+                    DistHead[k].donee_location =  buffer
+                ENDIF
+
+                IF (edit_index EQUALS 3)
+                    DistHead[k].donation_date = donation_date
+                ENDIF
+
+                k = k + 1
+            UNTIL(DistHead[search_index].transaction_no NOT EQUALS DistHead[k].transaction_no)
+
+            CALL DistToFile()
+        ENDIF
+    UNTIL(1)
+
+
+ViewHistoryRecord_Dist()
+
+    DECLARE choice
+    DECLARE choice_buffer[1000]
+    REPEAT
+    
+        REPEAT
+        
+            CALL clrscr()
+            DECLARE title[100] = "View Records"
+            DECLARE menu[][50] = {"View current distributed donation", "View detailed distributed donation", "Return"}
+            CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+            CALL Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
+            PRINT("Choice: ")
+            ACCEPT choice_buffer
+            IF (validation_isdigit(1000, choice_buffer, LENGTH OF choice_buffer))
+                choice = choice_buffer
+            ELSE
+                ENTER NEXT ROUND
+            ENDIF
+
+            IF (CHOICE_CONDITION)
+                END THIS LOOP
+            ENDIF
+        UNTIL(1)
+        
+        IF choice EUQALS 1
+            CALL viewCurrentDistTotal()
+
+        ELSE IF choice EUQALS 2
+            CALLviewDistDetailedRecord()
+
+        ELSE IF choice EUQALS 3
+            RETURN
+       
+        ENDIF
+    UNTIL(1)
+
+
+viewCurrentDistTotal()
+
+    DECLARE choice
+    DECLARE choice_buffer[1000]
+    REPEAT
+    
+        REPEAT
+        
+            CALL clrscr()
+            DECLARE title[100] = "View Current Distributed Donation"
+            DECLARE menu[][50] = {"Distributed ID - Ascending", "Quantity(millions) - Descending", "Accumulative Quantity(millions) - Descending", "Return"}
+            CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+            PRINT("Sort according to:\n")
+            CALL Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
+            PRINT("Choice: ")
+            ACCEPT choice_buffer
+            IF (validation_isdigit(1000, choice_buffer, LENGTH OF choice_buffer))
+                choice = choice_buffer
+            ELSE
+                ENTER NEXT ROUND
+            ENDIF
+            IF (CHOICE_CONDITION)
+                END THIS LOOP
+            ENDIF
+        UNTIL(1)
+        
+        CALL clrscr()
+        
+        IF choice EQUALS 1
+            CALL PrintTable(4, DISTCOLUMN, Space_DistTotal, DistTotalColumnName, DistTotalLength)
+            CALL Exit_Phrase()
+
+        ELSE IF choice EQUALS 2
+            CALL PrintTable(11, DISTCOLUMN, Space_DistTotal, DistTotalColumnName, DistTotalLength)
+            CALL Exit_Phrase()
+
+        ELSE IF choice EQUALS 3
+            CALL PrintTable(12, DISTCOLUMN, Space_DistTotal, DistTotalColumnName, DistTotalLength)
+            CALL Exit_Phrase()
+
+        ELSE IF choice EQUALS 4
+            RETURN
+
+        ENDIF
+        
+    UNTIL(1)
+
+
+ viewDistDetailedRecord()
+
+    DECLARE choice
+    DECLARE choice_buffer[1000]
+    REPEAT
+    
+        REPEAT
+        
+            clrscr()
+            DECLARE title[100] = "View Detailed Distributed Donation"
+            DECLARE menu[][50] = {"Distributed ID - Ascending", "Quantity(millions) - Descending", "Accumulative Quantity(millions) - Descending", "Return"}
+            Print_Title(TITLELENGTH, LENGTH OF title, title)
+            PRINT("Sort according to:\n")
+            Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
+            PRINT("Choice: ")
+            ACCEPT  choice_buffer
+            fflush(stdin)
+            IF (validation_isdigit(1000, choice_buffer, LENGTH OF choice_buffer))
+                choice = atoi(choice_buffer)
+            ELSE
+                ENTER NEXT ROUND
+            IF (CHOICE_CONDITION)
+                END THIS LOOP
         }
-        if (search_index >= 0)
-            break;
-        else
-            printf("Donation ID doesnt exist. Please enter again.\n");
-
-        Exit_Phrase();
-        return;
-    }
-    clrscr();
-    //Printing the table
-    sum = PrintTableHeader(SUPPLYCOLUMN, Space_Supply, SupplyColumnName);
-    printTableSupplyRow(Space_Supply, SupplyHead[i]);
-    putchar('\n');
-    for (i = 0; i < sum; i++)
-        printf("-");
-    putchar('\n');
-    Exit_Phrase();
-    return;
-}
-
-void AddDistDonation()
-{
-    //If the character length user enter is not larger than 1000 should not have a problem
-    char donee_name[1000];
-    int supply_code_index;
-    char donee_location[1000];
-    struct date donation_date;
-    char stocks_ID[1000];
-    char quantity[1000];
-    char accu_quantity[1000];
-    char buffer[100];
-    char date_buffer[1000];
-    char supply_index;
-    int validation_result;
-    int ID_length;
-    int ID_array[1000];
-    float quan_remainder;
-    dist temp;
-    int k;
-
-    clrscr();
-    char title[100] = "Add Distributed Donation";
-    Print_Title(TITLELENGTH, strlen(title), title);
-    //Print all the stocks table out
-    PrintTable(3, STOCKCOLUMN, Space_Stock, StockColumnName, StockLength);
-
-    //Prints stuffs and ask customer to enter
-    printf("\nPlease fill up the details of the donation: \n");
-
-    //Donee name validation(cannot exceed 30)
-    do
-    {
-        printf("Donee's name: ");
-        scanf("%[^\n]", donee_name);
-        fflush(stdin);
-    } while (!Validation_CharLength(30, strlen(donee_name)));
-
-    //Donee location length validation(cannot exceed 20)
-    do
-    {
-        printf("Donee's location: ");
-        scanf("%[^\n]", donee_location);
-        fflush(stdin);
-    } while (!Validation_CharLength(20, strlen(donee_location)));
-
-    //Donation date validation(Format )
-    do
-    {
-        printf("Enter Date in format: dd/mm/yyyy\n");
-        printf("Date: ");
-        //Get the string
-        scanf("%s", date_buffer);
-        fflush(stdin);
-        //Write inside donation_date according to the format
-        sscanf(date_buffer, "%d/%d/%d", &donation_date.day, &donation_date.month, &donation_date.year);
-    } while (!Validation_Date(donation_date));
-
-    //stocks ID
-    do
-    {
-        printf("Stock ID: ");
-        scanf("%s", stocks_ID);
-        fflush(stdin);
-        //The function will return supply index if stock ID exists, else it would return -1
-        supply_index = validation_stockID(stocks_ID);
-    } while (supply_index == -1);
-    freeList_Stock(StockHead);
-
-    //Quantity Donated
-    do
-    {
-        ID_length = 0;
-        printf("Quantity(millions): ");
-        scanf("%s", quantity);
-        fflush(stdin);
-        validation_result = validation_isfloat(quantity, strlen(quantity));
-        if (validation_result)
-            ID_length = EnsureQuantity(ID_array, atof(quantity), supply_index);
-
-    } while (validation_result && (ID_length == -1));
-
-    //Saving the variables temporarily for confirmation
-    snprintf(buffer, 10, DISTIDFORMAT, DistLength);
-    strcpy(temp.distributed_ID, buffer);
-    strcpy(temp.donee_name, donee_name);
-    strcpy(temp.donee_location, donee_location);
-    temp.donation_date = donation_date;
-    strcpy(temp.stocks_ID, stocks_ID);
-    temp.quantity = atof(quantity);
-
-    //Mode 1 for adding; mode 2 for editing
-    int result = ConfirmDistSection(&temp, -1, NULL, NULL);
-
-    //Exit the add distributed donation
-    if (result == 0)
-        return;
-
-    quan_remainder = atof(quantity);
-    int transaction_no = DistLength + 1;
-    for (int i = 0; i < ID_length; i++)
-    {
-        //Must add to ensure distributedID is corect
-        DistLength++;
-        //Store everything inside a variable of type supply
-        snprintf(buffer, 10, DISTIDFORMAT, DistLength);
-        strcpy(DistHead[DistLength - 1].distributed_ID, buffer);
-        strcpy(DistHead[DistLength - 1].donee_name, donee_name);
-        strcpy(DistHead[DistLength - 1].donee_location, donee_location);
-        DistHead[DistLength - 1].donation_date = donation_date;
-        strcpy(DistHead[DistLength - 1].donation_ID, SupplyHead[ID_array[i]].donation_ID);
-        strcpy(DistHead[DistLength - 1].stocks_ID, stocks_ID);
-        //Calculate quantitty(ID length is the number of element in the array ID_array which store the index of donation ID of the same stock ID)
-        if (ID_length > 1 && i != ID_length - 1)
-        {
-            quan_remainder -= SupplyHead[ID_array[i]].curr_quantity;
-            DistHead[DistLength - 1].quantity = SupplyHead[ID_array[i]].curr_quantity;
-            SupplyHead[ID_array[i]].curr_quantity = 0;
-        }
-        else
-        {
-            SupplyHead[ID_array[i]].curr_quantity -= quan_remainder;
-            DistHead[DistLength - 1].quantity = quan_remainder;
-        }
-
-        //Calculate accumulative quantity
-        //Distlength - 2 because need to skip the current one which is index DistLength - 1
-        for (k = DistLength - 2; k >= 0; k--)
-            //Same stock ID means come from the supply of same donator and supply type
-            //Accumulative quantity must be the same stock ID, donee name and donee location
-            if (!strcmp(DistHead[DistLength - 1].stocks_ID, DistHead[k].stocks_ID) && !strcmp(DistHead[DistLength - 1].donee_name, DistHead[k].donee_name) && !strcmp(DistHead[DistLength - 1].donee_location, DistHead[k].donee_location))
-            {
-                DistHead[DistLength - 1].accu_quantity = DistHead[k].accu_quantity + DistHead[DistLength - 1].quantity;
-                break;
-            }
-        //Did not find records with the same stock ID, donee name and donee location
-        //accu quantity equals quantity
-        if (k < 0)
-            DistHead[DistLength - 1].accu_quantity = DistHead[DistLength - 1].quantity;
-
-        //Add transaction no
-        DistHead[DistLength - 1].transaction_no = transaction_no;
-    }
-    SupplyToFile();
-    DistToFile();
-}
-
-void EditDistDonation()
-{
-    int supply_code_index;
-    struct date donation_date;
-    char date_buffer[1000];
-    char buffer[1000];
-    char distributed_ID[1000];
-    int search_index = -1;
-    char title[100] = "Edit Donation Supply";
-    int selection;
-    int edit_index = -1;
-
-    while (1)
-    {
-        int choice;
-        char choice_buffer[1000];
-
-        //User enter donation ID part
-        while (1)
-        {
-            clrscr();
-
-            Print_Title(TITLELENGTH, strlen(title), title);
-            PrintTable(4, DISTCOLUMN, Space_Dist, DistColumnName, DistLength);
-            printf("\nEnter Distributed ID: ");
-            scanf("%s", distributed_ID);
-            fflush(stdin);
-            //Locate the index of the distributed ID
-            DistTotal_Generator();
-            for (struct dist_total *ptr = DistTotalHead; ptr != NULL; ptr = ptr->link)
-            {
-                if (strcmp(ptr->disttotal_ID, distributed_ID) == 0)
-                {
-                    search_index = ptr->dist_index;
-                    break;
-                }
-            }
-            freeList_DistTotal(DistTotalHead);
-            if (search_index >= 0)
-                break;
-            else
-                printf("Distributed ID doesnt exist. Please enter again.\n");
-
-            Exit_Phrase();
-        }
-
-        //Choosing which attribute to edit part
-        while (1)
-        {
-            clrscr();
-
-            char menu[][50] = {"Donee name", "Donee location", "Donation date", "Return"};
-            Print_Title(TITLELENGTH, strlen(title), title);
-            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            printf("Choice: ");
-            scanf("%s", choice_buffer);
-            fflush(stdin);
-            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
-                choice = atoi(choice_buffer);
-            else
-                continue;
-            if (CHOICE_CONDITION)
-                break;
-        }
-
+        clrscr()
         switch (choice)
-        {
-        //Supply Code
+        
         case 1:
-            do
-            {
-                printf("Donee name: ");
-                scanf("%[^\n]", buffer);
-                fflush(stdin);
-                edit_index = 1;
-            } while (!Validation_CharLength(20, strlen(buffer)));
-            break;
-        //Donator
+            PrintTable(2, DISTCOLUMN, Space_Dist, DistColumnName, DistLength)
+            Exit_Phrase()
+            END THIS LOOP
         case 2:
-            do
-            {
-                printf("Donee location: ");
-                scanf("%[^\n]", buffer);
-                fflush(stdin);
-                edit_index = 2;
-            } while (!Validation_CharLength(20, strlen(buffer)));
-            break;
-        //Donation date
+            PrintTable(7, DISTCOLUMN, Space_Dist, DistColumnName, DistLength)
+            Exit_Phrase()
+            END THIS LOOP
         case 3:
-            do
-            {
-                printf("Enter Date in format: dd/mm/yyyy\n");
-                printf("Date: ");
-                //Get the string
-                scanf("%s", buffer);
-                fflush(stdin);
-                //Write inside donation_date according to the format
-                sscanf(buffer, "%d/%d/%d", &donation_date.day, &donation_date.month, &donation_date.year);
-                edit_index = 3;
-            } while (!Validation_Date(donation_date));
-            break;
-
+            PrintTable(8, DISTCOLUMN, Space_Dist, DistColumnName, DistLength)
+            Exit_Phrase()
+            END THIS LOOP
         case 4:
-            edit_index = -1;
-            return;
-
+            return
         default:
-            break;
-        }
-
-        //prints the confirm section
-        clrscr();
-        int result = ConfirmDistSection(&DistHead[search_index], edit_index, buffer, distributed_ID);
-
-        //Exit the add distributed donation
-        if (result == 0)
-            return;
-        else
-        {
-            //Need to replace every single record with the same transaction no.
-            int k = search_index;
-            while (DistHead[search_index].transaction_no == DistHead[k].transaction_no)
-            {
-                if (edit_index == 1)
-                    strcpy(DistHead[k].donee_name, buffer);
-
-                if (edit_index == 2)
-                    strcpy(DistHead[k].donee_location, buffer);
-
-                if (edit_index == 3)
-                    DistHead[k].donation_date = donation_date;
-
-                k++;
-            }
-
-            DistToFile();
-        }
-    }
-}
-
-void ViewHistoryRecord_Dist()
-{
-    int choice;
-    char choice_buffer[1000];
-    while (1)
-    {
-        while (1)
-        {
-            clrscr();
-            char title[100] = "View Records";
-            char menu[][50] = {"View current distributed donation", "View detailed distributed donation", "Return"};
-            Print_Title(TITLELENGTH, strlen(title), title);
-            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            printf("Choice: ");
-            scanf("%s", choice_buffer);
-            fflush(stdin);
-            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
-                choice = atoi(choice_buffer);
-            else
-                continue;
-            if (CHOICE_CONDITION)
-                break;
-        }
-        switch (choice)
-        {
-        case 1:
-            viewCurrentDistTotal();
-            break;
-        case 2:
-            viewDistDetailedRecord();
-            break;
-        case 3:
-            return;
-        default:
-            break;
-        }
-    }
-}
-
-static void viewCurrentDistTotal()
-{
-    int choice;
-    char choice_buffer[1000];
-    while (1)
-    {
-        while (1)
-        {
-            clrscr();
-            char title[100] = "View Current Distributed Donation";
-            char menu[][50] = {"Distributed ID - Ascending", "Quantity(millions) - Descending", "Accumulative Quantity(millions) - Descending", "Return"};
-            Print_Title(TITLELENGTH, strlen(title), title);
-            printf("Sort according to:\n");
-            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            printf("Choice: ");
-            scanf("%s", choice_buffer);
-            fflush(stdin);
-            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
-                choice = atoi(choice_buffer);
-            else
-                continue;
-            if (CHOICE_CONDITION)
-                break;
-        }
-        clrscr();
-        switch (choice)
-        {
-        case 1:
-            PrintTable(4, DISTCOLUMN, Space_DistTotal, DistTotalColumnName, DistTotalLength);
-            Exit_Phrase();
-            break;
-        case 2:
-            PrintTable(11, DISTCOLUMN, Space_DistTotal, DistTotalColumnName, DistTotalLength);
-            Exit_Phrase();
-            break;
-        case 3:
-            PrintTable(12, DISTCOLUMN, Space_DistTotal, DistTotalColumnName, DistTotalLength);
-            Exit_Phrase();
-            break;
-        case 4:
-            return;
-
-        default:
-            break;
-        }
-    }
-}
-
-static void viewDistDetailedRecord()
-{
-    int choice;
-    char choice_buffer[1000];
-    while (1)
-    {
-        while (1)
-        {
-            clrscr();
-            char title[100] = "View Detailed Distributed Donation";
-            char menu[][50] = {"Distributed ID - Ascending", "Quantity(millions) - Descending", "Accumulative Quantity(millions) - Descending", "Return"};
-            Print_Title(TITLELENGTH, strlen(title), title);
-            printf("Sort according to:\n");
-            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            printf("Choice: ");
-            scanf("%s", choice_buffer);
-            fflush(stdin);
-            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
-                choice = atoi(choice_buffer);
-            else
-                continue;
-            if (CHOICE_CONDITION)
-                break;
-        }
-        clrscr();
-        switch (choice)
-        {
-        case 1:
-            PrintTable(2, DISTCOLUMN, Space_Dist, DistColumnName, DistLength);
-            Exit_Phrase();
-            break;
-        case 2:
-            PrintTable(7, DISTCOLUMN, Space_Dist, DistColumnName, DistLength);
-            Exit_Phrase();
-            break;
-        case 3:
-            PrintTable(8, DISTCOLUMN, Space_Dist, DistColumnName, DistLength);
-            Exit_Phrase();
-            break;
-        case 4:
-            return;
-        default:
-            break;
-        }
-    }
-}
-
-void SearchDistDonation()
-{
-    while (1)
-    {
-        int choice;
-        char choice_buffer[1000];
-        while (1)
-        {
-            clrscr();
-            char title[100] = "Search Distributed Donation";
-            char menu[][50] = {"Search in current distributed donation", "Search in detailed distirbuted donation", "Return"};
-            Print_Title(TITLELENGTH, strlen(title), title);
-            Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            printf("Choice: ");
-            scanf("%s", choice_buffer);
-            fflush(stdin);
-            if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
-                choice = atoi(choice_buffer);
-            else
-                continue;
-            if (CHOICE_CONDITION)
-                break;
-        }
-
-        switch (choice)
-        {
-        case 1:
-            SearchDistTotal();
-            break;
-
-        case 2:
-            SearchDistHistory();
-            break;
-
-        case 3:
-            return;
-
-        default:
-            break;
-        }
-    }
-}
-
-void SearchDistHistory()
-{
-    int i, k;
-    int sum = 0;
-    char search_target[1000];
-    int search_index = -1;
-    char title[100] = "Search in Detailed Distirbuted Donation";
-    struct stocks *ptr;
-    while (1)
-    {
-        clrscr();
-        Print_Title(TITLELENGTH, strlen(title), title);
-        printf("**Format of Donation ID is DXXXXXX, where X are numbers");
-        printf("\nEnter Distributed ID: ");
-        scanf("%s", search_target);
-        fflush(stdin);
-        for (i = 0; i < DistLength; i++)
-        {
-            if (strcmp(DistHead[i].distributed_ID, search_target) == 0)
-            {
-                search_index = i;
-                break;
-            }
-        }
-        if (search_index >= 0)
-            break;
-        else
-            printf("Distributed ID doesnt exist. Please enter again.\n");
-
-        Exit_Phrase();
-        return;
-    }
-    clrscr();
-    //Printing the table
-    sum = PrintTableHeader(DISTCOLUMN, Space_Dist, DistColumnName);
-    printTableDistRow(Space_Dist, DistHead[i]);
-    putchar('\n');
-    for (i = 0; i < sum; i++)
-        printf("-");
-    putchar('\n');
-    Exit_Phrase();
-    return;
-}
-
-void SearchDistTotal()
-{
-    int i, k;
-    int sum = 0;
-    char search_target[1000];
-    struct dist_total *search_index = NULL;
-    char title[100] = "Search in Current Distributed Donation";
-    while (1)
-    {
-        clrscr();
-        Print_Title(TITLELENGTH, strlen(title), title);
-        printf("**Format of stocks ID is IXXXXXX, where X are numbers");
-        printf("\nEnter Distributed ID: ");
-        scanf("%s", search_target);
-        fflush(stdin);
-        DistTotal_Generator();
-        search_index = NULL;
-        for (struct dist_total *ptr = DistTotalHead; ptr != NULL; ptr = ptr->link)
-            if (strcmp(ptr->disttotal_ID, search_target) == 0)
-            {
-                search_index = ptr;
-                break;
-            }
-        if (search_index != NULL)
-            break;
-        else
-
-            printf("Distributed ID doesnt exist. Please enter again.\n");
-        freeList_DistTotal(DistTotalHead);
-        Exit_Phrase();
-        return;
-    }
-    clrscr();
-    //Printing the table
-    sum = PrintTableHeader(DISTCOLUMN, Space_DistTotal, DistTotalColumnName);
-    printTableDistTotalRow(Space_DistTotal, search_index);
-    putchar('\n');
-    for (i = 0; i < sum; i++)
-        printf("-");
-    putchar('\n');
-    Exit_Phrase();
-    freeList_DistTotal(DistTotalHead);
-    return;
-}
-
-void SupplyAccuDonation()
-{
-    double count[MAXSUPPLYTYPES] = {0};
-
-    clrscr();
-    char title[100] = "Accumulated Donation Received For Each Supply";
-    Print_Title(TITLELENGTH, strlen(title), title);
-    //Calculate quantity for each supply
-    for (int i = 0; i < SupplyLength; i++)
-    {
-        for (int k = 0; k < SupplyTypeLength; k++)
-        {
-            if (strcmp(SupplyHead[i].supply_code, Supply_Type[k][0]) == 0)
-            {
-                count[k] += SupplyHead[i].init_quantity;
-                break;
-            }
+            END THIS LOOP
         }
     }
 
-    for (int i = 0; i < SupplyTypeLength; i++)
-    {
-        printf("%s|%s - %f\n", Supply_Type[i][0], Supply_Type[i][1], count[i]);
-    }
-    putchar('\n');
-    Exit_Phrase();
-}
 
-void DistAccuDonation()
-{
-    double count[MAXSUPPLYTYPES] = {0};
+SearchDistDonation()
 
-    clrscr();
-    char title[100] = "Accumulated Distributed Donation for Each Supply";
-    Print_Title(TITLELENGTH, strlen(title), title);
-    //Calculate quantity for each supply
-    for (int i = 0; i < DistLength; i++)
-    {
-        for (int k = 0; k < SupplyLength; k++)
-        {
-            if (strcmp(DistHead[i].donation_ID, SupplyHead[k].donation_ID) == 0)
-            {
-                for (int j = 0; j < SupplyTypeLength; j++)
-                {
-                    if (strcmp(SupplyHead[k].supply_code, Supply_Type[j][0]) == 0)
-                    {
-                        count[j] += DistHead[i].quantity;
-                        break;
-                    }
-                }
-            }
-        }
-    }
+    REPEAT
+    
+        DECLARE choice
+        DECLARE choice_buffer[1000]
+        REPEAT
+        
+            CALL clrscr()
+            DECLARE title[100] = "Search Distributed Donation"
+            DECLARE menu[][50] = {"Search in current distributed donation", "Search in detailed distirbuted donation", "Return"}
+            CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+            CALL Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
+            PRINT("Choice: ")
+            ACCEPT choice_buffer
+            IF (validation_isdigit(1000, choice_buffer, LENGTH OF choice_buffer))
+                choice = choice_buffer
+            ELSE
+                ENTER NEXT ROUND
+            ENDIF
 
-    for (int i = 0; i < SupplyTypeLength; i++)
-    {
-        printf("%s|%s - %f\n", Supply_Type[i][0], Supply_Type[i][1], count[i]);
+            IF (CHOICE_CONDITION)
+                END THIS LOOP
+            ENDIF
+        UNTIL(1)
+        
+        IF choice EQUALS 1
+            CALL SearchDistTotal()
+
+        ELSE IF choice EQUALS 2
+            CALL SearchDistHistory()
+
+        ELSE IF choice EQUALS 3
+            RETURN
+        
+        ENDIF
+
+        
+    UNTIL(1)
+
+
+SearchDistHistory()
+
+    DECLARE i, k
+    DECLARE sum = 0
+    DECLARE search_target[1000]
+    DECLARE search_index = -1
+    DECLARE title[100] = "Search in Detailed Distirbuted Donation"
+    DECLARE ptr
+    REPEAT
+    
+        CALL clrscr()
+        CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
+        PRINT("**Format of Donation ID is DXXXXXX, where X are numbers")
+        PRINT("Enter Distributed ID: ")
+        ACCEPT search_target
+        FOR (i = 0 TO DistLength - 1) STEP 1
+        
+            IF (DistHead[i].distributed_ID EQUALS search_target)
+            
+                search_index = i
+                END THIS LOOP
+            ENDIF
+        ENDFOR
+        IF (search_index >= 0)
+            END THIS LOOP
+        ELSE
+            PRINT("Distributed ID doesnt exist. Please enter again.")
+        ENDFOR
+
+        CALL Exit_Phrase()
+        RETURN
+    UNTIL(1)
+
+    CALL clrscr()
+    sum = CALL PrintTableHeader(DISTCOLUMN, Space_Dist, DistColumnName)
+    CALL printTableDistRow(Space_Dist, DistHead[i])
+    PRINT NEWLINE
+    FOR (i = 0 TO sum - 1) STEP 1
+        PRINT("-")
+    ENDFOR
+    PRINT NEWLINE
+    CALL Exit_Phrase()
+    
+
+SearchDistTotal()
+
+    DECLARE i, k, ptr
+    DECLARE sum = 0
+    DECLARE search_target[1000]
+    DECLARE search_index = NULL
+    DECLARE title[100] = "Search in Current Distributed Donation"
+    REPEAT
+    
+        CALL clrscr()
+        CALL RINT_Title(TITLELENGTH, LENGTH OF title, title)
+        PRINT("**Format of stocks ID is IXXXXXX, where X are numbers")
+        PRINT("Enter Distributed ID: ")
+        ACCEPT search_target
+        CALL DistTotal_Generator()
+        search_index = NULL
+        LOOP DistTotalHead TILL END OF RECORDS
+            IF (ptr->disttotal_ID EQUALS search_target)
+            
+                search_index = ptr
+                END THIS LOOP
+            ENDIF
+
+        IF (search_index NOT EQUALS NULL)
+            END THIS LOOP
+        ELSE
+            PRINT("Distributed ID doesnt exist. Please enter again.")
+        ENDIF
+
+        CALL freeList_DistTotal(DistTotalHead)
+        CALL Exit_Phrase()
+    UNTIL(1)
+
+    CALL clrscr()
+    sum = CALL PrintTableHeader(DISTCOLUMN, Space_DistTotal, DistTotalColumnName)
+    CALL printTableDistTotalRow(Space_DistTotal, search_index)
+    PRINT NEWLINE
+    FOR (i = 0 TO sum - 1) STEP 1
+        PRINT("-")
+    PRINT NEWLINE
+    CALL Exit_Phrase()
+    CALL freeList_DistTotal(DistTotalHead)
+
+
+SupplyAccuDonation()
+
+    DECLARE i, k
+    count[MAXSUPPLYTYPES] = {0}
+
+    CALL clrscr()
+    DECLARE title[100] = "Accumulated Donation Received For Each Supply"
+    CALL RINT_Title(TITLELENGTH, LENGTH OF title, title)
+    FOR (i = 0 TO SupplyLength - 1) STEP 1
+    
+        FOR (k = 0 TO SupplyTypeLength - 1) STEP 1
+        
+            IF (SupplyHead[i].supply_code EQUALS  Supply_Type[k][0])
+            
+                count[k] = count[k] + SupplyHead[i].init_quantity
+                END THIS LOOP
+            ENDIF
+        ENDFOR
+    ENDFOR
+
+    FOR (i = 0 TO SupplyTypeLength - 1) STEP 1
+    
+        PRINT(Supply_Type[i][0]|Supply_Type[i][1]: count[i])
     }
-    putchar('\n');
-    Exit_Phrase();
-}
+    PRINT NEWLINE
+    CALL Exit_Phrase()
+
+
+DistAccuDonation()
+
+    count[MAXSUPPLYTYPES] = {0}
+
+    CALL clrscr()
+    DECLARE title[100] = "Accumulated Distributed Donation for Each Supply"
+    Print_Title(TITLELENGTH, LENGTH OF title, title)
+    FOR (int i = 0 TO DistLength - 1) STEP 1
+    
+        FOR (int k = 0 TO SupplyLength - 1) STEP 1
+        
+            IF (DistHead[i].donation_ID EQUALS SupplyHead[k].donation_ID)
+            
+                FOR (int j = 0 TO SupplyTypeLength - 1) STEP 1
+                
+                    IF (SupplyHead[k].supply_code EQUALS Supply_Type[j][0])
+                    
+                        count[j] = count[j] + DistHead[i].quantity
+                        END THIS LOOP
+
+                    ENDIF
+                ENDFOR
+            ENDIF
+        ENDFOR
+    ENDFOR
+
+    FOR (int i = 0 TO SupplyTypeLength - 1) STEP 1
+    
+        PRINT(Supply_Type[i][0]|Supply_Type[i][1] - count[i])
+    ENDFOR
+    PRINT NEWLINE
+    CALL Exit_Phrase()
 
 
 
