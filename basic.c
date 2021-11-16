@@ -1193,7 +1193,7 @@ int validation_supply_code(char *input)
     return -1;
 }
 
-void ConfirmSupplySection(supply *input)
+void ConfirmSupplySection(supply *input, int supply_validate_index)
 {
     int choice;
     char choice_buffer[1000];
@@ -1220,6 +1220,18 @@ void ConfirmSupplySection(supply *input)
             if (CHOICE_CONDITION)
                 break;
         }
+
+        //If it's used for supply validation need to subtract the value previously added in validation_samestock
+        if(supply_validate_index >= 1 && choice == 2)
+        {
+            SupplyHead[supply_validate_index].init_quantity -= input->init_quantity;
+            SupplyHead[supply_validate_index].curr_quantity -= input->init_quantity;
+        }   
+        
+        //agrees but need to delete the prevously added supply length
+        if(supply_validate_index >= 1 && choice == 1)
+            SupplyLength--;
+
 
         switch (choice)
         {
@@ -1482,6 +1494,28 @@ int EnsureQuantity(int *ID_store, float quantity, int supply_index)
     return -1;
 }
 
+int validation_samesupply(supply input)
+{
+    //Must used supplylength - 1 to prevent supplyhead to strcmp itself
+    for(int i = 0; i < SupplyLength - 1; i++)
+    {
+        if((strcmp(input.supply_code, SupplyHead[i].supply_code) == 0)  && (strcmp(strlwr(input.donator), strlwr(SupplyHead[i].donator)) == 0) && (input.shipment_no == SupplyHead[i].shipment_no) && (input.donation_date.year == SupplyHead[i].donation_date.year) &&(input.donation_date.month == SupplyHead[i].donation_date.month) && (input.donation_date.day == SupplyHead[i].donation_date.day))
+        {
+            putchar('\n');
+            printf("There is a same record today. Input quantity is added to the quantity of that record.");
+            putchar('\n');
+            SupplyHead[i].init_quantity += input.init_quantity;
+            SupplyHead[i].curr_quantity += input.init_quantity;
+            ConfirmSupplySection(&SupplyHead[i], 1);
+            
+            //Return 1 if found same supply
+            return 1;
+
+        }
+    }
+
+    return 0;
+}
 /*int main()
 {
     int choice;

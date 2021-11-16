@@ -135,6 +135,7 @@ int validation_isdigit(int limit, char *input, int input_length);
 int validation_isfloat(char *input, int input_length);
 int validation_supply_code(char* input);
 int validation_stockID(char *input);
+int validation_samesupply(supply input);
 
 //Functions for stock list
 //Generate list for struct stocks
@@ -193,7 +194,7 @@ int EnsureQuantity(int *ID_store, float quantity, int supply_index);
 
 //Printing the confirmation
 int ConfirmDistSection(dist *input, int edit_index, char *edited_data, char *distributed_ID);
-void ConfirmSupplySection(supply *input);
+void ConfirmSupplySection(supply *input, int supply_validate_index);
 
 
 #endif

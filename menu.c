@@ -13,7 +13,7 @@ void MainMenu()
         char menu[][50] = {"Dashboard", "Manage Donation Supplies", "Manage Distributed Donation", "Exit"};
         Print_Title(TITLELENGTH, strlen(title), title);
         Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-        Printf("Choice: ");
+        printf("Choice: ");
         scanf("%s", choice_buffer);
         fflush(stdin);
         if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
@@ -39,7 +39,7 @@ void MainMenu()
         break;
 
     case 4:
-        Printf("Program Successfully Exited......\n");
+        printf("Program Successfully Exited......\n");
         exit(0);
 
     default:
@@ -61,7 +61,7 @@ void Dashboard()
             char menu[][50] = {"Accumulated donation received for each supply", "Accumulated distributed donation for each supply", "Return"};
             Print_Title(TITLELENGTH, strlen(title), title);
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            Printf("Choice: ");
+            printf("Choice: ");
             scanf("%s", choice_buffer);
             fflush(stdin);
             if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
@@ -107,7 +107,7 @@ void DonationSupplies()
             PrintTable(1, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength);
             putchar('\n');
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            Printf("Choice: ");
+            printf("Choice: ");
             scanf("%s", choice_buffer);
             fflush(stdin);
             if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
@@ -161,7 +161,7 @@ void DistributedDonation()
             PrintTable(4, DISTCOLUMN, Space_Dist, DistColumnName, DistLength);
             putchar('\n');
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            Printf("Choice: ");
+            printf("Choice: ");
             scanf("%s", choice_buffer);
             fflush(stdin);
             if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
@@ -214,21 +214,21 @@ void AddDonationSupply()
     clrscr();
     char title[100] = "Add Donation Supply";
     Print_Title(TITLELENGTH, strlen(title), title);
-    Printf("Currently there are only %d types of supplies that you can donate.\n", SupplyTypeLength);
-    Printf("Supply Code - Supply Name\n");
+    printf("Currently there are only %d types of supplies that you can donate.\n", SupplyTypeLength);
+    printf("Supply Code - Supply Name\n");
     //Print all the available supplies out
     for (int i = 0; i < SupplyTypeLength; i++)
     {
-        Printf("%s - %s\n", Supply_Type[i][0], Supply_Type[i][1]);
+        printf("%s - %s\n", Supply_Type[i][0], Supply_Type[i][1]);
     }
 
     //Prints stuffs and ask customer to enter
-    Printf("\nPlease fill up the details of the donation: \n");
+    printf("\nPlease fill up the details of the donation: \n");
 
     //Supply Code validation
     do
     {
-        Printf("Supply Code: ");
+        printf("Supply Code: ");
         scanf("%s", supply_code);
         fflush(stdin);
         supply_code_index = validation_supply_code(supply_code);
@@ -237,7 +237,7 @@ void AddDonationSupply()
     //Donator length validation(cannot exceed 20)
     do
     {
-        Printf("Donator: ");
+        printf("Donator: ");
         scanf("%s", donator);
         fflush(stdin);
     } while (!Validation_CharLength(20, strlen(donator)));
@@ -245,8 +245,8 @@ void AddDonationSupply()
     //Donation date validation(Format )
     do
     {
-        Printf("Enter Date in format: dd/mm/yyyy\n");
-        Printf("Date: ");
+        printf("Enter Date in format: dd/mm/yyyy\n");
+        printf("Date: ");
         //Get the string
         scanf("%s", date_buffer);
         fflush(stdin);
@@ -257,7 +257,7 @@ void AddDonationSupply()
     //Shipment no.
     do
     {
-        Printf("Shipment No.: ");
+        printf("Shipment No.: ");
         scanf("%s", shipment_buffer);
         fflush(stdin);
     } while (!validation_isdigit(7, shipment_buffer, strlen(shipment_buffer)));
@@ -265,7 +265,7 @@ void AddDonationSupply()
     //Quantity Donated
     do
     {
-        Printf("Quantity(millions): ");
+        printf("Quantity(millions): ");
         scanf("%s", quantity_buffer);
         fflush(stdin);
 
@@ -273,8 +273,9 @@ void AddDonationSupply()
 
     //Must add to ensure donationID is corect
     SupplyLength++;
+    
     //Store everything inside a variable of type supply
-    snPrintf(buffer, 10, SUPPLYIDFORMAT, SupplyLength);
+    snprintf(buffer, 10, SUPPLYIDFORMAT, SupplyLength);
     strcpy(SupplyHead[SupplyLength - 1].donation_ID, buffer);
     strcpy(SupplyHead[SupplyLength - 1].supply_code, supply_code);
     strcpy(SupplyHead[SupplyLength - 1].supply_name, Supply_Type[supply_code_index][1]);
@@ -284,7 +285,11 @@ void AddDonationSupply()
     SupplyHead[SupplyLength - 1].init_quantity = atof(quantity_buffer);
     SupplyHead[SupplyLength - 1].curr_quantity = atof(quantity_buffer);
 
-    ConfirmSupplySection(&SupplyHead[SupplyLength - 1]);
+    //validate if the record appear before
+    if(validation_samesupply(SupplyHead[SupplyLength - 1]))
+        return;
+    else
+        ConfirmSupplySection(&SupplyHead[SupplyLength - 1], -1);
 }
 
 void EditDonationSupply()
@@ -310,7 +315,7 @@ void EditDonationSupply()
 
             Print_Title(TITLELENGTH, strlen(title), title);
             PrintTable(1, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength);
-            Printf("\nEnter Donation ID: ");
+            printf("\nEnter Donation ID: ");
             scanf("%s", donation_ID);
             fflush(stdin);
             for (int i = 0; i < SupplyLength; i++)
@@ -325,7 +330,7 @@ void EditDonationSupply()
             if (search_index >= 0)
                 break;
             else
-                Printf("Donation ID doesnt exist. Please enter again.\n");
+                printf("Donation ID doesnt exist. Please enter again.\n");
             Exit_Phrase();
         }
 
@@ -337,7 +342,7 @@ void EditDonationSupply()
             char menu[][50] = {"Supply code", "Donator", "Donation date", "Shipment no", "Quantity received(millions)", "Current Quantity(millions)", "Return"};
             Print_Title(TITLELENGTH, strlen(title), title);
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            Printf("Choice: ");
+            printf("Choice: ");
             scanf("%s", choice_buffer);
             fflush(stdin);
             if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
@@ -354,8 +359,8 @@ void EditDonationSupply()
         case 1:
             do
             {
-                Printf("\nSupply name will be changed automatically");
-                Printf("\nSupply Code: ");
+                printf("\nSupply name will be changed automatically");
+                printf("\nSupply Code: ");
                 scanf("%s", buffer);
                 fflush(stdin);
                 supply_code_index = validation_supply_code(buffer);
@@ -365,7 +370,7 @@ void EditDonationSupply()
         case 2:
             do
             {
-                Printf("Donator: ");
+                printf("Donator: ");
                 scanf("%[^\n]", buffer);
                 fflush(stdin);
             } while (!Validation_CharLength(20, strlen(buffer)));
@@ -374,8 +379,8 @@ void EditDonationSupply()
         case 3:
             do
             {
-                Printf("Enter Date in format: dd/mm/yyyy\n");
-                Printf("Date: ");
+                printf("Enter Date in format: dd/mm/yyyy\n");
+                printf("Date: ");
                 //Get the string
                 scanf("%s", buffer);
                 fflush(stdin);
@@ -387,7 +392,7 @@ void EditDonationSupply()
         case 4:
             do
             {
-                Printf("Shipment No.: ");
+                printf("Shipment No.: ");
                 scanf("%s", buffer);
                 fflush(stdin);
             } while (!validation_isdigit(7, buffer, strlen(buffer)));
@@ -396,7 +401,7 @@ void EditDonationSupply()
         case 5:
             do
             {
-                Printf("Quantity Received(millions): ");
+                printf("Quantity Received(millions): ");
                 scanf("%s", buffer);
                 fflush(stdin);
 
@@ -406,7 +411,7 @@ void EditDonationSupply()
         case 6:
             do
             {
-                Printf("Current Quantity(millions): ");
+                printf("Current Quantity(millions): ");
                 scanf("%s", buffer);
                 fflush(stdin);
 
@@ -432,7 +437,7 @@ void EditDonationSupply()
             Print_Title(TITLELENGTH, strlen(title), title);
             Print_SupplyList(&SupplyHead[search_index], choice, buffer);
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            Printf("Choice: ");
+            printf("Choice: ");
             scanf("%s", selection_buffer);
             fflush(stdin);
             if (validation_isdigit(1000, selection_buffer, strlen(selection_buffer)))
@@ -446,7 +451,7 @@ void EditDonationSupply()
 
         if (selection == 2)
         {
-            Printf("You have cancelled this record.\n");
+            printf("You have cancelled this record.\n");
             Exit_Phrase();
             return;
         }
@@ -491,7 +496,7 @@ void ViewCurrentStock_Supply()
             char menu[][50] = {"View current stocks", "View history records", "Return"};
             Print_Title(TITLELENGTH, strlen(title), title);
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            Printf("Choice: ");
+            printf("Choice: ");
             scanf("%s", choice_buffer);
             fflush(stdin);
             if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
@@ -528,9 +533,9 @@ static void viewCurrentStocks()
             char title[100] = "View Current Stocks";
             char menu[][50] = {"Stock ID - Ascending", "Quantity Received(millions) - Descending", "Current Quantity(millions) - Descending", "Return"};
             Print_Title(TITLELENGTH, strlen(title), title);
-            Printf("Sort according to:\n");
+            printf("Sort according to:\n");
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            Printf("Choice: ");
+            printf("Choice: ");
             scanf("%s", choice_buffer);
             fflush(stdin);
             if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
@@ -575,9 +580,9 @@ static void viewSupplyHistoryRecord()
             char title[100] = "View History Records";
             char menu[][50] = {"Donation ID - Ascending", "Quantity Received(millions) - Descending", "Current Quantity(millions) - Descending", "Return"};
             Print_Title(TITLELENGTH, strlen(title), title);
-            Printf("Sort according to:\n");
+            printf("Sort according to:\n");
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            Printf("Choice: ");
+            printf("Choice: ");
             scanf("%s", choice_buffer);
             fflush(stdin);
             if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
@@ -623,7 +628,7 @@ void SearchDonationSupplies()
             char menu[][50] = {"Search in current stocks", "Search in history records", "Return"};
             Print_Title(TITLELENGTH, strlen(title), title);
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            Printf("Choice: ");
+            printf("Choice: ");
             scanf("%s", choice_buffer);
             fflush(stdin);
             if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
@@ -664,8 +669,8 @@ void SearchStocks()
     {
         clrscr();
         Print_Title(TITLELENGTH, strlen(title), title);
-        Printf("**Format of stocks ID is TXXXXXX, where X are numbers");
-        Printf("\nEnter Stocks ID: ");
+        printf("**Format of stocks ID is TXXXXXX, where X are numbers");
+        printf("\nEnter Stocks ID: ");
         scanf("%s", search_target);
         fflush(stdin);
         Stock_Generator();
@@ -680,7 +685,7 @@ void SearchStocks()
             break;
         else
 
-            Printf("Stocks ID doesnt exist. Please enter again.\n");
+            printf("Stocks ID doesnt exist. Please enter again.\n");
         freeList_Stock(StockHead);
         Exit_Phrase();
         return;
@@ -688,10 +693,10 @@ void SearchStocks()
     clrscr();
     //Printing the table
     sum = PrintTableHeader(STOCKCOLUMN, Space_Stock, StockColumnName);
-    PrintTableStockRow(Space_Stock, search_index);
+    printTableStockRow(Space_Stock, search_index);
     putchar('\n');
     for (i = 0; i < sum; i++)
-        Printf("-");
+        printf("-");
     putchar('\n');
     Exit_Phrase();
     freeList_Stock(StockHead);
@@ -710,8 +715,8 @@ void SearchSupplyHistory()
     {
         clrscr();
         Print_Title(TITLELENGTH, strlen(title), title);
-        Printf("**Format of Donation ID is SXXXXXX, where X are numbers");
-        Printf("\nEnter Donation ID: ");
+        printf("**Format of Donation ID is SXXXXXX, where X are numbers");
+        printf("\nEnter Donation ID: ");
         scanf("%s", search_target);
         fflush(stdin);
         for (i = 0; i < SupplyLength; i++)
@@ -725,7 +730,7 @@ void SearchSupplyHistory()
         if (search_index >= 0)
             break;
         else
-            Printf("Donation ID doesnt exist. Please enter again.\n");
+            printf("Donation ID doesnt exist. Please enter again.\n");
 
         Exit_Phrase();
         return;
@@ -733,10 +738,10 @@ void SearchSupplyHistory()
     clrscr();
     //Printing the table
     sum = PrintTableHeader(SUPPLYCOLUMN, Space_Supply, SupplyColumnName);
-    PrintTableSupplyRow(Space_Supply, SupplyHead[i]);
+    printTableSupplyRow(Space_Supply, SupplyHead[i]);
     putchar('\n');
     for (i = 0; i < sum; i++)
-        Printf("-");
+        printf("-");
     putchar('\n');
     Exit_Phrase();
     return;
@@ -769,12 +774,12 @@ void AddDistDonation()
     PrintTable(3, STOCKCOLUMN, Space_Stock, StockColumnName, StockLength);
 
     //Prints stuffs and ask customer to enter
-    Printf("\nPlease fill up the details of the donation: \n");
+    printf("\nPlease fill up the details of the donation: \n");
 
     //Donee name validation(cannot exceed 30)
     do
     {
-        Printf("Donee's name: ");
+        printf("Donee's name: ");
         scanf("%[^\n]", donee_name);
         fflush(stdin);
     } while (!Validation_CharLength(30, strlen(donee_name)));
@@ -782,7 +787,7 @@ void AddDistDonation()
     //Donee location length validation(cannot exceed 20)
     do
     {
-        Printf("Donee's location: ");
+        printf("Donee's location: ");
         scanf("%[^\n]", donee_location);
         fflush(stdin);
     } while (!Validation_CharLength(20, strlen(donee_location)));
@@ -790,8 +795,8 @@ void AddDistDonation()
     //Donation date validation(Format )
     do
     {
-        Printf("Enter Date in format: dd/mm/yyyy\n");
-        Printf("Date: ");
+        printf("Enter Date in format: dd/mm/yyyy\n");
+        printf("Date: ");
         //Get the string
         scanf("%s", date_buffer);
         fflush(stdin);
@@ -802,7 +807,7 @@ void AddDistDonation()
     //stocks ID
     do
     {
-        Printf("Stock ID: ");
+        printf("Stock ID: ");
         scanf("%s", stocks_ID);
         fflush(stdin);
         //The function will return supply index if stock ID exists, else it would return -1
@@ -814,7 +819,7 @@ void AddDistDonation()
     do
     {
         ID_length = 0;
-        Printf("Quantity(millions): ");
+        printf("Quantity(millions): ");
         scanf("%s", quantity);
         fflush(stdin);
         validation_result = validation_isfloat(quantity, strlen(quantity));
@@ -824,7 +829,7 @@ void AddDistDonation()
     } while (validation_result && (ID_length == -1));
 
     //Saving the variables temporarily for confirmation
-    snPrintf(buffer, 10, DISTIDFORMAT, DistLength);
+    snprintf(buffer, 10, DISTIDFORMAT, DistLength);
     strcpy(temp.distributed_ID, buffer);
     strcpy(temp.donee_name, donee_name);
     strcpy(temp.donee_location, donee_location);
@@ -846,7 +851,7 @@ void AddDistDonation()
         //Must add to ensure distributedID is corect
         DistLength++;
         //Store everything inside a variable of type supply
-        snPrintf(buffer, 10, DISTIDFORMAT, DistLength);
+        snprintf(buffer, 10, DISTIDFORMAT, DistLength);
         strcpy(DistHead[DistLength - 1].distributed_ID, buffer);
         strcpy(DistHead[DistLength - 1].donee_name, donee_name);
         strcpy(DistHead[DistLength - 1].donee_location, donee_location);
@@ -912,7 +917,7 @@ void EditDistDonation()
 
             Print_Title(TITLELENGTH, strlen(title), title);
             PrintTable(4, DISTCOLUMN, Space_Dist, DistColumnName, DistLength);
-            Printf("\nEnter Distributed ID: ");
+            printf("\nEnter Distributed ID: ");
             scanf("%s", distributed_ID);
             fflush(stdin);
             //Locate the index of the distributed ID
@@ -929,7 +934,7 @@ void EditDistDonation()
             if (search_index >= 0)
                 break;
             else
-                Printf("Distributed ID doesnt exist. Please enter again.\n");
+                printf("Distributed ID doesnt exist. Please enter again.\n");
 
             Exit_Phrase();
         }
@@ -942,7 +947,7 @@ void EditDistDonation()
             char menu[][50] = {"Donee name", "Donee location", "Donation date", "Return"};
             Print_Title(TITLELENGTH, strlen(title), title);
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            Printf("Choice: ");
+            printf("Choice: ");
             scanf("%s", choice_buffer);
             fflush(stdin);
             if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
@@ -959,7 +964,7 @@ void EditDistDonation()
         case 1:
             do
             {
-                Printf("Donee name: ");
+                printf("Donee name: ");
                 scanf("%[^\n]", buffer);
                 fflush(stdin);
                 edit_index = 1;
@@ -969,7 +974,7 @@ void EditDistDonation()
         case 2:
             do
             {
-                Printf("Donee location: ");
+                printf("Donee location: ");
                 scanf("%[^\n]", buffer);
                 fflush(stdin);
                 edit_index = 2;
@@ -979,8 +984,8 @@ void EditDistDonation()
         case 3:
             do
             {
-                Printf("Enter Date in format: dd/mm/yyyy\n");
-                Printf("Date: ");
+                printf("Enter Date in format: dd/mm/yyyy\n");
+                printf("Date: ");
                 //Get the string
                 scanf("%s", buffer);
                 fflush(stdin);
@@ -1041,7 +1046,7 @@ void ViewHistoryRecord_Dist()
             char menu[][50] = {"View current distributed donation", "View detailed distributed donation", "Return"};
             Print_Title(TITLELENGTH, strlen(title), title);
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            Printf("Choice: ");
+            printf("Choice: ");
             scanf("%s", choice_buffer);
             fflush(stdin);
             if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
@@ -1079,9 +1084,9 @@ static void viewCurrentDistTotal()
             char title[100] = "View Current Distributed Donation";
             char menu[][50] = {"Distributed ID - Ascending", "Quantity(millions) - Descending", "Accumulative Quantity(millions) - Descending", "Return"};
             Print_Title(TITLELENGTH, strlen(title), title);
-            Printf("Sort according to:\n");
+            printf("Sort according to:\n");
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            Printf("Choice: ");
+            printf("Choice: ");
             scanf("%s", choice_buffer);
             fflush(stdin);
             if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
@@ -1127,9 +1132,9 @@ static void viewDistDetailedRecord()
             char title[100] = "View Detailed Distributed Donation";
             char menu[][50] = {"Distributed ID - Ascending", "Quantity(millions) - Descending", "Accumulative Quantity(millions) - Descending", "Return"};
             Print_Title(TITLELENGTH, strlen(title), title);
-            Printf("Sort according to:\n");
+            printf("Sort according to:\n");
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            Printf("Choice: ");
+            printf("Choice: ");
             scanf("%s", choice_buffer);
             fflush(stdin);
             if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
@@ -1175,7 +1180,7 @@ void SearchDistDonation()
             char menu[][50] = {"Search in current distributed donation", "Search in detailed distirbuted donation", "Return"};
             Print_Title(TITLELENGTH, strlen(title), title);
             Print_Menu(sizeof(menu) / sizeof(menu[0]), menu);
-            Printf("Choice: ");
+            printf("Choice: ");
             scanf("%s", choice_buffer);
             fflush(stdin);
             if (validation_isdigit(1000, choice_buffer, strlen(choice_buffer)))
@@ -1217,8 +1222,8 @@ void SearchDistHistory()
     {
         clrscr();
         Print_Title(TITLELENGTH, strlen(title), title);
-        Printf("**Format of Donation ID is DXXXXXX, where X are numbers");
-        Printf("\nEnter Distributed ID: ");
+        printf("**Format of Donation ID is DXXXXXX, where X are numbers");
+        printf("\nEnter Distributed ID: ");
         scanf("%s", search_target);
         fflush(stdin);
         for (i = 0; i < DistLength; i++)
@@ -1232,7 +1237,7 @@ void SearchDistHistory()
         if (search_index >= 0)
             break;
         else
-            Printf("Distributed ID doesnt exist. Please enter again.\n");
+            printf("Distributed ID doesnt exist. Please enter again.\n");
 
         Exit_Phrase();
         return;
@@ -1240,10 +1245,10 @@ void SearchDistHistory()
     clrscr();
     //Printing the table
     sum = PrintTableHeader(DISTCOLUMN, Space_Dist, DistColumnName);
-    PrintTableDistRow(Space_Dist, DistHead[i]);
+    printTableDistRow(Space_Dist, DistHead[i]);
     putchar('\n');
     for (i = 0; i < sum; i++)
-        Printf("-");
+        printf("-");
     putchar('\n');
     Exit_Phrase();
     return;
@@ -1260,8 +1265,8 @@ void SearchDistTotal()
     {
         clrscr();
         Print_Title(TITLELENGTH, strlen(title), title);
-        Printf("**Format of stocks ID is IXXXXXX, where X are numbers");
-        Printf("\nEnter Distributed ID: ");
+        printf("**Format of stocks ID is IXXXXXX, where X are numbers");
+        printf("\nEnter Distributed ID: ");
         scanf("%s", search_target);
         fflush(stdin);
         DistTotal_Generator();
@@ -1276,7 +1281,7 @@ void SearchDistTotal()
             break;
         else
 
-            Printf("Distributed ID doesnt exist. Please enter again.\n");
+            printf("Distributed ID doesnt exist. Please enter again.\n");
         freeList_DistTotal(DistTotalHead);
         Exit_Phrase();
         return;
@@ -1284,10 +1289,10 @@ void SearchDistTotal()
     clrscr();
     //Printing the table
     sum = PrintTableHeader(DISTCOLUMN, Space_DistTotal, DistTotalColumnName);
-    PrintTableDistTotalRow(Space_DistTotal, search_index);
+    printTableDistTotalRow(Space_DistTotal, search_index);
     putchar('\n');
     for (i = 0; i < sum; i++)
-        Printf("-");
+        printf("-");
     putchar('\n');
     Exit_Phrase();
     freeList_DistTotal(DistTotalHead);
@@ -1316,7 +1321,7 @@ void SupplyAccuDonation()
 
     for (int i = 0; i < SupplyTypeLength; i++)
     {
-        Printf("%s|%s - %f\n", Supply_Type[i][0], Supply_Type[i][1], count[i]);
+        printf("%s|%s - %f\n", Supply_Type[i][0], Supply_Type[i][1], count[i]);
     }
     putchar('\n');
     Exit_Phrase();
@@ -1350,7 +1355,7 @@ void DistAccuDonation()
 
     for (int i = 0; i < SupplyTypeLength; i++)
     {
-        Printf("%s|%s - %f\n", Supply_Type[i][0], Supply_Type[i][1], count[i]);
+        printf("%s|%s - %f\n", Supply_Type[i][0], Supply_Type[i][1], count[i]);
     }
     putchar('\n');
     Exit_Phrase();

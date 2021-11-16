@@ -230,13 +230,13 @@ AddDonationSupply()
     DOWHILE(validation_isdigit(7, shipment_buffer, LENGTH OF shipment_buffer) EQUALS 0)
     
         PRINT("Shipment No.: ")
-        ACCEPT  shipment_buffer
+        ACCEPT shipment_buffer
     ENDDO
 
     DOWHILE(validation_isfloat(quantity_buffer, LENGTH OF quantity_buffer) EQUALS 0)
     
         PRINT("Quantity(millions): ")
-        ACCEPT  quantity_buffer
+        ACCEPT quantity_buffer
 
     ENDDO
 
@@ -251,8 +251,11 @@ AddDonationSupply()
     SupplyHead[SupplyLength - 1].init_quantity = quantity_buffer
     SupplyHead[SupplyLength - 1].curr_quantity = quantity_buffer
 
-    CALL ConfirmSupplySection(&SupplyHead[SupplyLength - 1])
-
+    IF(validation_samesupply(SupplyHead[SupplyLength - 1]))
+        RETURN
+    ELSE
+        CALL ConfirmSupplySection(SupplyHead[SupplyLength - 1])
+    ENDIF
 
 EditDonationSupply()
 
@@ -731,7 +734,7 @@ AddDistDonation()
         PRINT("Enter Date in format: dd/mm/yyyy\n")
         PRINT("Date: ")
         ACCEPT date_buffer
-        ACCEPT  donation_date
+        ACCEPT donation_date
     ENDDO
 
     DOWHILE(supply_index EQUALS -1)
@@ -762,7 +765,7 @@ AddDistDonation()
     temp.stocks_ID =  stocks_ID
     temp.quantity = quantity
 
-    DECLARE result = CALL ConfirmDistSection(&temp, -1, NULL, NULL)
+    DECLARE result = CALL ConfirmDistSection(temp, -1, NULL, NULL)
 
     IF (result EQUALS 0)
         RETURN
