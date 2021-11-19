@@ -5,7 +5,7 @@ ReadFile_Donation()
 
     REPEAT
 
-        COPY VALUES FROM THE donation.txt INTO TEMP
+        COPY VALUES FROM THE txt OF donation INTO TEMP
 
         temp = SupplyHead[i]
 
@@ -23,7 +23,7 @@ ReadFile_Dist()
 
     REPEAT
     
-        COPY VALUES FROM dist.txt INTO TEMP
+        COPY VALUES FROM txt OF dist INTO TEMP
 
         temp = DistHead[i]
 
@@ -236,28 +236,28 @@ printTableSupplyRow(space[], input)
     REPEAT
         
         IF i EQUALS 1
-            buffer = input.donation_ID
+            buffer = donation_ID OF input
 
         ELSE IF i EQUALS 2
-            buffer = input.supply_code
+            buffer = supply_code OF input
 
         ELSE IF i EQUALS 3
-            buffer = input.supply_name
+            buffer = supply_name OF input
 
         ELSE IF i EQUALS 4
-            buffer = input.donator
+            buffer = donator OF input
 
         ELSE IF i EQUALS 5
-            buffer = input.donation_date
+            buffer = donation_date OF input
 
         ELSE IF i EQUALS 6
-            buffer = input.shipment_no
+            buffer = shipment_no OF input
 
         ELSE IF i EQUALS 7
-            buffer = input.init_quantity
+            buffer = init_quantity OF input
 
         ELSE 
-            buffer = input.curr_quantity
+            buffer = curr_quantity OF input
 
         ENDIF
 
@@ -285,25 +285,25 @@ printTableDistRow(space[], input)
     REPEAT
         
         IF i EQUALS 1
-            buffer = input.distributed_ID
+            buffer = distributed_ID OF input
 
         ELSE IF i EQUALS 2
-            buffer = input.donee_name
+            buffer = donee_name OF input
 
         ELSE IF i EQUALS 3
-            buffer = input.donee_location
+            buffer = donee_location OF input
 
         ELSE IF i EQUALS 4
-            buffer = input.donation_date
+            buffer = donation_date OF input
 
         ELSE IF i EQUALS 5
-            buffer = input.donation_ID
+            buffer = donation_ID OF input
 
         ELSE IF i EQUALS 6
-            buffer = input.quantity
+            buffer = quantity OF input
 
         ELSE
-            buffer = input.accu_quantity
+            buffer = accu_quantity OF input
 
         ENDIF
 
@@ -321,7 +321,7 @@ printTableDistRow(space[], input)
 printTableStockRow(space[], input)
 
     DECLARE i = 1
-    DECLARE index = input->supply_index
+    DECLARE index = supply_index OF input
     DECLARE space_index = 0
     DECLARE buffer[100]
 
@@ -330,25 +330,25 @@ printTableStockRow(space[], input)
     REPEAT
         
         IF i EQUALS 1
-            buffer = input->stock_ID
+            buffer = stock_ID OF input
 
         ELSE IF i EQUALS 2
-            buffer = SupplyHead[index].supply_code
+            buffer = supply_code OF SupplyHead[index]
 
         ELSE IF i EQUALS 3
-            buffer = SupplyHead[index].supply_name
+            buffer = supply_name OF SupplyHead[index]
 
         ELSE IF i EQUALS 4
-            buffer = SupplyHead[index].donator
+            buffer = donator OF SupplyHead[index]
 
         ELSE IF i EQUALS 5
-            buffer = SupplyHead[index].shipment_no
+            buffer = shipment_no OF SupplyHead[index]
 
         ELSE IF i EQUALS 6
-            buffer = input.init_quantity
+            buffer = init_quantity OF input
 
         ELSE
-            buffer = input.curr_quantity
+            buffer = curr_quantity OF input
 
         ENDIF
 
@@ -367,7 +367,7 @@ printTableStockRow(space[], input)
 printTableDistTotalRow(space[], input)
 
     DECLARE i = 1
-    DECLARE index = input->dist_index
+    DECLARE index = dist_index OF input
     DECLARE space_index = 0
     DECLARE buffer[100]
 
@@ -376,25 +376,25 @@ printTableDistTotalRow(space[], input)
     REPEAT
         
         IF i EQUALS 1
-            buffer = input->disttotal_ID
+            buffer = disttotal_ID OF input
 
         ELSE IF i EQUALS 2
-            buffer = DistHead[index].donee_name
+            buffer = donee_name OF DistHead[index]
 
         ELSE IF i EQUALS 3
-            buffer = DistHead[index].donee_location
+            buffer = donee_location OF DistHead[index]
 
         ELSE IF i EQUALS 4
-            buffer = DistHead[index].donation_date
+            buffer = donation_date OF DistHead[index]
 
         ELSE IF i EQUALS 5
-            buffer = DistHead[index].stocks_ID
+            buffer = stocks_ID OF DistHead[index]
 
         ELSE IF i EQUALS 6
-            buffer = input->quantity
+            buffer = quantity OF input
 
         ELSE
-            buffer = input->accu_quantity
+            buffer = accu_quantity OF input
 
         ENDIF
 
@@ -455,22 +455,22 @@ Stock_Generator()
                 ENTER NEXT ROUND
             ENDIF
 
-            IF ((SupplyHead[i].supply_code NOT EQUALS SupplyHead[k].supply_code) AND (SupplyHead[i].donator NOT EQUALS SupplyHead[k].donator) AND (SupplyHead[i].shipment_no EQUALS SupplyHead[k].shipment_no))
+            IF (supply_code OF SupplyHead[i] NOT EQUALS supply_code OF SupplyHead[k]) AND (donator OF SupplyHead[i] NOT EQUALS donator OF SupplyHead[k]) AND (shipment_no OF SupplyHead[i] EQUALS shipment_no OF SupplyHead[k]))
             
                 IF (same_stock_count EQUALS 0)
                 
                     same_stock_count = same_stock_count + 1
                     finish[finish_count] = i
                     finish_count = finish_count + 1
-                    total_init_quan += SupplyHead[i].init_quantity
-                    total_curr_quan += SupplyHead[i].curr_quantity
+                    total_init_quan += init_quantity OF SupplyHead[i]
+                    total_curr_quan += curr_quantity OF SupplyHead[i]
                 ENDIF
 
                 same_stock_count = same_stock_count + 1
                 finish[finish_count] = k
                 finish_count = finish_count + 1
-                total_init_quan += SupplyHead[k].init_quantity
-                total_curr_quan += SupplyHead[k].curr_quantity
+                total_init_quan += init_quantity OF SupplyHead[k]
+                total_curr_quan += curr_quantity OF SupplyHead[k]
 
             ENDIF
         ENDFOR
@@ -483,7 +483,7 @@ Stock_Generator()
         ELSE
         
             StockLength += 1
-            insertNode(i, SupplyHead[i].init_quantity, SupplyHead[i].curr_quantity)
+            insertNode(i, init_quantity OF SupplyHead[i], curr_quantity OF SupplyHead[i])
         ENDIF
     
     ENDFOR
@@ -494,11 +494,11 @@ insertNode(i, total_init_quan, total_curr_quan)
     DECLARE node, curr
     DECLARE buffer[10] = current_stock_ID
 
-    node->supply_index = i
-    buffer = node->stock_ID
-    node->init_quantity = total_init_quan
-    node->curr_quantity = total_curr_quan
-    node->link = NULL
+    supply_index OF node = i
+    buffer = stock_ID OF node
+    init_quantity OF node = total_init_quan
+    curr_quantity OF node = total_curr_quan
+    link OF node = NULL
 
     IF (StockHead EQUALS NULL)
     
@@ -507,7 +507,7 @@ insertNode(i, total_init_quan, total_curr_quan)
     
     ELSE
     
-        curr->link = node
+        link OF curr = node
         curr = node
     
     ENDIF
@@ -521,11 +521,11 @@ insertNode_Dist(i, quan, accu_quan)
 
     DECLARE buffer[10] = current_disttotalID
 
-    node->dist_index = i
-    buffer = node->disttotal_ID
-    node->quantity = quan
-    node->accu_quantity = accu_quan
-    node->link = NULL
+    dist_index OF node = i
+    buffer = disttotal_ID OF node
+    quantity OF node = quan
+    accu_quantity OF node = accu_quan
+    link OF node = NULL
 
     IF (DistTotalHead EQUALS NULL)
     
@@ -534,7 +534,7 @@ insertNode_Dist(i, quan, accu_quan)
     
     ELSE
     
-        curr->link = node
+        link OF curr = node
         curr = node
     
     ENDIF
@@ -562,7 +562,7 @@ freeList_Stock(head)
     DECLARE curr = head, link
     REPEAT 
     
-        link = curr->link
+        link = link OF curr
         CALL free(curr)
         curr = link
 
@@ -626,22 +626,22 @@ sort_StockQuan(head, count, mode_name)
         FOR (j = 0 TO count - i - 2) STEP 1
 
             p1 = h
-            p2 = p1->link
+            p2 = link OF p1
             IF (p2 EQUALS NULL)
                 ENTER NEXT ROUND
             ENDIF
 
-            IF (mode EQUALS 1 AND (p1->init_quantity < p2->init_quantity))
+            IF (mode EQUALS 1 AND (init_quantity OF p1 < init_quantity OF p2))
                 h = CALL swap(p1, p2)
                 swapped = 1
             ENDIF
 
-            IF (mode EQUALS 2 AND (p1->curr_quantity < p2->curr_quantity))
+            IF (mode EQUALS 2 AND (curr_quantity OF p1 < curr_quantity OF p2))
                 h = CALL swap(p1, p2)
                 swapped = 1
             ENDIF
 
-            h = &(*h)->link
+            h = link OF h
 
         ENDFOR
 
@@ -665,12 +665,12 @@ sort_DistQuan(sequence, mode)
     
         FOR (k = 0 TO DistLength - i - 1 - 1) STEP 1
         
-            IF (mode EQUALS 1 AND DistHead[sequence[k]].quantity < DistHead[sequence[k + 1]].quantity)
+            IF (mode EQUALS 1 AND quantity OF DistHead[sequence[k]] < DistHead[sequence[k + 1quantity OF ]])
                 SWAP sequence[k] AND sequence[k+1]
 
             ENDIF
 
-            IF (mode EQUALS 2 AND DistHead[sequence[k]].accu_quantity < DistHead[sequence[k + 1]].accu_quantity)
+            IF (mode EQUALS 2 AND accu_quantity OF DistHead[sequence[k]] < DistHead[sequence[k + 1accu_quantity OF ]])
                 SWAP sequence[k] AND sequence[k+1]
 
             ENDIF
@@ -684,13 +684,13 @@ sort_SupplyQuan(sequence, mode)
     
         FOR (k = 0 TO SupplyLength - i - 1 - 1) STEP 1
         
-            IF (mode EQUALS 1 AND SupplyHead[sequence[k]].init_quantity < SupplyHead[sequence[k + 1]].init_quantity)
+            IF (mode EQUALS 1 AND init_quantity OF SupplyHead[sequence[k]] < SupplyHead[sequence[k + 1init_quantity OF ]])
                 
                 SWAP sequence[k] AND sequence[k+1]
             
             ENDIF
 
-            IF (mode EQUALS 2 AND SupplyHead[sequence[k]].curr_quantity < SupplyHead[sequence[k + 1]].curr_quantity)
+            IF (mode EQUALS 2 AND curr_quantity OF SupplyHead[sequence[k]] < SupplyHead[sequence[k + 1curr_quantity OF ]])
                 
                 SWAP sequence[k] AND sequence[k+1]
             
@@ -718,19 +718,19 @@ DistTotal_Generator()
     FOR (i = 0 TO DistLength - 1) STEP 1
     
         DistTotalLength = DistTotalLength + 1
-        ptr = insertNode_Dist(i, DistHead[i].quantity, DistHead[i].accu_quantity)
+        ptr = insertNode_Dist(i, quantity OF DistHead[i], accu_quantity OF DistHead[i])
 
-        IF (ptr->link NOT EQUALS NULL)
-            ptr = ptr->link
+        IF (link OF ptr NOT EQUALS NULL)
+            ptr = link OF ptr
         ENDIF
 
         REPEAT 
         
-            ptr->quantity += DistHead[i + 1].quantity
-            ptr->accu_quantity += DistHead[i + 1].accu_quantity
+            quantity OF ptr += DistHead[i + 1quantity OF ]
+            accu_quantity OF ptr += DistHead[i + 1accu_quantity OF ]
 
             i = i + 1
-        UNTIL(DistHead[i].transaction_no EQUALS DistHead[i + 1].transaction_no)
+        UNTIL(transaction_no OF DistHead[i] EQUALS DistHead[i + 1transaction_no OF ])
     
     ENDFOR
 
@@ -763,27 +763,27 @@ sort_DistTotalQuan(head, count, mode_name)
         FOR (j = 0 TO count - i - 1 - 1) STEP 1
 
             p1 = h
-            p2 = p1->link
+            p2 = link OF p1
             IF (p2 EQUALS NULL)
                 ENTER NEXT ROUND
 
             ENDIF
 
-            IF (mode EQUALS 1 AND (p1->quantity < p2->quantity))
+            IF (mode EQUALS 1 AND (quantity OF p1 < quantity OF p2))
     
                 h = CALL swap_DistTotal(p1, p2)
                 swapped = 1
             
             ENDIF
 
-            IF (mode EQUALS 2 AND (p1->accu_quantity < p2->accu_quantity))
+            IF (mode EQUALS 2 AND (accu_quantity OF p1 < accu_quantity OF p2))
             
                 h = CALL swap_DistTotal(p1, p2)
                 swapped = 1
             
             ENDIF
 
-            h = &(*h)->link
+            h = link OF h
         
         ENDFOR
 
@@ -800,7 +800,7 @@ freeList_DistTotal(head)
     DECLARE curr = head, link
     REPEAT 
     
-        link = curr->link
+        link = link OF curr
         CALL free(curr)
         curr = link
 
@@ -810,45 +810,45 @@ freeList_DistTotal(head)
 
 Validation_Date(input)
 
-    IF (input.year >= 1000 AND input.year <= 9999)
+    IF (year OF input >= 1000 AND year OF input <= 9999)
     
-        IF (input.month >= 1 AND input.month <= 12)
+        IF (month OF input >= 1 AND month OF input <= 12)
         
-            IF ((input.day >= 1 AND input.day <= 31) AND (input.month EQUALS 1 || input.month EQUALS 3 || input.month EQUALS 5 || input.month EQUALS 7 || input.month EQUALS 8 || input.month EQUALS 10 || input.month EQUALS 12))
+            IF ((day OF input >= 1 AND day OF input <= 31) AND (month OF input EQUALS 1 || month OF input EQUALS 3 || month OF input EQUALS 5 || month OF input EQUALS 7 || month OF input EQUALS 8 || month OF input EQUALS 10 || month OF input EQUALS 12))
                 RETURN 1
-            ELSE IF ((input.day >= 1 AND input.day <= 30) AND (input.month EQUALS 4 || input.month EQUALS 6 || input.month EQUALS 9 || input.month EQUALS 11))
+            ELSE IF ((day OF input >= 1 AND day OF input <= 30) AND (month OF input EQUALS 4 || month OF input EQUALS 6 || month OF input EQUALS 9 || month OF input EQUALS 11))
                 RETURN 1
-            ELSE IF ((input.day >= 1 AND input.day <= 28) AND (input.month EQUALS 2))
+            ELSE IF ((day OF input >= 1 AND day OF input <= 28) AND (month OF input EQUALS 2))
                 RETURN 1
-            ELSE IF (input.day EQUALS 29 AND input.month EQUALS 2 AND (input.year % 400 EQUALS 0 || (input.year % 4 EQUALS 0 AND input.year % 100 NOT EQUALS 0)))
+            ELSE IF (day OF input EQUALS 29 AND month OF input EQUALS 2 AND (year OF input % 400 EQUALS 0 || (year OF input % 4 EQUALS 0 AND year OF input % 100 NOT EQUALS 0)))
                 RETURN 1
             ELSE
             
-                PRINT("Invalid Date Input/Format.\n")
+                PRINT("Invalid Date Input/Format")
                 RETURN 0
             ENDIF
         
         ELSE
         
-            PRINT("Invalid Date Input/Format.\n")
+            PRINT("Invalid Date Input/Format")
             RETURN 0
         ENDIF
     
     ELSE
     
-        PRINT("Invalid Date Input/Format.\n")
+        PRINT("Invalid Date Input/Format")
         RETURN 0
     
     ENDIF
 
-    PRINT("Invalid Date Input/Format.\n")
+    PRINT("Invalid Date Input/Format")
     RETURN 0
 
 Validation_CharLength(limit, input_length)
 
     IF (input_length > limit)
     
-        PRINT(The length can only be within limit characters.)
+        PRINT("The length can only be within", limit, "characters")
         RETURN 0
     
     ENDIF
@@ -860,7 +860,7 @@ validation_isdigit(limit, input, input_length)
     DECLARE i
     IF (input_length > limit)
     
-        PRINT(The length can only be within limit characters)
+        PRINT("The length can only be within", limit, "characters")
         RETURN 0
     
     ENDIF
@@ -869,7 +869,7 @@ validation_isdigit(limit, input, input_length)
     
         IF (isdigit(input[i]) EQUALS 0)
         
-            PRINT(Only numbers can be accepted.)
+            PRINT("Only numbers can be accepted")
             RETURN 0
         
         ENDIF
@@ -891,7 +891,7 @@ validation_isfloat(input, input_length)
 
         IF (isdigit(input[i]) EQUALS 0)
         
-            PRINT("Only numbers can be accepted.\n")
+            PRINT("Only numbers can be accepted")
             RETURN 0
         
         ENDIF
@@ -901,7 +901,7 @@ validation_isfloat(input, input_length)
         RETURN 1
     ELSE
     
-        PRINT("Cannot exceed 10000000.")
+        PRINT("Cannot exceed 10000000")
         RETURN 0
     ENDIF
 
@@ -917,7 +917,7 @@ validation_supply_code(input)
         ENDIF
     
     ENDFOR
-    PRINT("Invalid Supply Code.")
+    PRINT("Invalid Supply  OF Code")
     RETURN -1
 
 
@@ -953,7 +953,7 @@ ConfirmSupplySection(input)
             
             ELSE IF(choice EQUALS 2)
                 SupplyLength--
-                PRINT("You have cancelled this record.")
+                PRINT("You have cancelled this  OF record")
                 CALL Exit_Phrase()
                 RETURN 0
             ENDIF
@@ -997,7 +997,7 @@ ConfirmDistSection(input, edit_index, edited_data, distributed_ID)
         
         ELSE IF choice EQUALS 2
             SupplyLength--
-            PRINT("You have cancelled this record.")
+            PRINT("You have cancelled this  OF record")
             CALL Exit_Phrase()
         
         ENDIF
@@ -1015,7 +1015,7 @@ Print_DistList(input, edit_index, edited_data, distributed_ID)
 
     IF(distributed_ID NOT EQUALS NULL)
         LOOP DistTotalHead TILL THE END OF RECORDS
-            IF (ptr->disttotal_ID EQUALS distributed_ID)
+            IF (disttotal_ID OF ptr EQUALS distributed_ID)
                 END THIS LOOP
             ENDIF
         ENDLOOP
@@ -1039,26 +1039,26 @@ Print_DistList(input, edit_index, edited_data, distributed_ID)
             ENDIF
         
         ELSE IF i EQUALS 1
-            buffer = input->donee_name
+            buffer = donee_name OF input
         
         ELSE IF i EQUALS 2
-            buffer = input->donee_location
+            buffer = donee_location OF input
         
         ELSE IF i EQUALS 3
-            buffer = input->donation_date
+            buffer = donation_date OF input
 
         ELSE IF i EQUALS 4
-            buffer = input->stock_ID
+            buffer = stock_ID OF input
 
         ELSE IF i EQUALS 5
             IF(distributed_ID EQUALS NULL)
-                buffer = input->quantity
+                buffer = quantity OF input
             ELSE
-                buffer = ptr->quantity
+                buffer = quantity OF ptr
             ENDIF
         
         ELSE IF i EQUALS 6
-            buffer = ptr->accu_quantity
+            buffer = accu_quantity OF ptr
         ENDIF
 
         PRINT(DistTotalColumnName[i]: buffer)
@@ -1072,7 +1072,7 @@ Print_DistList(input, edit_index, edited_data, distributed_ID)
 
 Exit_Phrase()
 
-    PRINT("Press any key to ENTER NEXT ROUND......")
+    PRINT("Press any key to ENTER NEXT  OF ROUND OF  OF  OF  OF  OF ")
     ACCEPT A CHARACTER
 
 
@@ -1099,28 +1099,28 @@ Print_SupplyList(input, choice, edited_data)
         ENDIF
 
         IF i EQUALS 0 
-            buffer = input->donation_ID
+            buffer = donation_ID OF input
         
         ELSE IF i EQUALS 1
-            buffer = input->supply_code
+            buffer = supply_code OF input
         
         ELSE IF i EQUALS 2
-            buffer = input->supply_name
+            buffer = supply_name OF input
         
         ELSE IF i EQUALS 3
-            buffer = input->donator
+            buffer = donator OF input
 
         ELSE IF i EQUALS 4
-            buffer = input->donation_date
+            buffer = donation_date OF input
 
         ELSE IF i EQUALS 5
-            buffer = input->shipment_no
+            buffer = shipment_no OF input
         
         ELSE IF i EQUALS 6
-            buffer = input->init_quantity
+            buffer = init_quantity OF input
         
         ELSE IF i EQUALS 7
-            buffer = input->curr_quantity
+            buffer = curr_quantity OF input
 
         ENDIF
 
@@ -1134,9 +1134,9 @@ validation_stockID(input)
     CALL Stock_Generator()
     LOOP StockHead TILL END OF RECORDS
     
-        IF (ptr->stock_ID EQUALS input)
+        IF (stock_ID OF ptr EQUALS input)
         
-            RETURN ptr->supply_index
+            RETURN supply_index OF ptr
         ENDIF
     ENDLOOP
     PRINT("Stock ID does not exist\n")
@@ -1148,7 +1148,7 @@ SupplyToFile()
 
     FOR (i = 0 TO SupplyLength - 1) STEP 1
     
-        PRINT SupplyHead TO donation.txt
+        PRINT SupplyHead TO txt OF donation
     
     ENDFOR
     CLOSE THE FILE
@@ -1158,7 +1158,7 @@ DistToFile()
 
     FOR (i = 0 TO DistLength - 1) STEP 1
 
-        PRINT DistHead TO dist.txt
+        PRINT DistHead TO txt OF dist
     
     ENDFOR
     CLOSE THE FILE
@@ -1172,9 +1172,9 @@ EnsureQuantity(ID_store, quantity, supply_index)
 
     FOR (i = supply_index TO SupplyLength - 1) STEP 1
     
-        IF ((SupplyHead[i].supply_code EQUALS SupplyHead[k].supply_code) AND (SupplyHead[i].donator, SupplyHead[k].donator) AND (SupplyHead[i].shipment_no EQUALS SupplyHead[k].shipment_no))
+        IF ((supply_code OF SupplyHead[i] EQUALS supply_code OF SupplyHead[k]) AND (donator OF SupplyHead[i], donator OF SupplyHead[k]) AND (shipment_no OF SupplyHead[i] EQUALS shipment_no OF SupplyHead[k]))
         
-            quan_remainder -= SupplyHead[i].curr_quantity
+            quan_remainder -= curr_quantity OF SupplyHead[i]
             ID_store[ID_store_index] = i
             ID_store_index = ID_store_index + 1
             IF (quan_remainder <= 0)
@@ -1184,6 +1184,6 @@ EnsureQuantity(ID_store, quantity, supply_index)
         ENDIF
     ENDFOR
 
-    PRINT("The quantity entered cannot exceed the stock's current quantity.")
+    PRINT("The quantity entered cannot exceed the stock's current  OF quantity")
     RETURN -1
 

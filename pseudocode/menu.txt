@@ -220,7 +220,7 @@ AddDonationSupply()
 
     DOWHILE(Validation_Date(donation_date) EQUALS 0)
     
-        PRINT("Enter Date in format: dd/mm/yyyy\n")
+        PRINT("Enter Date in format: dd/mm/yyyy ")
         PRINT("Date: ")
         ACCEPT date_buffer
         ACCEPT donation_date
@@ -242,14 +242,14 @@ AddDonationSupply()
 
     SupplyLength = SupplyLength + 1
     buffer = SupplyID
-    SupplyHead[SupplyLength - 1].donation_ID =  buffer
-    SupplyHead[SupplyLength - 1].supply_code =  supply_code
-    SupplyHead[SupplyLength - 1].supply_name =  Supply_Type[supply_code_index][1]
-    SupplyHead[SupplyLength - 1].donator =  donator
-    SupplyHead[SupplyLength - 1].donation_date = donation_date
-    SupplyHead[SupplyLength - 1].shipment_no = shipment_buffer
-    SupplyHead[SupplyLength - 1].init_quantity = quantity_buffer
-    SupplyHead[SupplyLength - 1].curr_quantity = quantity_buffer
+    donation_ID OF SupplyHead[SupplyLength-1] =  buffer
+    supply_code OF SupplyHead[SupplyLength-1] =  supply_code
+    supply_name OF SupplyHead[SupplyLength-1] =  Supply_Type[supply_code_index][1]
+    donator OF SupplyHead[SupplyLength-1] =  donator
+    donation_date OF SupplyHead[SupplyLength-1] = donation_date
+    shipment_no OF SupplyHead[SupplyLength-1] = shipment_buffer
+    init_quantity OF SupplyHead[SupplyLength-1] = quantity_buffer
+    curr_quantity OF SupplyHead[SupplyLength-1] = quantity_buffer
 
     CALL ConfirmSupplySection(&SupplyHead[SupplyLength - 1])
 
@@ -276,11 +276,11 @@ EditDonationSupply()
 
             CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
             CALL PrintTable(1, SUPPLYCOLUMN, Space_Supply, SupplyColumnName, SupplyLength)
-            CALL PRINT("\nEnter Donation ID: ")
+            CALL PRINT(" Enter Donation ID: ")
             ACCEPT donation_ID
             FOR (i = 0 TO SupplyLength - 1) STEP 1
             
-                IF (SupplyHead[i].donation_ID EQUALS donation_ID)
+                IF (donation_ID OF SupplyHead[i] EQUALS donation_ID)
                 
                     search_index = i
                     END THIS LOOP
@@ -337,7 +337,7 @@ EditDonationSupply()
         ELSE IF choice EQUALS 3
             DOWHILE(Validation_Date(donation_date) EQUALS 0)
             
-                PRINT("Enter Date in format: dd/mm/yyyy\n")
+                PRINT("Enter Date in format: dd/mm/yyyy ")
                 PRINT("Date: ")
                 ACCEPT buffer
                 ACCEPT donation_date 
@@ -400,30 +400,30 @@ EditDonationSupply()
 
         IF (selection EQUALS 2)
         
-            PRINT("You have cancelled this record.\n")
+            PRINT("You have cancelled this record. ")
             CALL Exit_Phrase()
             RETURN
         ENDIF
 
         IF (choice EQUALS 1)
         
-            SupplyHead[search_index].supply_code =  buffer
-            SupplyHead[search_index].supply_name =  Supply_Type[supply_code_index][1]
+            supply_code OF SupplyHead[search_index] =  buffer
+            supply_name OF SupplyHead[search_index] =  Supply_Type[supply_code_index][1]
 
         ELSE IF (choice EQUALS 3)
-            SupplyHead[search_index].donator =  buffer
+            donator OF SupplyHead[search_index] =  buffer
 
         ELSE IF (choice EQUALS 4)
-            SupplyHead[search_index].donation_date = donation_date
+            donation_date OF SupplyHead[search_index] = donation_date
 
         ELSE IF (choice EQUALS 5)
-            SupplyHead[search_index].shipment_no = atoi(buffer)
+            shipment_no OF SupplyHead[search_index] = atoi(buffer)
 
         ELSE IF (choice EQUALS 6)
-            SupplyHead[search_index].init_quantity = atof(buffer)
+            init_quantity OF SupplyHead[search_index] = atof(buffer)
 
         ELSE IF (choice EQUALS 7)
-            SupplyHead[search_index].curr_quantity = atof(buffer)
+            curr_quantity OF SupplyHead[search_index] = atof(buffer)
         ENDIF
         
         CALL SupplyToFile()
@@ -481,7 +481,7 @@ ViewCurrentStock_Supply()
             DECLARE title[100] = "View Current Stocks"
             DECLARE menu[][50] = {"Stock ID - Ascending", "Quantity Received(millions) - Descending", "Current Quantity(millions) - Descending", "Return"}
             Print_Title(TITLELENGTH, LENGTH OF title, title)
-            PRINT("Sort according to:\n")
+            PRINT("Sort according to: ")
             Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
             PRINT("Choice: ")
             ACCEPT  choice_buffer
@@ -528,7 +528,7 @@ viewSupplyHistoryRecord()
             DECLARE title[100] = "View History Records"
             DECLARE menu[][50] = {"Donation ID - Ascending", "Quantity Received(millions) - Descending", "Current Quantity(millions) - Descending", "Return"}
             CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
-            CALL PRINT("Sort according to:\n")
+            CALL PRINT("Sort according to: ")
             CALL Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
             PRINT("Choice: ")
             ACCEPT choice_buffer
@@ -616,7 +616,7 @@ void SearchStocks()
         CALL Stock_Generator()
         search_index = NULL
         LOOP StockHead TILL END OF RECORDS 
-            IF (ptr->stock_ID EQUALS  search_target)
+            IF (stock_ID OF ptr EQUALS  search_target)
             
                 search_index = ptr
                 END THIS LOOP
@@ -627,7 +627,7 @@ void SearchStocks()
             END THIS LOOP
         ELSE
 
-            PRINT("Stocks ID doesnt exist. Please enter again.\n")
+            PRINT("Stocks ID doesnt exist. Please enter again. ")
             CALL feeList_Stock(StockHead)
             CALL Exit_Phrase()
         ENDIF
@@ -663,7 +663,7 @@ void SearchSupplyHistory()
         ACCEPT search_target
         FOR (i = 0 TO SupplyLength - 1) STEP 1
         
-            IF (SupplyHead[i].donation_ID EQUALS search_target)
+            IF (donation_ID OF SupplyHead[i] EQUALS search_target)
             
                 search_index = i
                 END THIS LOOP
@@ -712,7 +712,7 @@ AddDistDonation()
     CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
     CALL PrintTable(3, STOCKCOLUMN, Space_Stock, StockColumnName, StockLength)
 
-    CALL PRINT("\nPlease fill up the details of the donation: \n")
+    CALL PRINT(" Please fill up the details of the donation:  ")
 
     DOWHILE(Validation_CharLength(30, LENGTH OF donee_name) EQUALS 0)
     
@@ -728,7 +728,7 @@ AddDistDonation()
 
     DOWHILE(Validation_Date(donation_date) EQUALS 0)
     
-        PRINT("Enter Date in format: dd/mm/yyyy\n")
+        PRINT("Enter Date in format: dd/mm/yyyy ")
         PRINT("Date: ")
         ACCEPT date_buffer
         ACCEPT  donation_date
@@ -755,12 +755,12 @@ AddDistDonation()
     ENDDO
 
     buffer = DistID
-    temp.distributed_ID =  buffer
-    temp.donee_name =  donee_name
-    temp.donee_location =  donee_location
-    temp.donation_date = donation_date
-    temp.stocks_ID =  stocks_ID
-    temp.quantity = quantity
+    distributed_ID OF temp =  buffer
+    donee_name OF temp =  donee_name
+    donee_location OF temp =  donee_location
+    donation_date OF temp = donation_date
+    stocks_ID OF temp =  stocks_ID
+    quantity OF temp = quantity
 
     DECLARE result = CALL ConfirmDistSection(&temp, -1, NULL, NULL)
 
@@ -773,37 +773,37 @@ AddDistDonation()
     
         DistLength = DistLength + 1
         buffer = DistID
-        DistHead[DistLength - 1].distributed_ID =  buffer
-        DistHead[DistLength - 1].donee_name =  donee_name
-        DistHead[DistLength - 1].donee_location =  donee_location
-        DistHead[DistLength - 1].donation_date = donation_date
-        DistHead[DistLength - 1].donation_ID =  SupplyHead[ID_array[i]].donation_ID
-        DistHead[DistLength - 1].stocks_ID =  stocks_ID
+        distributed_ID OF DistHead[DistLength-1] =  buffer
+        donee_name OF DistHead[DistLength-1] =  donee_name
+        donee_location OF DistHead[DistLength-1] =  donee_location
+        donation_date OF DistHead[DistLength-1] = donation_date
+        donation_ID OF DistHead[DistLength-1] =  donation_ID OF SupplyHead[ID_array[i]]
+        stocks_ID OF DistHead[DistLength-1] =  stocks_ID
 
         IF (ID_length > 1 AND i NOT EQUALS ID_length - 1)
         
-            quan_remainder = quan_remainder - SupplyHead[ID_array[i]].curr_quantity
-            DistHead[DistLength - 1].quantity = SupplyHead[ID_array[i]].curr_quantity
-            SupplyHead[ID_array[i]].curr_quantity = 0
+            quan_remainder = quan_remainder - curr_quantity OF SupplyHead[ID_array[i]]
+            quantity OF DistHead[DistLength-1] = curr_quantity OF SupplyHead[ID_array[i]]
+            curr_quantity OF SupplyHead[ID_array[i]] = 0
         
         ELSE
         
-            SupplyHead[ID_array[i]].curr_quantity -= quan_remainder
-            DistHead[DistLength - 1].quantity = quan_remainder
+            curr_quantity OF SupplyHead[ID_array[i]] -= quan_remainder
+            quantity OF DistHead[DistLength-1] = quan_remainder
         ENDIF
 
         for (k = DistLength - 2 TO 0)STEP -1
-            IF (DistHead[DistLength - 1].stocks_ID EQUALS DistHead[k].stocks_ID AND DistHead[DistLength - 1].donee_name EQUALS DistHead[k].donee_name AND DistHead[DistLength - 1].donee_location EQUALS DistHead[k].donee_location)
+            IF (stocks_ID OF DistHead[DistLength-1] EQUALS stocks_ID OF DistHead[k] AND DistHead[DistLength - donee_name OF 1] EQUALS donee_name OF DistHead[k] AND DistHead[DistLength - donee_location OF 1] EQUALS donee_location OF DistHead[k])
             
-                DistHead[DistLength - 1].accu_quantity = DistHead[k].accu_quantity + DistHead[DistLength - 1].quantity
+                accu_quantity OF DistHead[DistLength-1] = accu_quantity OF DistHead[k] + DistHead[DistLength - quantity OF 1]
                 END THIS LOOP
             ENDIF
 
         IF (k < 0)
-            DistHead[DistLength - 1].accu_quantity = DistHead[DistLength - 1].quantity
+            accu_quantity OF DistHead[DistLength-1] = DistHead[DistLength - quantity OF 1]
         ENDIF
 
-        DistHead[DistLength - 1].transaction_no = transaction_no
+        transaction_no OF DistHead[DistLength-1] = transaction_no
     ENDFOR
     CALL SupplyToFile()
     CALL DistToFile()
@@ -838,9 +838,9 @@ EditDistDonation()
             CALL DistTotal_Generator()
             LOOP DistTotalHead TILL END OF RECORDS
             
-                IF (ptr->disttotal_ID EQUALS distributed_ID)
+                IF (disttotal_ID OF ptr EQUALS distributed_ID)
                 
-                    search_index = ptr->dist_index
+                    search_index = dist_index OF ptr
                     END THIS LOOP
                 ENDIF
             ENDLOOP
@@ -896,7 +896,7 @@ EditDistDonation()
        IF choice EQUALS 3
             DOWHILE(Validation_Date(donation_date))
             
-                PRINT("Enter Date in format: dd/mm/yyyy\n")
+                PRINT("Enter Date in format: dd/mm/yyyy ")
                 PRINT("Date: ")
                 ACCEPT  buffer
                 ACCEPT  donation_date
@@ -920,19 +920,19 @@ EditDistDonation()
             REPEAT ()
 
                 IF (edit_index EQUALS 1)
-                    DistHead[k].donee_name =  buffer
+                    donee_name OF DistHead[k] =  buffer
                 ENDIF
 
                 IF (edit_index EQUALS 2)
-                    DistHead[k].donee_location =  buffer
+                    donee_location OF DistHead[k] =  buffer
                 ENDIF
 
                 IF (edit_index EQUALS 3)
-                    DistHead[k].donation_date = donation_date
+                    donation_date OF DistHead[k] = donation_date
                 ENDIF
 
                 k = k + 1
-            UNTIL(DistHead[search_index].transaction_no NOT EQUALS DistHead[k].transaction_no)
+            UNTIL(transaction_no OF DistHead[search_index] NOT EQUALS transaction_no OF DistHead[k])
 
             CALL DistToFile()
         ENDIF
@@ -990,7 +990,7 @@ viewCurrentDistTotal()
             DECLARE title[100] = "View Current Distributed Donation"
             DECLARE menu[][50] = {"Distributed ID - Ascending", "Quantity(millions) - Descending", "Accumulative Quantity(millions) - Descending", "Return"}
             CALL Print_Title(TITLELENGTH, LENGTH OF title, title)
-            PRINT("Sort according to:\n")
+            PRINT("Sort according to: ")
             CALL Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
             PRINT("Choice: ")
             ACCEPT choice_buffer
@@ -1038,7 +1038,7 @@ viewCurrentDistTotal()
             DECLARE title[100] = "View Detailed Distributed Donation"
             DECLARE menu[][50] = {"Distributed ID - Ascending", "Quantity(millions) - Descending", "Accumulative Quantity(millions) - Descending", "Return"}
             Print_Title(TITLELENGTH, LENGTH OF title, title)
-            PRINT("Sort according to:\n")
+            PRINT("Sort according to: ")
             Print_Menu(SIZE OF menu / SIZE OF menu[0], menu)
             PRINT("Choice: ")
             ACCEPT  choice_buffer
@@ -1131,7 +1131,7 @@ SearchDistHistory()
         ACCEPT search_target
         FOR (i = 0 TO DistLength - 1) STEP 1
         
-            IF (DistHead[i].distributed_ID EQUALS search_target)
+            IF (distributed_ID OF DistHead[i] EQUALS search_target)
             
                 search_index = i
                 END THIS LOOP
@@ -1175,7 +1175,7 @@ SearchDistTotal()
         CALL DistTotal_Generator()
         search_index = NULL
         LOOP DistTotalHead TILL END OF RECORDS
-            IF (ptr->disttotal_ID EQUALS search_target)
+            IF (disttotal_ID OF ptr EQUALS search_target)
             
                 search_index = ptr
                 END THIS LOOP
@@ -1215,9 +1215,9 @@ SupplyAccuDonation()
     
         FOR (k = 0 TO SupplyTypeLength - 1) STEP 1
         
-            IF (SupplyHead[i].supply_code EQUALS  Supply_Type[k][0])
+            IF (supply_code OF SupplyHead[i] EQUALS  Supply_Type[k][0])
             
-                count[k] = count[k] + SupplyHead[i].init_quantity
+                count[k] = count[k] + init_quantity OF SupplyHead[i]
                 END THIS LOOP
             ENDIF
         ENDFOR
@@ -1242,13 +1242,13 @@ DistAccuDonation()
     
         FOR (int k = 0 TO SupplyLength - 1) STEP 1
         
-            IF (DistHead[i].donation_ID EQUALS SupplyHead[k].donation_ID)
+            IF (donation_ID OF DistHead[i] EQUALS donation_ID OF SupplyHead[k])
             
                 FOR (int j = 0 TO SupplyTypeLength - 1) STEP 1
                 
-                    IF (SupplyHead[k].supply_code EQUALS Supply_Type[j][0])
+                    IF (supply_code OF SupplyHead[k] EQUALS Supply_Type[j][0])
                     
-                        count[j] = count[j] + DistHead[i].quantity
+                        count[j] = count[j] + quantity OF DistHead[i]
                         END THIS LOOP
 
                     ENDIF
@@ -1259,7 +1259,7 @@ DistAccuDonation()
 
     FOR (int i = 0 TO SupplyTypeLength - 1) STEP 1
     
-        PRINT(Supply_Type[i][0]|Supply_Type[i][1] - count[i])
+        PRINT(Supply_Type[i][0], "|", Supply_Type[i][1], "-" ,count[i])
     ENDFOR
     PRINT NEWLINE
     CALL Exit_Phrase()

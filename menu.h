@@ -4,7 +4,7 @@
 //Function Declaration
 
 //Menus
-//The first menu of all
+//Startup Menu
 void MainMenu();
 
 //Primary Menus

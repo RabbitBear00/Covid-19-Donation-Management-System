@@ -136,6 +136,9 @@ int validation_isfloat(char *input, int input_length);
 int validation_supply_code(char* input);
 int validation_stockID(char *input);
 int validation_samesupply(supply input);
+//Ensure quantity of distributed donation doesn't exceed
+int EnsureQuantity(int *ID_store, float quantity, int supply_index);
+
 
 //Functions for stock list
 //Generate list for struct stocks
@@ -188,9 +191,6 @@ void Print_DistList(dist *input, int edit_index, char *edited_data, char *distri
 
 //Print Table header, return the sum of length of the table
 int PrintTableHeader(int col_count, int *space, char col_name[][50]);
-
-//Ensure quantity of distributed donation doesn't exceed
-int EnsureQuantity(int *ID_store, float quantity, int supply_index);
 
 //Printing the confirmation
 int ConfirmDistSection(dist *input, int edit_index, char *edited_data, char *distributed_ID);
